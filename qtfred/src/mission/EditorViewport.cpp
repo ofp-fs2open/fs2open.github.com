@@ -1099,6 +1099,7 @@ SCP_string EditorViewport::getObjectLayerName(int objectIndex) const {
 	return _layerNames[layerIndex];
 }
 
+
 bool EditorViewport::moveObjectToLayer(int objectIndex, const SCP_string& layerName, SCP_string* errorMessage) {
 	const auto layerIndex = getLayerIndex(layerName);
 	if (layerIndex == static_cast<size_t>(-1)) {
