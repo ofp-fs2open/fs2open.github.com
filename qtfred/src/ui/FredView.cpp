@@ -2637,13 +2637,32 @@ void FredView::keyReleaseEvent(QKeyEvent* event) {
 
 	_inKeyReleaseHandler = false;
 }
+namespace {
+// The editors are modeless; a second instance of the same editor would let two
+// apply-undo commands interleave on the main stack (whichever OKs last silently
+// clobbers the other). Reuse the already-open instance instead.
+template <typename DialogT>
+bool raiseExistingEditor(const QWidget* parent)
+{
+	auto* existing = parent->findChild<DialogT*>(QString(), Qt::FindDirectChildrenOnly);
+	if (existing != nullptr && existing->isVisible()) {
+		existing->raise();
+		existing->activateWindow();
+		return true;
+	}
+	return false;
+}
+} // namespace
+
 void FredView::on_actionMission_Events_triggered(bool) {
+	if (raiseExistingEditor<dialogs::MissionEventsDialog>(this)) return;
 	auto eventEditor = new dialogs::MissionEventsDialog(this, _viewport);
 	eventEditor->setAttribute(Qt::WA_DeleteOnClose);
 	eventEditor->show();
 }
 void FredView::on_actionMission_Cutscenes_triggered(bool)
 {
+	if (raiseExistingEditor<dialogs::MissionCutscenesDialog>(this)) return;
 	auto cutsceneEditor = new dialogs::MissionCutscenesDialog(this, _viewport);
 	cutsceneEditor->setAttribute(Qt::WA_DeleteOnClose);
 	cutsceneEditor->show();
@@ -2676,6 +2695,7 @@ void FredView::onOtherKindSelected(int other_kind) {
 	_viewport->cur_other_kind = static_cast<OtherKind>(other_kind);
 }
 void FredView::on_actionAsteroid_Field_triggered(bool) {
+	if (raiseExistingEditor<dialogs::AsteroidEditorDialog>(this)) return;
 	auto asteroidFieldEditor = new dialogs::AsteroidEditorDialog(this, _viewport);
 	asteroidFieldEditor->setAttribute(Qt::WA_DeleteOnClose);
 	connect(asteroidFieldEditor, &QDialog::finished, this, [this]() { fred->updateAllViewports(); });
@@ -2683,27 +2703,32 @@ void FredView::on_actionAsteroid_Field_triggered(bool) {
 }
 void FredView::on_actionVolumetric_Nebula_triggered(bool)
 {
+	if (raiseExistingEditor<dialogs::VolumetricNebulaDialog>(this)) return;
 	auto volumetricNebulaEditor = new dialogs::VolumetricNebulaDialog(this, _viewport);
 	volumetricNebulaEditor->setAttribute(Qt::WA_DeleteOnClose);
 	volumetricNebulaEditor->show();
 }
 void FredView::on_actionBriefing_triggered(bool) {
+	if (raiseExistingEditor<dialogs::BriefingEditorDialog>(this)) return;
 	auto eventEditor = new dialogs::BriefingEditorDialog(this, _viewport);
 	eventEditor->setAttribute(Qt::WA_DeleteOnClose);
 	eventEditor->show();
 }
 void FredView::on_actionMission_Specs_triggered(bool) {
+	if (raiseExistingEditor<dialogs::MissionSpecDialog>(this)) return;
 	auto missionSpecEditor = new dialogs::MissionSpecDialog(this, _viewport);
 	missionSpecEditor->setAttribute(Qt::WA_DeleteOnClose);
 	missionSpecEditor->show();
 }
 void FredView::on_actionWaypoint_Paths_triggered(bool) {
+	if (raiseExistingEditor<dialogs::WaypointEditorDialog>(this)) return;
 	auto editorDialog = new dialogs::WaypointEditorDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
 }
 void FredView::on_actionJump_Nodes_triggered(bool)
 {
+	if (raiseExistingEditor<dialogs::JumpNodeEditorDialog>(this)) return;
 	auto editorDialog = new dialogs::JumpNodeEditorDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
@@ -2750,7 +2775,7 @@ void FredView::on_actionProps_triggered(bool)
 	}
 }
 void FredView::on_actionCampaign_triggered(bool) {
-	//TODO: Save if Changes
+	if (raiseExistingEditor<dialogs::CampaignEditorDialog>(this)) return;
 	auto editorCampaign = new dialogs::CampaignEditorDialog(this, _viewport);
 	editorCampaign->setAttribute(Qt::WA_DeleteOnClose);
 	editorCampaign->show();
@@ -2759,27 +2784,32 @@ void FredView::on_actionObject_Orientation_triggered(bool) {
 	orientEditorTriggered();
 }
 void FredView::on_actionCommand_Briefing_triggered(bool) {
+	if (raiseExistingEditor<dialogs::CommandBriefingDialog>(this)) return;
 	auto editorDialog = new dialogs::CommandBriefingDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
 }
 void FredView::on_actionDebriefing_triggered(bool)
 {
+	if (raiseExistingEditor<dialogs::DebriefingDialog>(this)) return;
 	auto editorDialog = new dialogs::DebriefingDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
 }
 void FredView::on_actionReinforcements_triggered(bool) {
+	if (raiseExistingEditor<dialogs::ReinforcementsDialog>(this)) return;
 	auto editorDialog = new dialogs::ReinforcementsDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
 }
 void FredView::on_actionLoadout_triggered(bool) {
+	if (raiseExistingEditor<dialogs::TeamLoadoutDialog>(this)) return;
 	auto editorDialog = new dialogs::TeamLoadoutDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
 }
 void FredView::on_actionVariables_triggered(bool) {
+	if (raiseExistingEditor<dialogs::VariableDialog>(this)) return;
 	auto editorDialog = new dialogs::VariableDialog(this, _viewport);
 	editorDialog->setAttribute(Qt::WA_DeleteOnClose);
 	editorDialog->show();
@@ -3351,29 +3381,34 @@ void FredView::on_actionMission_Statistics_triggered(bool) {
 }
 
 void FredView::on_actionBackground_triggered(bool) {
+	if (raiseExistingEditor<dialogs::BackgroundEditorDialog>(this)) return;
 	auto dialog = new dialogs::BackgroundEditorDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
 }
 
 void FredView::on_actionShield_System_triggered(bool) {
+	if (raiseExistingEditor<dialogs::ShieldSystemDialog>(this)) return;
 	auto dialog = new dialogs::ShieldSystemDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
 }
 
 void FredView::on_actionSet_Global_Ship_Flags_triggered(bool) {
+	if (raiseExistingEditor<dialogs::GlobalShipFlagsDialog>(this)) return;
 	auto dialog = new dialogs::GlobalShipFlagsDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
 }
 
 void FredView::on_actionVoice_Acting_Manager_triggered(bool) {
+	if (raiseExistingEditor<dialogs::VoiceActingManager>(this)) return;
 	auto dialog = new dialogs::VoiceActingManager(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
 }
 void FredView::on_actionMission_Goals_triggered(bool) {
+	if (raiseExistingEditor<dialogs::MissionGoalsDialog>(this)) return;
 	auto dialog = new dialogs::MissionGoalsDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
@@ -3393,12 +3428,14 @@ void FredView::on_actionCalculate_Relative_Coordinates_triggered(bool) {
 }
 
 void FredView::on_actionFiction_Viewer_triggered(bool) {
+	if (raiseExistingEditor<dialogs::FictionViewerDialog>(this)) return;
 	auto dialog = new dialogs::FictionViewerDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
 }
 
 void FredView::on_actionWaypointPathGenerator_triggered(bool) {
+	if (raiseExistingEditor<dialogs::WaypointPathGeneratorDialog>(this)) return;
 	auto dialog = new dialogs::WaypointPathGeneratorDialog(this, _viewport);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->show();
