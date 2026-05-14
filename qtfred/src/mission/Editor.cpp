@@ -946,7 +946,7 @@ int Editor::getNumMarked() {
 }
 int Editor::dup_object(object* objp) {
 
-	int i, j, n, inst, obj = -1;
+	int inst, obj = -1;
 	static int waypoint_instance(-1);
 
 	if (!objp) {
@@ -975,7 +975,7 @@ int Editor::dup_object(object* objp) {
 			return -1;
 		}
 
-		n = Objects[obj].instance;
+		int n = Objects[obj].instance;
 
 		// Copy every editable per-ship field.  See clone_ship_instance_data() in
 		// code/missioneditor/objectduplication.cpp for the canonical field list.
@@ -983,10 +983,10 @@ int Editor::dup_object(object* objp) {
 
 		// Reinforcement-list propagation: if the source ship is listed as a
 		// reinforcement, add a new entry pointing at the duplicate.
-		for (i = 0; i < Num_reinforcements; i++) {
+		for (int i = 0; i < Num_reinforcements; i++) {
 			if (!stricmp(Reinforcements[i].name, Ships[inst].ship_name)) {
 				if (Num_reinforcements < MAX_REINFORCEMENTS) {
-					j = Num_reinforcements++;
+					int j = Num_reinforcements++;
 					strcpy_s(Reinforcements[j].name, Ships[n].ship_name);
 					Reinforcements[j].type = Reinforcements[i].type;
 					Reinforcements[j].uses = Reinforcements[i].uses;
@@ -997,10 +997,14 @@ int Editor::dup_object(object* objp) {
 		}
 
 		if (player_start_demoted && _lastActiveViewport) {
+			SCP_string message;
+			sprintf(message,
+				"Cannot create another player start. This mission already has the maximum of %d. "
+				"The duplicate has been created as a regular ship instead.",
+				MAX_PLAYERS);
 			_lastActiveViewport->dialogProvider->showButtonDialog(DialogType::Information,
 				"Player Starts",
-				"Cannot create another player start. This mission already has the maximum of 12. "
-				"The duplicate has been created as a regular ship instead.",
+				message,
 				{ DialogButton::Ok });
 		}
 
