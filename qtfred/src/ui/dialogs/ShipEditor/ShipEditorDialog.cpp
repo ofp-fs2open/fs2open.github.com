@@ -933,7 +933,7 @@ void ShipEditorDialog::updateArrival(bool overwrite)
 
 		ui->updateArrivalCueCheckBox->setChecked(_model->getArrivalCue());
 
-		ui->arrivalTree->initializeEditor(_viewport->editor, this, _viewport);
+		ui->arrivalTree->initializeEditor(_viewport->editor, this, _viewport, _fredView);
 		if (_model->getNumSelectedShips()) {
 
 			if (_model->getIfMultipleShips()) {
@@ -991,7 +991,7 @@ void ShipEditorDialog::updateDeparture(bool overwrite)
 	if (overwrite) {
 		ui->departureDelaySpinBox->setValue(_model->getDepartureDelay());
 
-		ui->departureTree->initializeEditor(_viewport->editor, this, _viewport);
+		ui->departureTree->initializeEditor(_viewport->editor, this, _viewport, _fredView);
 		if (_model->getNumSelectedShips()) {
 
 			if (_model->getIfMultipleShips()) {
