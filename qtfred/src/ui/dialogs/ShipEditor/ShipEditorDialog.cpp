@@ -428,12 +428,9 @@ ShipEditorDialog::ShipEditorDialog(FredView* parent, EditorViewport* viewport)
 	connect(viewport->editor, &Editor::objectMarkingChanged, this, &ShipEditorDialog::update);
 	connect(viewport->editor, &Editor::missionChanged, this, &ShipEditorDialog::update);
 
-	connect(ui->arrivalTree, &sexp_tree_view::modified, this, &ShipEditorDialog::on_arrivalTree_modified);
-	connect(ui->arrivalTree, &sexp_tree_view::helpChanged, this, &ShipEditorDialog::on_arrivalTree_helpChanged);
-	connect(ui->arrivalTree, &sexp_tree_view::miniHelpChanged, this, &ShipEditorDialog::on_arrivalTree_miniHelpChanged);
-	connect(ui->departureTree, &sexp_tree_view::modified, this, &ShipEditorDialog::on_departureTree_modified);
-	connect(ui->departureTree, &sexp_tree_view::helpChanged, this, &ShipEditorDialog::on_departureTree_helpChanged);
-	connect(ui->departureTree, &sexp_tree_view::miniHelpChanged, this, &ShipEditorDialog::on_departureTree_miniHelpChanged);
+	// The on_arrivalTree_*/on_departureTree_* slots are auto-connected by
+	// setupUi's connectSlotsByName; connecting them here again would run each
+	// handler twice per signal (and push duplicate undo commands).
 
 	// Column One
 	connect(ui->cargoCombo->lineEdit(), (&QLineEdit::editingFinished), this, &ShipEditorDialog::cargoChanged);
@@ -2519,8 +2516,37 @@ void ShipEditorDialog::on_noArrivalWarpCheckBox_stateChanged(int state)
 }
 void ShipEditorDialog::on_arrivalTree_modified()
 {
-	// TODO(sexp_tree_refactor): wire arrival cue sexp undo (Phase 8).
-	_model->setArrivalTreeDirty(ui->arrivalTree->_model.save_tree());
+	// Multi-edit without "update cue" checked: the model setter is a no-op.
+	if (_model->getIfMultipleShips() && !_model->getArrivalCue()) {
+		_model->setArrivalTreeDirty(ui->arrivalTree->_model.save_tree());
+		return;
+	}
+
+	auto* cmd = new SexpCueEditCommand(_viewport->editor, tr("Edit Arrival Cue"), true);
+	forEachMarkedShip([&](int sig, int inst) {
+		if (Ships[inst].wingnum >= 0)
+			return;
+		cmd->addOwner(Ships[inst].arrival_cue,
+			[sig]() {
+				const int n = obj_get_by_signature(sig);
+				return n < 0 ? -1 : Ships[Objects[n].instance].arrival_cue;
+			},
+			[sig](int formula) {
+				const int n = obj_get_by_signature(sig);
+				if (n >= 0)
+					Ships[Objects[n].instance].arrival_cue = formula;
+			});
+	});
+
+	const int newFormula = ui->arrivalTree->_model.save_tree();
+	_model->setArrivalTreeDirty(newFormula);
+
+	if (cmd->isEmpty()) {
+		delete cmd;
+		return;
+	}
+	cmd->captureAfter(newFormula);
+	_fredView->mainUndoStack()->push(cmd);
 }
 
 void ShipEditorDialog::on_arrivalTree_helpChanged(const QString& help)
@@ -2670,8 +2696,37 @@ void ShipEditorDialog::on_updateDepartureCueCheckBox_toggled(bool value)
 }
 void fred::dialogs::ShipEditorDialog::on_departureTree_modified()
 {
-	// TODO(sexp_tree_refactor): wire departure cue sexp undo (Phase 8).
-	_model->setDepartureTreeDirty(ui->departureTree->_model.save_tree());
+	// Multi-edit without "update cue" checked: the model setter is a no-op.
+	if (_model->getIfMultipleShips() && !_model->getDepartureCue()) {
+		_model->setDepartureTreeDirty(ui->departureTree->_model.save_tree());
+		return;
+	}
+
+	auto* cmd = new SexpCueEditCommand(_viewport->editor, tr("Edit Departure Cue"), true);
+	forEachMarkedShip([&](int sig, int inst) {
+		if (Ships[inst].wingnum >= 0)
+			return;
+		cmd->addOwner(Ships[inst].departure_cue,
+			[sig]() {
+				const int n = obj_get_by_signature(sig);
+				return n < 0 ? -1 : Ships[Objects[n].instance].departure_cue;
+			},
+			[sig](int formula) {
+				const int n = obj_get_by_signature(sig);
+				if (n >= 0)
+					Ships[Objects[n].instance].departure_cue = formula;
+			});
+	});
+
+	const int newFormula = ui->departureTree->_model.save_tree();
+	_model->setDepartureTreeDirty(newFormula);
+
+	if (cmd->isEmpty()) {
+		delete cmd;
+		return;
+	}
+	cmd->captureAfter(newFormula);
+	_fredView->mainUndoStack()->push(cmd);
 }
 
 void ShipEditorDialog::on_departureTree_helpChanged(const QString& help)
