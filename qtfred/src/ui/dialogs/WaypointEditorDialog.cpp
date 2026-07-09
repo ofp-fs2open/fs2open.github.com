@@ -1,4 +1,5 @@
 #include <QtWidgets/QTextEdit>
+#include <ui/util/DialogUndo.h>
 #include "ui/dialogs/WaypointEditorDialog.h"
 #include "ui/util/SignalBlockers.h"
 #include "ui_WaypointEditorDialog.h"
@@ -43,7 +44,9 @@ WaypointEditorDialog::WaypointEditorDialog(FredView* parent, EditorViewport* vie
 	_model(new WaypointEditorDialogModel(this, viewport))
 {
 	this->setFocus();
+
 	ui->setupUi(this);
+	util::installMainStackUndoShortcuts(this, _fredView->mainUndoStack());
 
 	ui->nameEdit->setMaxLength(NAME_LENGTH - 1);
 

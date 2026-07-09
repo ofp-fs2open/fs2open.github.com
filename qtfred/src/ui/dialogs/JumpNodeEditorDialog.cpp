@@ -1,4 +1,5 @@
 #include "ui/dialogs/JumpNodeEditorDialog.h"
+#include <ui/util/DialogUndo.h>
 #include "ui/util/SignalBlockers.h"
 #include "ui_JumpNodeEditorDialog.h"
 
@@ -29,7 +30,9 @@ JumpNodeEditorDialog::JumpNodeEditorDialog(FredView* parent, EditorViewport* vie
 	  _model(new JumpNodeEditorDialogModel(this, viewport))
 {
 	this->setFocus();
+
 	ui->setupUi(this);
+	util::installMainStackUndoShortcuts(this, _fredView->mainUndoStack());
 
 	ui->nameLineEdit->setMaxLength(NAME_LENGTH - 1);
 	ui->displayNameLineEdit->setMaxLength(NAME_LENGTH - 1);

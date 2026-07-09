@@ -241,6 +241,7 @@ class FredView: public QMainWindow, public IDialogProvider {
 	void updateUI();
 
 	void initializeStatusBar();
+	void updateUndoStatusIndicator();
 	void initializePopupMenus();
 	void populateMoveToLayerMenu(int targetObject, QMenu* targetMenu = nullptr);
 	void populateCreateShipSubmenu();
@@ -256,6 +257,7 @@ class FredView: public QMainWindow, public IDialogProvider {
 	QLabel* _statusBarLastSaved   = nullptr;
 	QLabel* _statusBarViewmode    = nullptr;
 	QLabel* _statusBarUnitsLabel  = nullptr;
+	QLabel* _statusBarUndoScope   = nullptr;
 
 	// Updates the "Last Saved" status bar label: pass an empty time to show "Never".
 	void setLastSaved(const QDateTime& when);

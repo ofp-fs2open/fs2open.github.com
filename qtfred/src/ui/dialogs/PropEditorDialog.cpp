@@ -1,4 +1,5 @@
 #include "ui/dialogs/PropEditorDialog.h"
+#include <ui/util/DialogUndo.h>
 
 #include "ui_PropEditorDialog.h"
 
@@ -17,7 +18,9 @@ namespace fso::fred::dialogs {
 PropEditorDialog::PropEditorDialog(FredView* parent, EditorViewport* viewport)
 	: QDialog(parent), _fredView(parent), _viewport(viewport),
 	  ui(new ::Ui::PropEditorDialog()), _model(new PropEditorDialogModel(this, viewport)) {
+
 	ui->setupUi(this);
+	util::installMainStackUndoShortcuts(this, _fredView->mainUndoStack());
 
 	ui->propNameLineEdit->setMaxLength(NAME_LENGTH - 1);
 

@@ -1,4 +1,5 @@
 #include "ShipEditorDialog.h"
+#include <ui/util/DialogUndo.h>
 
 #include "ui_ShipEditorDialog.h"
 
@@ -413,7 +414,9 @@ ShipEditorDialog::ShipEditorDialog(FredView* parent, EditorViewport* viewport)
 	  _viewport(viewport), _fredView(parent)
 {
 	this->setFocus();
+
 	ui->setupUi(this);
+	util::installMainStackUndoShortcuts(this, _fredView->mainUndoStack());
 	ui->HelpTitle->setVisible(viewport->Show_sexp_help_ship_editor);
 	ui->helpText->setVisible(viewport->Show_sexp_help_ship_editor);
 
