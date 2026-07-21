@@ -322,6 +322,11 @@ class sexp_tree_view: public QTreeWidget, public ISexpTreeUI {
 	//! Slot for itemSelectionChanged. Updates help text, sets item_index, and emits selectedRootChanged().
 	void handleNewItemSelected();
 
+	//! Examines the selected item (and its ancestor operators) to detect camera SEXPs.
+	//! If a camera node is found, activates the camera gizmo on _viewport with the parsed
+	//! args and write-back callbacks. Otherwise clears the gizmo.
+	void findAndActivateCameraGizmo(QTreeWidgetItem* selected);
+
 	//! Slot for double click which may either expand a tree or initiate edit mode
 	void handleDoubleClick();
 

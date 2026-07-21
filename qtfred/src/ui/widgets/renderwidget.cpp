@@ -29,6 +29,7 @@
 #include "mission/commands/FredCommands.h"
 #include "FredApplication.h"
 #include "ui/FredView.h"
+#include <math/fvi.h>
 
 namespace fso::fred {
 
@@ -169,6 +170,26 @@ void RenderWidget::keyPressEvent(QKeyEvent* key) {
 		return;
 	}
 
+	// Camera gizmo shortcuts, active only when a gizmo is showing.
+	if (_viewport != nullptr && _viewport->gizmo.active() && _viewport->view.Show_camera_gizmo
+		&& key->modifiers() == Qt::NoModifier) {
+		if (key->key() == Qt::Key_L) {
+			// "Look through camera": snap viewport eye to gizmo position/orientation.
+			_viewport->lookThroughGizmo();
+			key->accept();
+			return;
+		}
+		if (key->key() == Qt::Key_P && _viewport->gizmo.on_viewport_captured) {
+			// "Capture viewport": write current eye position into the SEXP args.
+			_viewport->gizmo.on_viewport_captured(_viewport->camera.eye_pos);
+			_viewport->gizmo.pos = _viewport->camera.eye_pos;
+			if (fred) fred->autosave("capture viewport to camera");
+			_viewport->needsUpdate();
+			key->accept();
+			return;
+		}
+	}
+
 	if (!ControlBindings::instance().handleKeyPress(key)) {
 		QWidget::keyPressEvent(key);
 		return;
@@ -235,6 +256,24 @@ void RenderWidget::mousePressEvent(QMouseEvent* event) {
 	if (event->button() != Qt::LeftButton) {
 		// Ignore everything that has nothing to do with the left button
 		return QWidget::mousePressEvent(event);
+	}
+
+	// Camera gizmo hit-test: if the click lands on the gizmo apex sphere, start a
+	// gizmo drag instead of selecting/moving mission objects.
+	if (_viewport->gizmo.draggable() && _viewport->view.Show_camera_gizmo
+		&& g3_in_frame() == 1) {
+		vertex vt;
+		g3_rotate_vertex(&vt, &_viewport->gizmo.pos);
+		if (!(vt.codes & CC_BEHIND) && !(g3_project_vertex(&vt) & PF_OVERFLOW)) {
+			float dx = vt.screen.xyw.x - static_cast<float>(event->position().x() * _window->devicePixelRatio());
+			float dy = vt.screen.xyw.y - static_cast<float>(event->position().y() * _window->devicePixelRatio());
+			if (dx*dx + dy*dy < 12.0f * 12.0f) {
+				_gizmo_drag_active = true;
+				_viewport->button_down = true;
+				event->accept();
+				return;
+			}
+		}
 	}
 
 	int waypoint_instance = -1;
@@ -394,6 +433,28 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event) {
 		}
 	}
 
+	// Gizmo drag: update position via XZ-plane ray intersection.
+	if (_gizmo_drag_active && _viewport != nullptr && _viewport->button_down
+		&& event->buttons().testFlag(Qt::LeftButton)) {
+		vec3d cursor_dir, hit;
+		g3_point_to_vec_delayed(&cursor_dir,
+			static_cast<int>(event->position().x() * _window->devicePixelRatio()),
+			static_cast<int>(event->position().y() * _window->devicePixelRatio()));
+		// Anticonstraint is (0,1,0) — the XZ-plane normal — set in EditorViewport ctor.
+		float r = fvi_ray_plane(&hit, &_viewport->gizmo.pos, &_viewport->Anticonstraint,
+		                        &_viewport->camera.view_pos, &cursor_dir, 0.0f);
+		if (r >= 0.0f) {
+			vec3d to_hit, to_old;
+			vm_vec_sub(&to_hit, &hit, &_viewport->camera.view_pos);
+			vm_vec_sub(&to_old, &_viewport->gizmo.pos, &_viewport->camera.view_pos);
+			if (vm_vec_dot(&to_hit, &to_old) >= 0.0f) {
+				_viewport->gizmo.pos = hit;
+				_viewport->needsUpdate();
+			}
+		}
+		return;
+	}
+
 // Update marking box
 	_markingBox.x2 = event->position().x() * _window->devicePixelRatio();
 	_markingBox.y2 = event->position().y() * _window->devicePixelRatio();
@@ -455,6 +516,19 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	if (event->button() != Qt::LeftButton) {
 		// Ignore everything that has nothing to do with the left button
 		return QWidget::mouseReleaseEvent(event);
+	}
+
+	// Gizmo drag complete: fire write-back and autosave.
+	if (_gizmo_drag_active) {
+		_gizmo_drag_active = false;
+		_viewport->button_down = false;
+		if (_viewport->gizmo.on_gizmo_dragged) {
+			_viewport->gizmo.on_gizmo_dragged(_viewport->gizmo.pos);
+		}
+		if (fred) fred->autosave("drag camera gizmo");
+		_viewport->needsUpdate();
+		event->accept();
+		return;
 	}
 
 	_markingBox.x2 = event->position().x() * _window->devicePixelRatio();

@@ -955,6 +955,95 @@ void FredRenderer::render_volumetric_overlay() {
 	disable_htl();
 }
 
+// Computes the 4 near-plane and 4 far-plane corners of a camera frustum.
+// Corner order: TL=0, TR=1, BR=2, BL=3.
+static void frustum_corners(const vec3d& apex, const matrix& orient, float fov_rad,
+                             float near_d, float far_d, float aspect,
+                             vec3d* nc, vec3d* fc)
+{
+	float hn = tanf(fov_rad * 0.5f) * near_d,  wn = hn * aspect;
+	float hf = tanf(fov_rad * 0.5f) * far_d,   wf = hf * aspect;
+	vec3d nctr, fctr;
+	vm_vec_scale_add(&nctr, &apex, &orient.vec.fvec, near_d);
+	vm_vec_scale_add(&fctr, &apex, &orient.vec.fvec, far_d);
+	for (int i = 0; i < 4; ++i) {
+		float sx = (i == 1 || i == 2) ? 1.0f : -1.0f;
+		float sy = (i == 0 || i == 1) ? 1.0f : -1.0f;
+		vec3d rn, un;
+		vm_vec_copy_scale(&rn, &orient.vec.rvec, sx * wn);
+		vm_vec_copy_scale(&un, &orient.vec.uvec, sy * hn);
+		vm_vec_add(&nc[i], &nctr, &rn); vm_vec_add2(&nc[i], &un);
+		vm_vec_copy_scale(&rn, &orient.vec.rvec, sx * wf);
+		vm_vec_copy_scale(&un, &orient.vec.uvec, sy * hf);
+		vm_vec_add(&fc[i], &fctr, &rn); vm_vec_add2(&fc[i], &un);
+	}
+}
+
+void FredRenderer::render_camera_gizmo()
+{
+	if (!view().Show_camera_gizmo) return;
+	const CameraGizmoState& g = _viewport->gizmo;
+	if (!g.active()) return;
+
+	enable_htl();
+
+	color cyan;  gr_init_color(&cyan, 0, 200, 255);
+	color teal;  gr_init_color(&teal, 0, 200, 180);
+
+	if (g.kind == CameraGizmoKind::HostTarget) {
+		// Draw a teal axis-aligned bounding box around the named ship.
+		if (g.host_obj_index >= 0 && query_valid_object(g.host_obj_index)) {
+			const object* objp = &Objects[g.host_obj_index];
+			float r = objp->radius;
+			vec3d c[8];
+			for (int i = 0; i < 8; ++i) {
+				c[i] = objp->pos;
+				c[i].xyz.x += (i & 1) ? r : -r;
+				c[i].xyz.y += (i & 2) ? r : -r;
+				c[i].xyz.z += (i & 4) ? r : -r;
+			}
+			static const int edges[12][2] = {
+				{0,1},{2,3},{4,5},{6,7},
+				{0,2},{1,3},{4,6},{5,7},
+				{0,4},{1,5},{2,6},{3,7}};
+			for (auto& e : edges) {
+				vec3d pts[2] = {c[e[0]], c[e[1]]};
+				g3_render_rod(&teal, 2, pts, 1.5f);
+			}
+		}
+		disable_htl();
+		return;
+	}
+
+	// For Position, Rotation, Facing: draw a camera frustum wireframe.
+	const float near_d = 30.0f, far_d = 150.0f, aspect = 16.0f / 9.0f;
+	vec3d nc[4], fc[4];
+	frustum_corners(g.pos, g.orient, g.fov_radians, near_d, far_d, aspect, nc, fc);
+
+	// 4 lines from apex to near corners
+	for (int i = 0; i < 4; ++i) {
+		vec3d pts[2] = {g.pos, nc[i]};
+		g3_render_rod(&cyan, 2, pts, 1.5f);
+	}
+	// Near rectangle, far rectangle, and 4 connecting side edges
+	for (int i = 0; i < 4; ++i) {
+		vec3d pn[2] = {nc[i], nc[(i+1)%4]};  g3_render_rod(&cyan, 2, pn, 1.5f);
+		vec3d pf[2] = {fc[i], fc[(i+1)%4]};  g3_render_rod(&cyan, 2, pf, 1.5f);
+		vec3d ps[2] = {nc[i], fc[i]};         g3_render_rod(&cyan, 2, ps, 1.5f);
+	}
+	// Small sphere at the apex (the "eye point")
+	g3_draw_htl_sphere(&cyan, &g.pos, 8.0f);
+
+	// For Facing: draw a line to the aim target and a small sphere there
+	if (g.kind == CameraGizmoKind::Facing) {
+		g3_draw_htl_sphere(&cyan, &g.aim_target, 5.0f);
+		gr_set_color(0, 200, 255);
+		g3_draw_htl_line(&g.pos, &g.aim_target);
+	}
+
+	disable_htl();
+}
+
 void FredRenderer::render_models(int cur_object_index) {
 	gr_set_color_fast(&colour_white);
 
@@ -1147,6 +1236,8 @@ void FredRenderer::render_frame(int cur_object_index,
 				hiddenLayerCount == 1 ? "Layer" : "Layers");
 		gr_string(8, 8, buf);
 	}
+
+	render_camera_gizmo();
 
 	g3_end_frame(); // ** Accounted for
 	render_compass();

@@ -8,8 +8,38 @@
 #include "ui/ThemeMode.h"
 
 #include <object/object.h>
+#include <functional>
 
 namespace fso::fred {
+
+// Describes what kind of camera SEXP is currently selected and how to visualize it.
+enum class CameraGizmoKind { None, Position, Rotation, Facing, HostTarget };
+
+// Transient editor-only state describing the camera gizmo. Never serialized.
+// Populated by sexp_tree_view when a camera SEXP node is selected; cleared on
+// deselection. FredRenderer reads it for rendering; RenderWidget reads it for
+// interaction. The std::function callbacks allow sexp_tree_view to write
+// updated values back into tree nodes without EditorViewport knowing about SEXP trees.
+struct CameraGizmoState {
+	CameraGizmoKind kind     = CameraGizmoKind::None;
+	vec3d  pos               = vmd_zero_vector;        // World-space gizmo origin
+	matrix orient            = vmd_identity_matrix;    // Camera orientation matrix
+	vec3d  aim_target        = vmd_zero_vector;        // For Facing: the look-at point
+	float  fov_radians       = PI / 3.0f;              // ~60° default
+	int    host_obj_index    = -1;                     // For HostTarget: Objects[] index
+
+	// tree_nodes[] indices for the X, Y, Z position argument nodes.
+	// -1 when the operator has no draggable numeric position args.
+	int    node_x = -1, node_y = -1, node_z = -1;
+
+	// Called by RenderWidget after a gizmo drag ends. Receives the new world position.
+	std::function<void(vec3d)> on_gizmo_dragged;
+	// Called when the user presses the capture-viewport shortcut. Receives eye_pos.
+	std::function<void(vec3d)> on_viewport_captured;
+
+	bool draggable() const { return kind == CameraGizmoKind::Position && node_x >= 0; }
+	bool active()    const { return kind != CameraGizmoKind::None; }
+};
 
 struct Marking_box {
 	int x1 = 0;
@@ -56,6 +86,7 @@ struct ViewSettings {
 	bool Show_jump_nodes = true;
 	bool Show_coordinate_points = true;
 	bool Show_compass = true;
+	bool Show_camera_gizmo = true;
 	bool Highlight_selectable_subsys = false;
 	int Outline_lod = 1;
 
@@ -176,6 +207,11 @@ class EditorViewport {
 	void view_universe(bool just_marked);
 
 	void view_object(int obj_num);
+
+	// Camera gizmo: transient state set by sexp_tree_view when a camera node is selected.
+	CameraGizmoState gizmo;
+	void clearCameraGizmo();
+	void lookThroughGizmo();   // Snaps eye_pos/eye_orient to gizmo pose (one-shot jump)
 
 	CameraController camera;
 

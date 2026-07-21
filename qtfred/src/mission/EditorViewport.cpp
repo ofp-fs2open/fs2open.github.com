@@ -171,6 +171,7 @@ void EditorViewport::loadSettings() {
 	view.Show_waypoints                    = settings.value("view_show_waypoints",                    view.Show_waypoints).toBool();
 	view.Show_coordinate_points            = settings.value("view_show_coordinate_points",            view.Show_coordinate_points).toBool();
 	view.Show_compass                      = settings.value("view_show_compass",                      view.Show_compass).toBool();
+	view.Show_camera_gizmo                 = settings.value("view_show_camera_gizmo",                 view.Show_camera_gizmo).toBool();
 	view.Highlight_selectable_subsys       = settings.value("view_highlight_selectable_subsys",       view.Highlight_selectable_subsys).toBool();
 	view.Outline_lod                       = settings.value("view_outline_lod",                       view.Outline_lod).toInt();
 	camera.setInvertOrbitX(settings.value("camera_invert_orbit_x", camera.getInvertOrbitX()).toBool());
@@ -220,12 +221,27 @@ void EditorViewport::saveSettings() const {
 	settings.setValue("view_show_waypoints",                    view.Show_waypoints);
 	settings.setValue("view_show_coordinate_points",            view.Show_coordinate_points);
 	settings.setValue("view_show_compass",                      view.Show_compass);
+	settings.setValue("view_show_camera_gizmo",                 view.Show_camera_gizmo);
 	settings.setValue("view_highlight_selectable_subsys",       view.Highlight_selectable_subsys);
 	settings.setValue("view_outline_lod",                       view.Outline_lod);
 	settings.setValue("camera_invert_orbit_x",                  camera.getInvertOrbitX());
 	settings.setValue("camera_invert_orbit_y",                  camera.getInvertOrbitY());
 	settings.endGroup();
 }
+void EditorViewport::clearCameraGizmo() {
+	if (gizmo.active()) {
+		gizmo = {};
+		needsUpdate();
+	}
+}
+
+void EditorViewport::lookThroughGizmo() {
+	if (!gizmo.active()) return;
+	camera.eye_pos    = gizmo.pos;
+	camera.eye_orient = gizmo.orient;
+	needsUpdate();
+}
+
 void EditorViewport::needsUpdate() {
 	_renderer->scheduleUpdate();
 }

@@ -1053,6 +1053,7 @@ void FredView::syncViewOptions() {
 	connectActionToViewSetting(ui->actionShow_Grid, &_viewport->view.Show_grid);
 	connectActionToViewSetting(ui->actionShow_Horizon, &_viewport->view.Show_horizon);
 	connectActionToViewSetting(ui->actionShow_3D_Compass, &_viewport->view.Show_compass);
+	connectActionToViewSetting(ui->actionShow_Camera_Gizmo, &_viewport->view.Show_camera_gizmo);
 	connectActionToViewSetting(ui->actionShow_Background, &_viewport->view.Show_stars);
 
 	connectActionToViewSetting(ui->actionLighting_from_Suns, &_viewport->view.Lighting_on);

@@ -111,6 +111,7 @@
     <addaction name="actionShow_Grid"/>
     <addaction name="actionShow_Horizon"/>
     <addaction name="actionShow_3D_Compass"/>
+    <addaction name="actionShow_Camera_Gizmo"/>
     <addaction name="separator"/>
     <addaction name="menuViewpoint"/>
     <addaction name="actionSave_Camera_Pos"/>
@@ -817,6 +818,17 @@
    </property>
    <property name="shortcut">
     <string>Alt+Shift+3</string>
+   </property>
+  </action>
+  <action name="actionShow_Camera_Gizmo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Camera Gizmo</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+G</string>
    </property>
   </action>
   <action name="actionShow_Background">

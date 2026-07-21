@@ -3,6 +3,9 @@
 #include "mission/Editor.h"
 #include "mission/object.h"
 
+#include <ship/ship.h>
+#include <math/vecmat.h>
+
 #include <ui/util/menu.h>
 #include <ui/util/SignalBlockers.h>
 #include <ui/dialogs/VariableDialog.h>
@@ -1091,6 +1094,12 @@ void sexp_tree_view::initializeEditor(::fso::fred::Editor* edit, SexpTreeEditorI
 	_interface = editorInterface;
 	_viewport = viewport;
 	_fredView = fredView;
+
+	// When any data node is edited inline, re-parse the gizmo in case a camera
+	// SEXP argument changed (e.g. the user typed a new X coordinate).
+	connect(this, &sexp_tree_view::nodeChanged, this, [this](int) {
+		findAndActivateCameraGizmo(currentItem());
+	});
 }
 
 // Slot connected to customContextMenuRequested. Gets the QTreeWidgetItem at the click position,
@@ -1994,6 +2003,153 @@ void sexp_tree_view::handleReplaceContainerDataAction(int idx) {
 	expand_branch(handle);
 }
 
+// Checks whether the given operator constant is one of the camera-related SEXPs
+// that the camera gizmo can visualize.
+static bool isCameraOpCode(int op_code) {
+	switch (op_code) {
+	case OP_CUTSCENES_SET_CAMERA_POSITION:
+	case OP_CUTSCENES_SET_CAMERA_ROTATION:
+	case OP_CUTSCENES_SET_CAMERA_FACING:
+	case OP_CUTSCENES_SET_CAMERA_FACING_OBJECT:
+	case OP_CUTSCENES_SET_CAMERA_HOST:
+	case OP_CUTSCENES_SET_CAMERA_TARGET:
+	case OP_CUTSCENES_SET_CAMERA_FOV:
+		return true;
+	default:
+		return false;
+	}
+}
+
+// Returns the tree_nodes[] indices of the first max_count child argument nodes of op_node.
+static SCP_vector<int> getArgNodes(const SCP_vector<sexp_tree_item>& nodes, int op_node, int max_count) {
+	SCP_vector<int> result;
+	for (int c = nodes[op_node].child; c >= 0 && static_cast<int>(result.size()) < max_count; c = nodes[c].next)
+		result.push_back(c);
+	return result;
+}
+
+void sexp_tree_view::findAndActivateCameraGizmo(QTreeWidgetItem* selected)
+{
+	if (!_viewport || !_viewport->view.Show_camera_gizmo) {
+		if (_viewport) _viewport->clearCameraGizmo();
+		return;
+	}
+
+	// Walk up from the selected node to find the nearest camera operator ancestor (or self).
+	int node_idx = (selected ? get_node(selected) : -1);
+	int op_node = -1;
+	for (int i = node_idx; i >= 0; i = tree_nodes[i].parent) {
+		if (!(tree_nodes[i].type & SEXPT_OPERATOR)) continue;
+		if (isCameraOpCode(get_operator_const(tree_nodes[i].text))) {
+			op_node = i;
+			break;
+		}
+	}
+
+	if (op_node < 0) {
+		_viewport->clearCameraGizmo();
+		return;
+	}
+
+	const int op_code = get_operator_const(tree_nodes[op_node].text);
+
+	auto parseFloat = [&](int node) -> float {
+		return (node >= 0) ? static_cast<float>(atof(tree_nodes[node].text)) : 0.0f;
+	};
+
+	CameraGizmoState g;
+
+	switch (op_code) {
+	case OP_CUTSCENES_SET_CAMERA_POSITION: {
+		auto args = getArgNodes(tree_nodes, op_node, 3);
+		if (args.size() < 3) break;
+		g.kind = CameraGizmoKind::Position;
+		g.pos.xyz.x = parseFloat(args[0]);
+		g.pos.xyz.y = parseFloat(args[1]);
+		g.pos.xyz.z = parseFloat(args[2]);
+		g.orient  = vmd_identity_matrix;
+		g.node_x  = args[0]; g.node_y = args[1]; g.node_z = args[2];
+		break;
+	}
+	case OP_CUTSCENES_SET_CAMERA_ROTATION: {
+		auto args = getArgNodes(tree_nodes, op_node, 3);
+		if (args.size() < 3) break;
+		g.kind = CameraGizmoKind::Rotation;
+		// SEXP args are degrees; vm_angles_2_matrix takes radians
+		angles a;
+		a.p = parseFloat(args[0]) * (PI / 180.0f);
+		a.b = parseFloat(args[1]) * (PI / 180.0f);
+		a.h = parseFloat(args[2]) * (PI / 180.0f);
+		vm_angles_2_matrix(&g.orient, &a);
+		g.pos = vmd_zero_vector; // rotation SEXP has no position component
+		break;
+	}
+	case OP_CUTSCENES_SET_CAMERA_FACING: {
+		auto args = getArgNodes(tree_nodes, op_node, 3);
+		if (args.size() < 3) break;
+		g.kind = CameraGizmoKind::Facing;
+		g.pos  = vmd_zero_vector;
+		g.aim_target.xyz.x = parseFloat(args[0]);
+		g.aim_target.xyz.y = parseFloat(args[1]);
+		g.aim_target.xyz.z = parseFloat(args[2]);
+		// Build orientation so frustum points toward aim_target
+		vec3d dir;
+		vm_vec_sub(&dir, &g.aim_target, &g.pos);
+		if (vm_vec_mag_squared(&dir) > 0.001f) {
+			vm_vec_normalize(&dir);
+			vm_vector_2_matrix(&g.orient, &dir, nullptr, nullptr);
+		} else {
+			g.orient = vmd_identity_matrix;
+		}
+		break;
+	}
+	case OP_CUTSCENES_SET_CAMERA_HOST:
+	case OP_CUTSCENES_SET_CAMERA_TARGET: {
+		auto args = getArgNodes(tree_nodes, op_node, 1);
+		if (args.empty()) break;
+		g.kind = CameraGizmoKind::HostTarget;
+		int sidx = ship_name_lookup(tree_nodes[args[0]].text, 1);
+		if (sidx >= 0 && Ships[sidx].objnum >= 0) {
+			g.host_obj_index = Ships[sidx].objnum;
+			g.pos = Objects[g.host_obj_index].pos;
+		}
+		break;
+	}
+	default:
+		break; // set-camera, set-camera-fov, set-camera-facing-object: no spatial gizmo in v1
+	}
+
+	if (!g.active()) {
+		_viewport->clearCameraGizmo();
+		return;
+	}
+
+	// Set write-back callbacks for the position case (dragging or viewport capture).
+	if (g.draggable()) {
+		int nx = g.node_x, ny = g.node_y, nz = g.node_z;
+		auto write_back = [this, nx, ny, nz](vec3d p) {
+			auto write_node = [&](int idx, float val) {
+				if (idx < 0 || idx >= static_cast<int>(tree_nodes.size())) return;
+				char buf[32]; snprintf(buf, sizeof(buf), "%.2f", static_cast<double>(val));
+				strncpy(tree_nodes[idx].text, buf, SEXP_TREE_NODE_TEXT_SIZE - 1);
+				tree_nodes[idx].text[SEXP_TREE_NODE_TEXT_SIZE - 1] = '\0';
+				if (auto* item = static_cast<QTreeWidgetItem*>(tree_nodes[idx].handle))
+					item->setText(0, QString::fromLatin1(buf));
+			};
+			write_node(nx, p.xyz.x);
+			write_node(ny, p.xyz.y);
+			write_node(nz, p.xyz.z);
+			emit modified();
+			if (_viewport) _viewport->needsUpdate();
+		};
+		g.on_gizmo_dragged     = write_back;
+		g.on_viewport_captured = write_back;
+	}
+
+	_viewport->gizmo = std::move(g);
+	_viewport->needsUpdate();
+}
+
 // Slot connected to itemSelectionChanged. Updates the help text panel via update_help(),
 // sets item_index to the selected node's tree_nodes[] index, walks up to the root item,
 // and emits selectedRootChanged() with the root's FormulaDataRole value.
@@ -2005,6 +2161,7 @@ void sexp_tree_view::handleNewItemSelected() {
 	if (selectedItem == nullptr) {
 		selectedRootChanged(-1);
 		setCurrentItemIndex(-1);
+		findAndActivateCameraGizmo(nullptr);
 		return;
 	}
 
@@ -2017,6 +2174,7 @@ void sexp_tree_view::handleNewItemSelected() {
 	}
 
 	selectedRootChanged(item->data(0, FormulaDataRole).toInt());
+	findAndActivateCameraGizmo(selectedItem);
 }
 
 // Slot connected to itemDoubleClicked. Allows the item to either be expanded or for an editable item

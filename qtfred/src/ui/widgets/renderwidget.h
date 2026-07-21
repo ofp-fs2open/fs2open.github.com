@@ -71,6 +71,9 @@ class RenderWidget: public QWidget {
 
 	void handleOrbitDrag(QPoint point, Qt::KeyboardModifiers modifiers);
 
+	// Camera gizmo drag state: true while the user is dragging the gizmo apex.
+	bool _gizmo_drag_active = false;
+
 	// Ctrl+drag clone tracking — set on press, consumed on release.
 	bool            _wasDupDrag              = false;
 	bool            _wasInsertDrag           = false;
