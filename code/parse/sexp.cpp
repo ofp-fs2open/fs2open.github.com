@@ -62,6 +62,7 @@
 #include "menuui/techmenu.h"		// for intel stuff
 #include "mission/missionbriefcommon.h"
 #include "mission/missioncampaign.h"
+#include "mission/missioncheckpoint.h"
 #include "mission/missiongoals.h"
 #include "mission/missionlog.h"
 #include "mission/missionmessage.h"
@@ -88,6 +89,7 @@
 #include "parse/sexp.h"
 #include "parse/sexp_container.h"
 #include "playerman/player.h"
+#include "popup/popup.h"
 #include "prop/prop.h"
 #include "render/3d.h"
 #include "scripting/global_hooks.h"
@@ -606,6 +608,13 @@ SCP_vector<sexp_oper> Operators = {
 	{ "turret-set-secondary-ammo",		OP_TURRET_SET_SECONDARY_AMMO,			4,	4,			SEXP_ACTION_OPERATOR,	},	// DahBlount
 	{ "is-in-turret-fov",				OP_IS_IN_TURRET_FOV,					3,	4,			SEXP_BOOLEAN_OPERATOR,	},	// Goober5000
 	
+	//Checkpoints Sub-Category
+	{ "store-checkpoint",				OP_STORE_CHECKPOINT,					0,	1,			SEXP_ACTION_OPERATOR,	},
+	{ "load-checkpoint",				OP_LOAD_CHECKPOINT,						0,	INT_MAX,	SEXP_ACTION_OPERATOR,	},
+	{ "prompt-user-checkpoint-load",	OP_PROMPT_USER_CHECKPOINT_LOAD,			0,	INT_MAX,	SEXP_BOOLEAN_OPERATOR,	},
+	{ "checkpoint-exists",				OP_CHECKPOINT_EXISTS,					0,	1,			SEXP_BOOLEAN_OPERATOR,	},
+	{ "delete-checkpoint",				OP_DELETE_CHECKPOINT,					0,	1,			SEXP_ACTION_OPERATOR,	},
+
 	//Models and Textures Sub-Category
 	{ "change-ship-class",				OP_CHANGE_SHIP_CLASS,					2,	INT_MAX,	SEXP_ACTION_OPERATOR,	},	// Goober5000
 	{ "deactivate-glow-maps",			OP_DEACTIVATE_GLOW_MAPS,				1,	INT_MAX,	SEXP_ACTION_OPERATOR,	},	//-Bobboau
@@ -3547,6 +3556,19 @@ int check_sexp_syntax(int node, int desired_return_type, int recursive, int *bad
 					return SEXP_CHECK_INVALID_PERSONA_NAME; 
 				}
 				break;
+
+			case OPF_CHECKPOINT_LOAD_FLAG: {
+				if (node_subtype != SEXP_ATOM_STRING) {
+					return SEXP_CHECK_TYPE_MISMATCH;
+				}
+
+				checkpoint::LoadFlags unused;
+				if (!mission_checkpoint_parse_load_flag(CTEXT(node), unused)) {
+					return SEXP_CHECK_INVALID_CHECKPOINT_LOAD_FLAG;
+				}
+
+				break;
+			}
 
 			case OPF_MISSION_MOOD:
 				if (node_subtype != SEXP_ATOM_STRING) {
@@ -18661,6 +18683,137 @@ void sexp_set_mission_mood (int node)
 	Warning(LOCATION, "Sexp-mission-mood attempted to set mood %s which does not exist in messages.tbl", mood);
 }
 
+// ------------------------------------------------------------------
+// Mission checkpoints
+// ------------------------------------------------------------------
+
+// The slot name is optional on every checkpoint operator; missions that only ever want one
+// checkpoint can leave it off entirely.
+static SCP_string sexp_checkpoint_slot(int node)
+{
+	if (node < 0) {
+		return SCP_string("default");
+	}
+
+	auto slot = CTEXT(node);
+	if (slot == nullptr || *slot == '\0') {
+		return SCP_string("default");
+	}
+
+	return SCP_string(slot);
+}
+
+// Reads the optional trailing flag arguments shared by load-checkpoint and
+// prompt-user-checkpoint-load.
+static checkpoint::LoadFlags sexp_checkpoint_load_flags(int node)
+{
+	checkpoint::LoadFlags flags = checkpoint::LoadFlags::None;
+
+	for (; node >= 0; node = CDR(node)) {
+		checkpoint::LoadFlags flag;
+		if (mission_checkpoint_parse_load_flag(CTEXT(node), flag)) {
+			flags |= flag;
+		} else {
+			Warning(LOCATION, "load-checkpoint: unrecognised option '%s'", CTEXT(node));
+		}
+	}
+
+	return flags;
+}
+
+static void sexp_store_checkpoint(int node)
+{
+	if (Game_mode & GM_MULTIPLAYER) {
+		mprintf(("CHECKPOINT => store-checkpoint does nothing in multiplayer.\n"));
+		return;
+	}
+
+	mission_checkpoint_store(sexp_checkpoint_slot(node));
+}
+
+static void sexp_load_checkpoint(int node)
+{
+	if (Game_mode & GM_MULTIPLAYER) {
+		mprintf(("CHECKPOINT => load-checkpoint does nothing in multiplayer.\n"));
+		return;
+	}
+
+	auto slot = sexp_checkpoint_slot(node);
+	auto flags = sexp_checkpoint_load_flags(node >= 0 ? CDR(node) : -1);
+
+	// This only queues the load.  Tearing the level down here would pull the ground out from
+	// under the SEXP evaluation currently on the stack, so the actual reload happens at the
+	// end of the frame.
+	mission_checkpoint_request_load(slot, flags);
+}
+
+static int sexp_prompt_user_checkpoint_load(int node)
+{
+	if (Game_mode & GM_MULTIPLAYER) {
+		return SEXP_FALSE;
+	}
+
+	auto slot = sexp_checkpoint_slot(node);
+
+	// Nothing to offer, so do not put a dialog in front of the player at all.
+	if (!mission_checkpoint_exists(slot)) {
+		return SEXP_FALSE;
+	}
+
+	int next = (node >= 0) ? CDR(node) : -1;
+
+	// An optional custom prompt, then the flags.
+	SCP_string prompt;
+	if (next >= 0) {
+		auto text = CTEXT(next);
+		checkpoint::LoadFlags unused;
+		// Only treat the argument as prompt text if it is not itself a flag name, so that the
+		// prompt can be omitted while still passing options.
+		if (text != nullptr && !mission_checkpoint_parse_load_flag(text, unused)) {
+			prompt = text;
+			next = CDR(next);
+		}
+	}
+	if (prompt.empty()) {
+		prompt = XSTR("Resume from the last checkpoint?", 1830);
+	}
+
+	auto flags = sexp_checkpoint_load_flags(next);
+
+	// Deliberately NOT PF_RUN_STATE.  That flag makes the popup run the underlying state's
+	// do-frame, which from here -- inside SEXP evaluation, inside the simulation step -- would
+	// recurse straight back into this operator.  Freezing the mission behind the dialog is
+	// also what the player wants: nobody should be getting shot at while deciding whether to
+	// go back to a checkpoint.  popup_init() stops the mission clock for us.
+	int choice = popup(PF_USE_AFFIRMATIVE_ICON | PF_USE_NEGATIVE_ICON,
+	                   2,
+	                   POPUP_NO,
+	                   POPUP_YES,
+	                   prompt.c_str());
+
+	if (choice != 1) {
+		return SEXP_FALSE;
+	}
+
+	mission_checkpoint_request_load(slot, flags);
+
+	return SEXP_TRUE;
+}
+
+static int sexp_checkpoint_exists(int node)
+{
+	if (Game_mode & GM_MULTIPLAYER) {
+		return SEXP_FALSE;
+	}
+
+	return mission_checkpoint_exists(sexp_checkpoint_slot(node)) ? SEXP_TRUE : SEXP_FALSE;
+}
+
+static void sexp_delete_checkpoint(int node)
+{
+	mission_checkpoint_delete(sexp_checkpoint_slot(node));
+}
+
 int sexp_turret_fired_delay(int node)
 {
 	bool is_nan, is_nan_forever;
@@ -29465,6 +29618,29 @@ int eval_sexp(int cur_node, int referenced_node)
 				sexp_val = SEXP_TRUE;
 				break;
 
+			case OP_STORE_CHECKPOINT:
+				sexp_store_checkpoint (node);
+				sexp_val = SEXP_TRUE;
+				break;
+
+			case OP_LOAD_CHECKPOINT:
+				sexp_load_checkpoint (node);
+				sexp_val = SEXP_TRUE;
+				break;
+
+			case OP_PROMPT_USER_CHECKPOINT_LOAD:
+				sexp_val = sexp_prompt_user_checkpoint_load (node);
+				break;
+
+			case OP_CHECKPOINT_EXISTS:
+				sexp_val = sexp_checkpoint_exists (node);
+				break;
+
+			case OP_DELETE_CHECKPOINT:
+				sexp_delete_checkpoint (node);
+				sexp_val = SEXP_TRUE;
+				break;
+
 			case OP_SEND_MESSAGE_LIST:
 			case OP_SEND_MESSAGE_CHAIN:
 				sexp_send_message_list(node, op_num == OP_SEND_MESSAGE_CHAIN);
@@ -31600,6 +31776,8 @@ int query_operator_return_type(int op)
 		case OP_PERFORM_ACTIONS_BOOL_FIRST:
 		case OP_PERFORM_ACTIONS_BOOL_LAST:
 		case OP_IS_TRUE_FOR_DURATION:
+		case OP_PROMPT_USER_CHECKPOINT_LOAD:
+		case OP_CHECKPOINT_EXISTS:
 		case OP_IS_DESTROYED:
 		case OP_IS_SUBSYSTEM_DESTROYED:
 		case OP_IS_DISABLED:
@@ -32158,6 +32336,9 @@ int query_operator_return_type(int op)
 		case OP_RESET_ORDERS:
 		case OP_SET_PERSONA:
 		case OP_SET_MISSION_MOOD:
+		case OP_STORE_CHECKPOINT:
+		case OP_LOAD_CHECKPOINT:
+		case OP_DELETE_CHECKPOINT:
 		case OP_CHANGE_SUBSYSTEM_NAME:
 		case OP_SET_RESPAWNS:
 		case OP_ADD_REMOVE_HOTKEY:
@@ -33618,6 +33799,26 @@ int query_operator_argument_type(int op_index, int argnum)
 
 		case OP_SET_MISSION_MOOD:
 			return OPF_MISSION_MOOD;
+
+		case OP_STORE_CHECKPOINT:
+		case OP_CHECKPOINT_EXISTS:
+		case OP_DELETE_CHECKPOINT:
+			// The only argument is the optional slot name.
+			return OPF_STRING;
+
+		case OP_LOAD_CHECKPOINT:
+			// Slot name first, then any number of options.
+			if (argnum == 0)
+				return OPF_STRING;
+			else
+				return OPF_CHECKPOINT_LOAD_FLAG;
+
+		case OP_PROMPT_USER_CHECKPOINT_LOAD:
+			// Slot name, then the prompt text, then any number of options.
+			if (argnum < 2)
+				return OPF_STRING;
+			else
+				return OPF_CHECKPOINT_LOAD_FLAG;
 
 		case OP_CHANGE_TEAM_COLOR:
 			if (argnum == 0)
@@ -35779,6 +35980,9 @@ const char *sexp_error_message(int num)
 		case SEXP_CHECK_INVALID_MISSION_MOOD:
 			return "Invalid mission mood";
 
+		case SEXP_CHECK_INVALID_CHECKPOINT_LOAD_FLAG:
+			return "Invalid checkpoint load option";
+
 		case SEXP_CHECK_INVALID_SHIP_FLAG:
 			return "Invalid ship flag";
 
@@ -36823,6 +37027,7 @@ int category_of_subcategory(int subcategory_id)
 		case CHANGE_SUBCATEGORY_SPECIAL_EFFECTS:
 		case CHANGE_SUBCATEGORY_VARIABLES:
 		case CHANGE_SUBCATEGORY_CONTAINERS:
+		case CHANGE_SUBCATEGORY_CHECKPOINTS:
 		case CHANGE_SUBCATEGORY_OTHER:
 			return OP_CATEGORY_CHANGE;
 
@@ -37397,6 +37602,11 @@ int get_category(int op_id)
 		case OP_DESTROY_SUBSYS_INSTANTLY:
 		case OP_DEBUG:
 		case OP_SET_MISSION_MOOD:
+		case OP_STORE_CHECKPOINT:
+		case OP_LOAD_CHECKPOINT:
+		case OP_DELETE_CHECKPOINT:
+		case OP_PROMPT_USER_CHECKPOINT_LOAD:
+		case OP_CHECKPOINT_EXISTS:
 		case OP_NAV_SELECT:
 		case OP_NAV_UNSELECT:
 		case OP_ALTER_SHIP_FLAG:
@@ -37992,6 +38202,13 @@ int get_subcategory(int op_id)
 		case OP_COPY_CONTAINER:
 		case OP_APPLY_CONTAINER_FILTER:
 			return CHANGE_SUBCATEGORY_CONTAINERS;
+
+		case OP_STORE_CHECKPOINT:
+		case OP_LOAD_CHECKPOINT:
+		case OP_PROMPT_USER_CHECKPOINT_LOAD:
+		case OP_CHECKPOINT_EXISTS:
+		case OP_DELETE_CHECKPOINT:
+			return CHANGE_SUBCATEGORY_CHECKPOINTS;
 
 		case OP_DAMAGED_ESCORT_LIST:
 		case OP_DAMAGED_ESCORT_LIST_ALL:
@@ -41759,6 +41976,50 @@ SCP_vector<sexp_help_struct> Sexp_help = {
 	},
 
 	// Goober5000
+	{ OP_STORE_CHECKPOINT, "store-checkpoint\r\n"
+		"\tSaves the current state of the mission so that it can be restored later with load-checkpoint.  Takes 0 or 1 arguments...\r\n"
+		"\t1: Optional name for this checkpoint slot, so that a mission can keep more than one.  Defaults to \"default\".\r\n\r\n"
+		"The checkpoint is written to disk under the current pilot and campaign, so it survives quitting the game.  "
+		"It records every ship's damage, subsystems, weapons, position and movement, wing wave state, SEXP variables, "
+		"the player's score and kills, and the mission time.  Does nothing in multiplayer."
+	},
+
+	{ OP_LOAD_CHECKPOINT, "load-checkpoint\r\n"
+		"\tRestarts the mission and restores the state saved by store-checkpoint.  Takes 0 or more arguments...\r\n"
+		"\t1: Optional name of the checkpoint slot to load.  Defaults to \"default\".\r\n"
+		"\tRest: Optional load options:\r\n"
+		"\t\t\"keep player loadout\" - keep the player's current ship and weapons instead of restoring the saved ones\r\n"
+		"\t\t\"keep wing loadout\" - as above, for the rest of the player's wing\r\n"
+		"\t\t\"reopen loadout\" - show the briefing and loadout screens before resuming\r\n"
+		"\t\t\"ignore mission changes\" - load even if the mission file has been edited since the checkpoint was saved\r\n\r\n"
+		"The mission is reloaded from scratch and the saved state is applied before the first frame, so the reload "
+		"happens at the end of the current frame rather than immediately.  If the checkpoint is missing or was saved "
+		"for a different version of this mission, the mission carries on as normal.  Does nothing in multiplayer."
+	},
+
+	{ OP_PROMPT_USER_CHECKPOINT_LOAD, "prompt-user-checkpoint-load\r\n"
+		"\tAsks the player whether to resume from a checkpoint, and loads it if they say yes.  "
+		"Returns true if the player chose to load, false otherwise.  Takes 0 or more arguments...\r\n"
+		"\t1: Optional name of the checkpoint slot.  Defaults to \"default\".\r\n"
+		"\t2: Optional prompt text.  Defaults to a generic message.\r\n"
+		"\tRest: Optional load options, the same as load-checkpoint.\r\n\r\n"
+		"If no usable checkpoint exists the player is not asked at all and this returns false.  "
+		"Returns false in multiplayer."
+	},
+
+	{ OP_CHECKPOINT_EXISTS, "checkpoint-exists\r\n"
+		"\tReturns true if a checkpoint has been saved for this mission that can still be loaded.  Takes 0 or 1 arguments...\r\n"
+		"\t1: Optional name of the checkpoint slot.  Defaults to \"default\".\r\n\r\n"
+		"A checkpoint saved before the mission file was last edited does not count, because the mission's events "
+		"and variables would no longer line up with it."
+	},
+
+	{ OP_DELETE_CHECKPOINT, "delete-checkpoint\r\n"
+		"\tDeletes a saved checkpoint.  Takes 0 or 1 arguments...\r\n"
+		"\t1: Optional name of the checkpoint slot.  Defaults to \"default\".\r\n\r\n"
+		"Does nothing if there was no such checkpoint."
+	},
+
 	{ OP_CHANGE_SHIP_CLASS, "change-ship-class\r\n"
 		"\tCauses the listed ships' classes to be changed to the specified ship class.  Takes 2 or more arguments...\r\n"
 		"\t1: The name of the new ship class\r\n"
@@ -43270,6 +43531,7 @@ SCP_vector<op_menu_struct> op_submenu =
 	{ "Special Effects",                CHANGE_SUBCATEGORY_SPECIAL_EFFECTS              },
 	{ "Variables",                      CHANGE_SUBCATEGORY_VARIABLES                    },
 	{ "Containers",                     CHANGE_SUBCATEGORY_CONTAINERS                   },
+	{ "Checkpoints",                    CHANGE_SUBCATEGORY_CHECKPOINTS                  },
 	{ "Other",                          CHANGE_SUBCATEGORY_OTHER                        },
 	{ "Mission",                        STATUS_SUBCATEGORY_MISSION                      },
 	{ "Cutscenes",                      STATUS_SUBCATEGORY_CUTSCENES                    },

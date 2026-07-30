@@ -78,9 +78,10 @@ typedef struct {
 #define CF_TYPE_SCRIPTS				34
 #define CF_TYPE_FICTION				35
 #define CF_TYPE_FREDDOCS			36
+#define CF_TYPE_CHECKPOINTS			37
 
 #define CF_MAX_PATH_TYPES                                                                                              \
-	37 // Can be as high as you'd like //DTP; yeah but beware alot of things uses CF_MAX_PATH_TYPES
+	38 // Can be as high as you'd like //DTP; yeah but beware alot of things uses CF_MAX_PATH_TYPES
 
 // TRUE if type is specified and valid
 #define CF_TYPE_SPECIFIED(path_type) (((path_type)>CF_TYPE_INVALID) && ((path_type)<CF_MAX_PATH_TYPES))

@@ -77,6 +77,9 @@ class BinaryFileHandler: public FileHandler {
 
 	void readString(const char* name, char* dest, size_t max_size) override;
 
+	// The binary format is positional, so a named field can neither be located nor skipped.
+	bool hasField(const char* name) override;
+
 	void beginSectionRead() override;
 
 	bool hasMoreSections() override;

@@ -85,7 +85,8 @@ cf_pathtype Pathtypes[CF_MAX_PATH_TYPES]  = {
 	{ CF_TYPE_INTEL_ANIMS,			"data" DIR_SEPARATOR_STR "intelanims",										".pcx .ani .eff .tga .jpg .png .dds .ktx .mp4 .ogg",	CF_TYPE_DATA	},
 	{ CF_TYPE_SCRIPTS,				"data" DIR_SEPARATOR_STR "scripts",											".lua .lc .fnl",						CF_TYPE_DATA	},
 	{ CF_TYPE_FICTION,				"data" DIR_SEPARATOR_STR "fiction",											".txt",								CF_TYPE_DATA	}, 
-	{ CF_TYPE_FREDDOCS,				"data" DIR_SEPARATOR_STR "freddocs",										".html .css .png .jpg",	CF_TYPE_DATA	}
+	{ CF_TYPE_FREDDOCS,				"data" DIR_SEPARATOR_STR "freddocs",										".html .css .png .jpg",	CF_TYPE_DATA	},
+	{ CF_TYPE_CHECKPOINTS,			"data" DIR_SEPARATOR_STR "players" DIR_SEPARATOR_STR "checkpoints",			".chk",								CF_TYPE_PLAYERS	}
 };
 // clang-format on
 

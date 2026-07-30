@@ -37,6 +37,10 @@ add_file_folder("Math"
     math/test_vecmat.cpp
 )
 
+add_file_folder("Mission"
+    mission/checkpointfile.cpp
+)
+
 add_file_folder("mod"
     mod/test_mod_table.cpp
 )

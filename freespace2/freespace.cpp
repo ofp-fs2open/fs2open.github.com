@@ -107,6 +107,7 @@
 #include "menuui/trainingmenu.h"
 #include "mission/missionbriefcommon.h"
 #include "mission/missioncampaign.h"
+#include "mission/missioncheckpoint.h"
 #include "mission/missiongoals.h"
 #include "mission/missionhotkey.h"
 #include "mission/missionload.h"
@@ -1482,6 +1483,10 @@ void game_post_level_init()
 	if ( (Game_mode & GM_CAMPAIGN_MODE) && red_alert_mission() ) {
 		red_alert_bash_ship_status();
 	}
+
+	// If we got here because the player loaded a checkpoint, restore it now: the mission has
+	// been parsed and its objects created, but nothing has started running yet.
+	mission_checkpoint_apply();
 
 	freespace_mission_load_stuff();
 
@@ -3921,6 +3926,11 @@ void game_simulation_frame()
 	// Kick off externally injected operations after the simulation step has finished
 	executor::OnSimulationExecutor->process();
 	scripting::hooks::OnSimulation->run();
+
+	// A checkpoint load requested by a SEXP earlier this frame restarts the mission, which
+	// cannot happen while SEXP evaluation is still on the stack.  Now that the simulation step
+	// is over it is safe to act on it.
+	mission_checkpoint_process_pending_load();
 }
 
 // Maybe render and process the dead-popup

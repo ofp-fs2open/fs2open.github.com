@@ -25,6 +25,8 @@ class JSONFileHandler: public FileHandler {
 	void* _sectionIterator = nullptr;
 	bool _startingSectionIteration = false;
 	size_t _arrayIndex = INVALID_SIZE;
+	// Saved _arrayIndex of each enclosing array, so that array reads can nest.
+	SCP_vector<size_t> _arrayIndexStack;
 
 	void ensureNotExists(const char* name);
 	void writeInteger(const char* name, json_int_t value);
@@ -81,6 +83,8 @@ class JSONFileHandler: public FileHandler {
 	float readFloat(const char* name) override;
 
 	SCP_string readString(const char* name) override;
+
+	bool hasField(const char* name) override;
 
 	void beginSectionRead() override;
 

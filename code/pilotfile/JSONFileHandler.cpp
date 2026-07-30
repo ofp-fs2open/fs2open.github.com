@@ -22,7 +22,12 @@ const SCP_vector<std::pair<Section, const char*>> SectionMapping {
 	std::pair<Section, const char*>(Section::Missions, "missions"),
 	std::pair<Section, const char*>(Section::Cutscenes, "cutscenes"),
 	std::pair<Section, const char*>(Section::LastMissions, "last_mission"),
-	std::pair<Section, const char*>(Section::Containers, "containers")
+	std::pair<Section, const char*>(Section::Containers, "containers"),
+	std::pair<Section, const char*>(Section::CheckpointInfo, "checkpoint_info"),
+	std::pair<Section, const char*>(Section::CheckpointClock, "checkpoint_clock"),
+	std::pair<Section, const char*>(Section::CheckpointShips, "checkpoint_ships"),
+	std::pair<Section, const char*>(Section::CheckpointWings, "checkpoint_wings"),
+	std::pair<Section, const char*>(Section::CheckpointScoring, "checkpoint_scoring")
 };
 
 const char* lookupSectionName(Section s) {
@@ -230,12 +235,26 @@ std::uint32_t pilot::JSONFileHandler::readUInt(const char* name) {
 float pilot::JSONFileHandler::readFloat(const char* name) {
 	auto el = json_object_get(_currentEl, name);
 
+	// Accept an integer as well.  jansson always writes reals with a decimal point, but a
+	// hand-edited file may well contain "0" where we wrote "0.0", and that is not worth
+	// failing a load over.
+	if (el != nullptr && json_typeof(el) == JSON_INTEGER) {
+		return (float)json_integer_value(el);
+	}
+
 	if (el == nullptr || json_typeof(el) != JSON_REAL) {
 		Error(LOCATION, "JSON element %s must be a float but it is not valid!", name);
 		return 0.0f;
 	}
 
 	return (float)json_real_value(el);
+}
+bool pilot::JSONFileHandler::hasField(const char* name) {
+	if (_currentEl == nullptr || json_typeof(_currentEl) != JSON_OBJECT) {
+		return false;
+	}
+
+	return json_object_get(_currentEl, name) != nullptr;
 }
 SCP_string pilot::JSONFileHandler::readString(const char* name) {
 	auto el = json_object_get(_currentEl, name);
@@ -311,8 +330,6 @@ void pilot::JSONFileHandler::endSectionRead() {
 	_sectionIterator = nullptr;
 }
 size_t pilot::JSONFileHandler::startArrayRead(const char* name, bool /*short_index*/) {
-	Assertion(_arrayIndex == INVALID_SIZE, "Array nesting is not supported yet!");
-
 	ensureExists(name);
 
 	auto array = json_object_get(_currentEl, name);
@@ -321,11 +338,17 @@ size_t pilot::JSONFileHandler::startArrayRead(const char* name, bool /*short_ind
 		return 0;
 	}
 
+	// Remember where the enclosing array (if any) had got to, so that arrays can nest.  The
+	// element stack already handles the nesting of the elements themselves; this is the only
+	// other piece of per-array state.
+	_arrayIndexStack.push_back(_arrayIndex);
+
 	pushElement(array);
 	auto size = json_array_size(array);
 
 	if (size == 0) {
 		// Nothing to do here, avoid calling nextArraySection since that assumes that there is at least one element
+		_arrayIndex = INVALID_SIZE;
 		return size;
 	}
 	_arrayIndex = 0;
@@ -372,6 +395,10 @@ void pilot::JSONFileHandler::endArrayRead() {
 	Assertion(json_typeof(_currentEl) == JSON_ARRAY, "Current element must be an array!");
 
 	popElement();
-	_arrayIndex = INVALID_SIZE;
+
+	// Restore the enclosing array's position, if we were nested inside one.
+	Assertion(!_arrayIndexStack.empty(), "endArrayRead() called without a matching startArrayRead()!");
+	_arrayIndex = _arrayIndexStack.back();
+	_arrayIndexStack.pop_back();
 }
 

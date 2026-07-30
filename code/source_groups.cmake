@@ -885,10 +885,15 @@ add_file_folder("MenuUI"
 
 # Mission files
 add_file_folder("Mission"
+	mission/checkpointfields.h
+	mission/checkpointfile.cpp
+	mission/checkpointfile.h
 	mission/missionbriefcommon.cpp
 	mission/missionbriefcommon.h
 	mission/missioncampaign.cpp
 	mission/missioncampaign.h
+	mission/missioncheckpoint.cpp
+	mission/missioncheckpoint.h
 	mission/missiongoals.cpp
 	mission/missiongoals.h
 	mission/missiongrid.cpp

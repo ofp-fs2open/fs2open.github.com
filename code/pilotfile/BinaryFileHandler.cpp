@@ -122,6 +122,12 @@ SCP_string pilot::BinaryFileHandler::readString(const char*) {
 void pilot::BinaryFileHandler::readString(const char*, char* dest, size_t max_size) {
 	cfread_string_len(dest, (int) max_size, _cfp);
 }
+bool pilot::BinaryFileHandler::hasField(const char*) {
+	// Fields are written positionally with no name and no length prefix, so there is nothing
+	// to look up and nothing that could be skipped.  Callers that need tolerant reads must
+	// use a self-describing handler.
+	return false;
+}
 void pilot::BinaryFileHandler::beginSectionRead() {
 	// Everything is handled in nextSection
 }

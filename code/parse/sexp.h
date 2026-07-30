@@ -152,6 +152,7 @@ enum sexp_opf_t : int {
 	OPF_CHILD_LUA_ENUM,			    // MjnMixael - Used to let Lua Enums reference Enums
 	OPF_MISSION_CUSTOM_STRING,      // MjnMixael - The custom strings as defined in FRED
 	OPF_MESSAGE_TYPE,      // naomimyselfandi - A message type (Attack Target et al.)
+	OPF_CHECKPOINT_LOAD_FLAG,       // An option for load-checkpoint; see missioncheckpoint.h
 
 	//Must always be at the end of the list
 	First_available_opf_id
@@ -251,6 +252,7 @@ enum : int {
 	CHANGE_SUBCATEGORY_SPECIAL_EFFECTS,
 	CHANGE_SUBCATEGORY_VARIABLES,
 	CHANGE_SUBCATEGORY_CONTAINERS,
+	CHANGE_SUBCATEGORY_CHECKPOINTS,
 	CHANGE_SUBCATEGORY_OTHER,
 	STATUS_SUBCATEGORY_MISSION,
 	STATUS_SUBCATEGORY_CUTSCENES,
@@ -1030,7 +1032,14 @@ enum : int {
 	OP_NODE_TARGETED, // FUBAR
 	OP_POINT_TARGETED,
 	OP_IGNORE_KEY, // Karajorma
-	
+
+	// mission checkpoints
+	OP_STORE_CHECKPOINT,
+	OP_LOAD_CHECKPOINT,
+	OP_PROMPT_USER_CHECKPOINT_LOAD,
+	OP_CHECKPOINT_EXISTS,
+	OP_DELETE_CHECKPOINT,
+
 	// this should come after every operator
 	First_available_operator_id
 };
@@ -1312,6 +1321,7 @@ enum sexp_error_check
 	SEXP_CHECK_INVALID_MESSAGE_TYPE,
 	SEXP_CHECK_POTENTIAL_ISSUE,
 	SEXP_CHECK_INVALID_SHIP_WING_PROP,  // invalid ship/wing/prop
+	SEXP_CHECK_INVALID_CHECKPOINT_LOAD_FLAG,
 };
 
 
