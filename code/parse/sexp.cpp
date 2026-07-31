@@ -42004,7 +42004,11 @@ SCP_vector<sexp_help_struct> Sexp_help = {
 		"\t2: Optional prompt text.  Defaults to a generic message.\r\n"
 		"\tRest: Optional load options, the same as load-checkpoint.\r\n\r\n"
 		"If no usable checkpoint exists the player is not asked at all and this returns false.  "
-		"Returns false in multiplayer."
+		"Returns false in multiplayer.\r\n\r\n"
+		"Use this for offering a checkpoint at a scripted moment mid-mission, such as after the player fails an "
+		"objective.  You do NOT need it to offer a checkpoint when the mission starts: the engine already asks "
+		"automatically on the way in whenever a usable checkpoint exists, without reloading the mission.  Set the "
+		"\"No Checkpoint Resume Prompt\" mission flag to suppress that automatic prompt."
 	},
 
 	{ OP_CHECKPOINT_EXISTS, "checkpoint-exists\r\n"

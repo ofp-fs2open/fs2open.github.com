@@ -610,18 +610,69 @@ void read_scoring(pilot::FileHandler* handler, checkpoint::checkpoint_data& data
 
 namespace checkpoint {
 
-SCP_string checkpoint_filename(const SCP_string& slot)
+SCP_string checkpoint_file_prefix(const SCP_string& mission_name)
 {
-	SCP_string filename;
+	SCP_string prefix;
 
-	sprintf(filename,
-	        "%s.%s.%s.%s.chk",
+	sprintf(prefix,
+	        "%s.%s.%s.",
 	        sanitize_for_filename(Player != nullptr ? Player->callsign : "").c_str(),
 	        base_name(Campaign.filename).c_str(),
-	        base_name(Game_current_mission_filename).c_str(),
-	        sanitize_for_filename(slot).c_str());
+	        base_name(mission_name.empty() ? Game_current_mission_filename : mission_name.c_str()).c_str());
 
-	return filename;
+	return prefix;
+}
+
+SCP_string checkpoint_filename(const SCP_string& slot)
+{
+	// Every component is sanitised to alphanumerics, '-' and '_', so the only dots in the name
+	// are the separators this builds.  That is what lets the enumeration below recover a slot
+	// name by simply taking whatever follows the prefix.
+	return checkpoint_file_prefix("") + sanitize_for_filename(slot) + ".chk";
+}
+
+SCP_vector<SCP_string> checkpoint_list_slots(const SCP_string& mission_name)
+{
+	SCP_vector<SCP_string> slots;
+	SCP_vector<SCP_string> files;
+
+	cf_get_file_list(files, CF_TYPE_CHECKPOINTS, "*.chk", CF_SORT_NAME, nullptr,
+	                 CF_LOCATION_ROOT_USER | CF_LOCATION_ROOT_GAME | CF_LOCATION_TYPE_ROOT);
+
+	auto prefix = checkpoint_file_prefix(mission_name);
+
+	for (const auto& file : files) {
+		// cfile strips the extension when building the list, so what is left is
+		// "<pilot>.<campaign>.<mission>.<slot>".
+		if (file.size() <= prefix.size() || strnicmp(file.c_str(), prefix.c_str(), prefix.size()) != 0) {
+			continue;
+		}
+
+		slots.push_back(file.substr(prefix.size()));
+	}
+
+	return slots;
+}
+
+int checkpoint_delete_all(const SCP_string& mission_name)
+{
+	auto slots = checkpoint_list_slots(mission_name);
+	auto prefix = checkpoint_file_prefix(mission_name);
+
+	int deleted = 0;
+	for (const auto& slot : slots) {
+		auto filename = prefix + slot + ".chk";
+
+		if (cf_delete(filename.c_str(), CF_TYPE_CHECKPOINTS, CF_LOCATION_ROOT_USER | CF_LOCATION_TYPE_ROOT)) {
+			++deleted;
+		}
+	}
+
+	mprintf(("CHECKPOINT => Deleted %d checkpoint(s) for '%s'.\n",
+	         deleted,
+	         mission_name.empty() ? Game_current_mission_filename : mission_name.c_str()));
+
+	return deleted;
 }
 
 bool checkpoint_write(const checkpoint_data& data)

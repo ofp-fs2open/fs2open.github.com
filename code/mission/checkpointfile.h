@@ -22,9 +22,23 @@ static const unsigned int CHECKPOINT_FILE_ID = 0x5f4b4843;   // "CHK_"
 // defaults anything the file does not carry, and ignores anything it does not recognise.
 static const unsigned int CHECKPOINT_VERSION = 1;
 
-// Build the on-disk name for a slot.  Slot names come from mission designers, so they are
-// sanitised down to a safe filename character set.
+// Build the on-disk name for a slot of the currently loaded mission.  Slot names come from
+// mission designers, so they are sanitised down to a safe filename character set.
 SCP_string checkpoint_filename(const SCP_string& slot);
+
+// The "<pilot>.<campaign>.<mission>." part that every checkpoint for a mission shares.  Pass an
+// empty mission name for the mission that is currently loaded.  Enumeration and the
+// single-file path both go through this so they cannot disagree about the naming scheme.
+SCP_string checkpoint_file_prefix(const SCP_string& mission_name);
+
+// Every slot saved for a mission, for the current pilot and campaign.  Empty mission name
+// means the mission that is currently loaded.  Does not validate fingerprints -- a stale
+// checkpoint is still a checkpoint that exists on disk and can be deleted.
+SCP_vector<SCP_string> checkpoint_list_slots(const SCP_string& mission_name);
+
+// Delete every checkpoint saved for a mission, for the current pilot and campaign.  Returns
+// how many files were removed.
+int checkpoint_delete_all(const SCP_string& mission_name);
 
 // Write a checkpoint.  Returns false and logs on failure; a failed write leaves any previous
 // checkpoint for that slot untouched.

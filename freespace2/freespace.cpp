@@ -1484,10 +1484,6 @@ void game_post_level_init()
 		red_alert_bash_ship_status();
 	}
 
-	// If we got here because the player loaded a checkpoint, restore it now: the mission has
-	// been parsed and its objects created, but nothing has started running yet.
-	mission_checkpoint_apply();
-
 	freespace_mission_load_stuff();
 
 	mission_process_alt_types();
@@ -5038,6 +5034,19 @@ void game_process_event( int current_state, int event )
 			// clear multiplayer button info
 			extern button_info Multi_ship_status_bi;
 			memset(&Multi_ship_status_bi, 0, sizeof(button_info));
+
+			// Restore a checkpoint, if one is being loaded or the player asks for one.
+			//
+			// This has to happen here rather than in game_post_level_init(), which runs back in
+			// GS_STATE_START_GAME -- before the briefing, and so before commit_pressed() calls
+			// create_wings() and before the GS_STATE_GAME_PLAY enter handler calls
+			// wss_direct_restore_loadout().  Both of those rewrite the starting wings' ship
+			// classes and weapons, so a checkpoint applied any earlier gets overwritten.  Every
+			// route into gameplay funnels through this event, and the first game_do_frame() has
+			// not run yet, so this is the one place that is after all the loadout bashing and
+			// still before the mission starts.
+			mission_checkpoint_maybe_offer_resume();
+			mission_checkpoint_apply();
 
 			// Make hv.Player available in "On Gameplay Start" hook -zookeeper
 			scripting::hooks::OnGameplayStart->run(scripting::hook_param_list(

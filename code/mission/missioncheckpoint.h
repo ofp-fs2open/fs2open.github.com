@@ -246,9 +246,19 @@ bool mission_checkpoint_load_pending();
 // mission restart that will eventually land in mission_checkpoint_apply().
 void mission_checkpoint_process_pending_load();
 
-// Called from game_post_level_init(), after the mission has been parsed and its objects
-// created but before the mission actually starts running.  Applies a checkpoint if one is
-// being restored; otherwise does nothing.
+// Offer the player a checkpoint on the way into a mission, if one is worth offering.  Does
+// nothing when a load is already being serviced (so the mid-mission SEXP path does not prompt
+// a second time on the way back in), when the mission carries the no-resume-prompt flag, or
+// when there is no usable checkpoint.  Answering yes queues the restore for
+// mission_checkpoint_apply(), which must be called immediately afterwards.
+void mission_checkpoint_maybe_offer_resume();
+
+// Apply a checkpoint if one is being restored; otherwise do nothing.
+//
+// Called from the GS_EVENT_ENTER_GAME handler, NOT from game_post_level_init().  It has to run
+// after commit_pressed() -> create_wings() and after wss_direct_restore_loadout(), both of
+// which rewrite the starting wings' ship classes and weapons and would otherwise overwrite
+// whatever was restored.  See the comment at the call site in freespace.cpp.
 void mission_checkpoint_apply();
 
 // Discard any queued or in-flight restore.  Called when leaving a mission by any route other

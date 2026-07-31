@@ -17,7 +17,9 @@
 #include "hud/hudmessage.h"
 #include "hud/hudsquadmsg.h"
 #include "iff_defs/iff_defs.h"
+#include "mission/checkpointfile.h"
 #include "mission/missioncampaign.h"
+#include "mission/missioncheckpoint.h"
 #include "mission/missiongoals.h"
 #include "mission/missionload.h"
 #include "mission/missionlog.h"
@@ -1937,6 +1939,176 @@ ADE_FUNC(getMissionFilename, l_Mission, NULL, "Gets mission filename", "string",
 	drop_extension(temp);
 
 	return ade_set_args(L, "s", temp);
+}
+
+// ------------------------------------------------------------------
+// Mission checkpoints
+// ------------------------------------------------------------------
+
+ADE_FUNC(storeCheckpoint,
+	l_Mission,
+	"[string slot=\"default\"]",
+	"Saves the current state of the mission to a checkpoint, the same as the store-checkpoint SEXP.  "
+	"Does nothing in multiplayer.",
+	"boolean",
+	"true if the checkpoint was written, false otherwise")
+{
+	const char* slot = nullptr;
+	if (!ade_get_args(L, "|s", &slot)) {
+		slot = nullptr;
+	}
+
+	if (Game_mode & GM_MULTIPLAYER) {
+		return ADE_RETURN_FALSE;
+	}
+
+	return ade_set_args(L, "b", mission_checkpoint_store(slot != nullptr ? slot : "default"));
+}
+
+ADE_FUNC(loadCheckpoint,
+	l_Mission,
+	"[string slot=\"default\", string... options]",
+	"Restores a checkpoint, the same as the load-checkpoint SEXP.  The mission is reloaded and the saved state "
+	"applied, so this takes effect at the end of the current frame rather than immediately.  Options are the same "
+	"strings the SEXP accepts: \"keep player loadout\", \"keep wing loadout\", \"reopen loadout\", "
+	"\"ignore mission changes\".  Does nothing in multiplayer.",
+	nullptr,
+	nullptr)
+{
+	const char* slot = nullptr;
+	if (!ade_get_args(L, "|s", &slot)) {
+		slot = nullptr;
+	}
+
+	if (Game_mode & GM_MULTIPLAYER) {
+		return ADE_RETURN_NIL;
+	}
+
+	// Everything after the slot name is an option flag.
+	checkpoint::LoadFlags flags = checkpoint::LoadFlags::None;
+	int argc = lua_gettop(L);
+	for (int i = 2; i <= argc; i++) {
+		if (lua_isstring(L, i)) {
+			checkpoint::LoadFlags flag;
+			if (mission_checkpoint_parse_load_flag(lua_tostring(L, i), flag)) {
+				flags |= flag;
+			} else {
+				LuaError(L, "loadCheckpoint: unrecognised option '%s'", lua_tostring(L, i));
+			}
+		}
+	}
+
+	mission_checkpoint_request_load(slot != nullptr ? slot : "default", flags);
+
+	return ADE_RETURN_NIL;
+}
+
+ADE_FUNC(checkpointExists,
+	l_Mission,
+	"[string slot=\"default\"]",
+	"Returns whether a checkpoint exists for this mission that can still be loaded.  A checkpoint saved before the "
+	"mission file was last edited does not count, since its events and variables would no longer line up.",
+	"boolean",
+	"true if a usable checkpoint exists")
+{
+	const char* slot = nullptr;
+	if (!ade_get_args(L, "|s", &slot)) {
+		slot = nullptr;
+	}
+
+	return ade_set_args(L, "b", mission_checkpoint_exists(slot != nullptr ? slot : "default"));
+}
+
+ADE_FUNC(deleteCheckpoint,
+	l_Mission,
+	"[string slot=\"default\"]",
+	"Deletes a saved checkpoint.  Does nothing if there was no such checkpoint.",
+	nullptr,
+	nullptr)
+{
+	const char* slot = nullptr;
+	if (!ade_get_args(L, "|s", &slot)) {
+		slot = nullptr;
+	}
+
+	mission_checkpoint_delete(slot != nullptr ? slot : "default");
+
+	return ADE_RETURN_NIL;
+}
+
+ADE_FUNC(getCheckpointInfo,
+	l_Mission,
+	"[string slot=\"default\"]",
+	"Reads a checkpoint's header without applying it.  Useful for building a checkpoint browser.",
+	"table",
+	"A table with Slot, MissionFilename, MissionTime (seconds), Campaign, Pilot, ModTitle and Valid "
+	"(false if the checkpoint no longer matches the current mission), or nil if there is no such checkpoint")
+{
+	const char* slot = nullptr;
+	if (!ade_get_args(L, "|s", &slot)) {
+		slot = nullptr;
+	}
+
+	checkpoint::checkpoint_data data;
+	if (!checkpoint::checkpoint_read(slot != nullptr ? slot : "default", data)) {
+		return ADE_RETURN_NIL;
+	}
+
+	auto table = luacpp::LuaTable::create(L);
+	auto session = Script_system.GetLuaSession();
+
+	table.addValue("Slot", luacpp::LuaValue::createValue(session, data.slot));
+	table.addValue("MissionFilename", luacpp::LuaValue::createValue(session, data.mission_filename));
+	table.addValue("MissionTime", luacpp::LuaValue::createValue(session, f2fl(data.mission_time)));
+	table.addValue("Campaign", luacpp::LuaValue::createValue(session, data.campaign));
+	table.addValue("Pilot", luacpp::LuaValue::createValue(session, data.pilot));
+	table.addValue("ModTitle", luacpp::LuaValue::createValue(session, data.mod_title));
+	table.addValue("Valid", luacpp::LuaValue::createValue(session, checkpoint::checkpoint_matches_current_mission(data)));
+
+	return ade_set_args(L, "t", &table);
+}
+
+ADE_FUNC(getCheckpointSlots,
+	l_Mission,
+	"[string missionName]",
+	"Lists every checkpoint slot saved for a mission by the current pilot in the current campaign.  "
+	"Defaults to the mission that is currently loaded.  Stale checkpoints are included, since they still "
+	"exist on disk and can still be deleted.",
+	"table",
+	"A numbered table of slot name strings, empty if there are none")
+{
+	const char* mission_name = nullptr;
+	if (!ade_get_args(L, "|s", &mission_name)) {
+		mission_name = nullptr;
+	}
+
+	auto slots = checkpoint::checkpoint_list_slots(mission_name != nullptr ? mission_name : "");
+
+	auto table = luacpp::LuaTable::create(L);
+	auto session = Script_system.GetLuaSession();
+
+	int index = 0;
+	for (const auto& slot : slots) {
+		table.addValue(++index, luacpp::LuaValue::createValue(session, slot));
+	}
+
+	return ade_set_args(L, "t", &table);
+}
+
+ADE_FUNC(deleteAllCheckpoints,
+	l_Mission,
+	"[string missionName]",
+	"Deletes every checkpoint saved for a mission by the current pilot in the current campaign.  "
+	"Defaults to the mission that is currently loaded.  Other pilots' checkpoints are never touched.",
+	"number",
+	"How many checkpoints were deleted")
+{
+	const char* mission_name = nullptr;
+	if (!ade_get_args(L, "|s", &mission_name)) {
+		mission_name = nullptr;
+	}
+
+	return ade_set_args(L, "i", checkpoint::checkpoint_delete_all(mission_name != nullptr ? mission_name : ""));
 }
 
 ADE_FUNC(startMission,

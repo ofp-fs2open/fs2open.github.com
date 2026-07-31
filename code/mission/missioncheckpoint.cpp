@@ -18,8 +18,10 @@
 #include "mission/missionparse.h"
 #include "mod_table/mod_table.h"
 #include "object/object.h"
+#include "parse/parselo.h"
 #include "parse/sexp.h"
 #include "playerman/player.h"
+#include "popup/popup.h"
 #include "ship/ship.h"
 #include "ship/shipfx.h"
 #include "stats/scoring.h"
@@ -1120,6 +1122,60 @@ void apply_clock(const checkpoint_data& data)
 
 } // namespace
 
+void mission_checkpoint_maybe_offer_resume()
+{
+	// A mid-mission load is already being serviced.  That path comes back through this same
+	// event, so without this check the player would be asked a second time for the restore
+	// they just asked for.
+	if (Pending_load.in_progress || Pending_load.queued) {
+		return;
+	}
+
+	if (Game_mode & GM_MULTIPLAYER) {
+		return;
+	}
+
+	// The designer can suppress the offer for missions where a scripted mid-mission prompt is
+	// the intended flow and an entry prompt would just be confusing.
+	if (The_mission.flags[Mission::Mission_Flags::No_checkpoint_resume_prompt]) {
+		return;
+	}
+
+	const SCP_string slot("default");
+
+	// Nothing worth offering -- either no checkpoint at all, or one written for a version of
+	// this mission that no longer matches.  Either way, say nothing and start normally.
+	if (!mission_checkpoint_exists(slot)) {
+		return;
+	}
+
+	checkpoint_data data;
+	if (!checkpoint_read(slot, data)) {
+		return;
+	}
+
+	SCP_string prompt;
+	sprintf(prompt,
+	        "%s\n\n%s",
+	        XSTR("Resume from checkpoint?", 1831),
+	        XSTR("You have a saved checkpoint for this mission.", 1832));
+
+	int choice = popup(PF_USE_AFFIRMATIVE_ICON | PF_USE_NEGATIVE_ICON, 2, POPUP_NO, POPUP_YES, prompt.c_str());
+
+	if (choice != 1) {
+		mprintf(("CHECKPOINT => Player declined the checkpoint; starting the mission normally.\n"));
+		return;
+	}
+
+	// No mission reload needed.  The reload the SEXP path performs exists only to get back to
+	// a freshly parsed mission, and entering a mission is already exactly that -- so all that
+	// is left is the bash, which mission_checkpoint_apply() does immediately after this.
+	Pending_load.slot = slot;
+	Pending_load.flags = LoadFlags::None;
+	Pending_load.data = std::move(data);
+	Pending_load.in_progress = true;
+}
+
 void mission_checkpoint_apply()
 {
 	if (!Pending_load.in_progress) {
@@ -1195,7 +1251,18 @@ void mission_checkpoint_apply()
 	// object up; the player pointers themselves are unchanged by that, so there is nothing
 	// further to do here.
 
+	// KNOWN GAP: the HUD escort list and the mission hotkey assignments are built in
+	// game_post_level_init() from the pristine mission, which is now well before this point, so
+	// a ship added to or removed from the escort list during the saved run will not be
+	// reflected.  hud_setup_escort_list() cannot simply be re-run here -- it deliberately
+	// early-returns once GM_IN_MISSION is set, which it is by the time we get here.  Restoring
+	// those properly belongs with the rest of the HUD state in milestone 2.
+
 	mprintf(("CHECKPOINT => Applied checkpoint at mission time %d.\n", f2i(Missiontime)));
+
+	// Release the snapshot.  A large mission's checkpoint is not small, and there is no reason
+	// to hold it for the rest of the mission.
+	mission_checkpoint_clear_pending();
 }
 
 // ------------------------------------------------------------------
