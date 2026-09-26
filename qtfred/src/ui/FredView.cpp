@@ -14,6 +14,8 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QAbstractSpinBox>
+#include <QToolBar>
 #include <QApplication>
 #include <QProcess>
 #include <QSignalBlocker>
@@ -1553,7 +1555,23 @@ void FredView::initializeTransformBar() {
 		sb->setFixedWidth(90);
 		sb->setKeyboardTracking(false);
 		_transformToolBar->addWidget(sb);
-		connect(sb, &QDoubleSpinBox::editingFinished, this, &FredView::onTransformEditingFinished);
+		connect(sb, &QDoubleSpinBox::editingFinished, this, [this, box = sb]() {
+			onTransformEditingFinished();
+			// editingFinished fires on Enter and on focus-out. Only Enter leaves the box
+			// focused, and then hand focus back to the viewport so its keys work again;
+			// Tab/click-away already moved focus where the user wanted it.
+			if (box->hasFocus())
+				ui->centralWidget->setFocus(Qt::OtherFocusReason);
+		});
+		// Arrow steps (buttons, Up/Down, wheel) apply immediately so the object moves as
+		// the user clicks. With keyboard tracking off, valueChanged doesn't fire per typed
+		// digit, only per step or on commit. The focus check skips the values
+		// onUpdateTransformBar() pushes in, which it only ever sets on unfocused boxes.
+		// An unchanged apply records no undo step, so Enter re-applying is harmless.
+		connect(sb, &QDoubleSpinBox::valueChanged, this, [this, box = sb]() {
+			if (box->hasFocus())
+				onTransformEditingFinished();
+		});
 	};
 
 	makeSpinBox(_transformLabelA, tr("X"), _transformA);
@@ -2020,11 +2038,17 @@ void FredView::ensureViewportFocus() {
 			return;
 		}
 
-		// Don't steal focus from dock widget children — the user is intentionally
-		// interacting with a panel (search bar, buttons, checkboxes, etc.).
+		// Don't steal focus from dock widget children -- the user is intentionally
+		// interacting with a panel (search bar, buttons, checkboxes, etc.). In a toolbar only
+		// text-entry widgets keep focus, e.g. the transform bar's X/Y/Z spin boxes; this runs
+		// every idle tick, so they could never be typed into. A spin box is itself the focus
+		// widget (its internal line edit proxies focus to it), so check for both types.
+		// Toolbar combos still hand focus back so keys after a pick reach the viewport.
+		const bool isTextField = qobject_cast<QLineEdit*>(focusedWidget) != nullptr ||
+			qobject_cast<QAbstractSpinBox*>(focusedWidget) != nullptr;
 		QWidget* w = focusedWidget;
 		while (w != nullptr) {
-			if (qobject_cast<QDockWidget*>(w) != nullptr) {
+			if (qobject_cast<QDockWidget*>(w) != nullptr || (isTextField && qobject_cast<QToolBar*>(w) != nullptr)) {
 				return;
 			}
 			w = w->parentWidget();
