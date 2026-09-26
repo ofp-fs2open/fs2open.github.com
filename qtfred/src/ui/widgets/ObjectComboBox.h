@@ -22,7 +22,11 @@ public:
 signals:
 	void classSelected(int class_index);
 
+protected:
+	void changeEvent(QEvent* event) override;
+
 private:
+	void refreshItemColors();
 	void buildShipsModel();
 	void buildPropsModel();
 	void buildOtherModel();

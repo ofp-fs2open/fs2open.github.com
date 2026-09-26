@@ -10,8 +10,10 @@
 
 #include <QtGui/QBrush>
 #include <QtGui/QColor>
+#include <QEvent>
 
 #include <FredApplication.h>
+#include <ui/Theme.h>
 
 namespace fso::fred {
 
@@ -49,13 +51,14 @@ void ObjectComboBox::buildShipsModel() {
 		}
 		auto item = new QStandardItem(it->name);
 		species_info* sinfo = &Species_info[it->species];
-		item->setData(QBrush(QColor(sinfo->fred_color.rgb.r, sinfo->fred_color.rgb.g, sinfo->fred_color.rgb.b)),
-					  Qt::ForegroundRole);
+		item->setData(QColor(sinfo->fred_color.rgb.r, sinfo->fred_color.rgb.g, sinfo->fred_color.rgb.b),
+					  SourceColorRole);
 		item->setData((int)std::distance(Ship_info.cbegin(), it), Qt::UserRole);
 		model->appendRow(item);
 	}
 
 	setModel(model);
+	refreshItemColors();
 }
 
 void ObjectComboBox::buildOtherModel() {
@@ -87,13 +90,28 @@ void ObjectComboBox::buildPropsModel() {
 		item->setData(i, Qt::UserRole);
 		auto category = prop_get_category(Prop_info[i].category_index);
 		if (category != nullptr) {
-			item->setData(QBrush(QColor(category->list_color.red, category->list_color.green, category->list_color.blue)),
-						  Qt::ForegroundRole);
+			item->setData(QColor(category->list_color.red, category->list_color.green, category->list_color.blue),
+						  SourceColorRole);
 		}
 		model->appendRow(item);
 	}
 
 	setModel(model);
+	refreshItemColors();
+}
+
+// Table colors are chosen for no particular background, so derive the drawn color
+// against the list's current background (see readableTextColor). Read it from the
+// combo, not view(): on a theme switch the combo gets PaletteChange before its hidden
+// popup list does, so the view still holds the previous theme's colors here.
+void ObjectComboBox::refreshItemColors() {
+	applyReadableItemColors(qobject_cast<QStandardItemModel*>(model()), palette().color(QPalette::Base));
+}
+
+void ObjectComboBox::changeEvent(QEvent* event) {
+	QComboBox::changeEvent(event);
+	if (event->type() == QEvent::PaletteChange)
+		refreshItemColors();
 }
 
 void ObjectComboBox::selectClass(int class_index) {

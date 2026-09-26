@@ -9,8 +9,12 @@
 #include <QPalette>
 #include <QPixmap>
 #include <QSettings>
+#include <QStandardItemModel>
 #include <QStyleHints>
 #include <QtMath>
+
+#include <algorithm>
+#include <cmath>
 
 namespace {
 class PaletteChangeFilter : public QObject {
@@ -677,6 +681,64 @@ QPixmap applyIconShadow(const QPixmap& src)
 	scene.render(&p, box, box);
 	p.end();
 	return out;
+}
+
+namespace {
+
+// WCAG relative luminance of an sRGB color.
+double relativeLuminance(const QColor& c)
+{
+	auto channel = [](double v) {
+		return (v <= 0.03928) ? v / 12.92 : std::pow((v + 0.055) / 1.055, 2.4);
+	};
+	return 0.2126 * channel(c.redF()) + 0.7152 * channel(c.greenF()) + 0.0722 * channel(c.blueF());
+}
+
+double contrastRatio(const QColor& a, const QColor& b)
+{
+	const double la = relativeLuminance(a);
+	const double lb = relativeLuminance(b);
+	return (std::max(la, lb) + 0.05) / (std::min(la, lb) + 0.05);
+}
+
+} // namespace
+
+QColor readableTextColor(const QColor& color, const QColor& background)
+{
+	// WCAG AA for normal text.
+	constexpr double MinContrast = 4.5;
+	if (!color.isValid() || contrastRatio(color, background) >= MinContrast)
+		return color;
+
+	// Move lightness away from the background, keeping hue and saturation, until the
+	// color reads. Hue stays put so a species/category color is still recognizable.
+	const bool lighten = relativeLuminance(background) < 0.18;
+	float h = 0.0f;
+	float s = 0.0f;
+	float l = 0.0f;
+	float a = 0.0f;
+	color.getHslF(&h, &s, &l, &a);
+
+	QColor out = color;
+	for (int step = 0; step < 50; ++step) {
+		l = lighten ? std::min(1.0f, l + 0.02f) : std::max(0.0f, l - 0.02f);
+		out = QColor::fromHslF(h, s, l, a);
+		if (contrastRatio(out, background) >= MinContrast || l <= 0.0f || l >= 1.0f)
+			break;
+	}
+	return out;
+}
+
+void applyReadableItemColors(QStandardItemModel* model, const QColor& background)
+{
+	if (model == nullptr)
+		return;
+	for (int row = 0; row < model->rowCount(); ++row) {
+		QStandardItem* item = model->item(row);
+		const QVariant source = item->data(SourceColorRole);
+		if (source.isValid())
+			item->setData(QBrush(readableTextColor(source.value<QColor>(), background)), Qt::ForegroundRole);
+	}
 }
 
 } // namespace fso::fred

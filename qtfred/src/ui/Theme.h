@@ -10,6 +10,8 @@
 #include <QString>
 #include <QStyle>
 
+class QStandardItemModel;
+
 namespace fso::fred {
 
 // Apply the Fusion-compatible light or dark palette and button stylesheet.
@@ -75,5 +77,21 @@ QPixmap tintScreen(const QPixmap& src, const QColor& color);
 // pixmap of the same size. Applied to every sexp tree icon so shadow styling stays
 // consistent and decoupled from the (tinted) artwork.
 QPixmap applyIconShadow(const QPixmap& src);
+
+// --- Readable table-driven text colors ---
+
+// Item data role holding the unadjusted table color (species fred_color, prop category
+// list_color) for items whose ForegroundRole is derived via applyReadableItemColors().
+constexpr int SourceColorRole = Qt::UserRole + 100;
+
+// Returns `color`, or when it doesn't reach WCAG AA contrast (4.5:1) against
+// `background`, the same hue lightened (dark background) or darkened (light background)
+// just enough to read. For display only; the table data is never changed.
+QColor readableTextColor(const QColor& color, const QColor& background);
+
+// Sets every top-level item's ForegroundRole from its SourceColorRole via
+// readableTextColor(). Items without a SourceColorRole keep the palette's text color.
+// Call after building the model and again on QEvent::PaletteChange.
+void applyReadableItemColors(QStandardItemModel* model, const QColor& background);
 
 } // namespace fso::fred
