@@ -80,7 +80,7 @@ A recused Maintainer may still comment technically but does not vote or merge. I
 
 ## Submitting a PR
 
-1. Fork the repo and create a branch from `main`.
+1. Fork the repo and create a branch from `master`.
 2. Write clear commit messages.
 3. If implementing a Queue item, reference the Discussion in your PR description.
 4. If skipping a Queue item, explain why in your PR description.
