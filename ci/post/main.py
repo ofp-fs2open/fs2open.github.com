@@ -28,6 +28,7 @@ import semantic_version
 import file_list
 import installer
 import nebula
+import release_notes
 
 # Compile regexes for extracting version components
 MAJOR_VERSION_PATTERN = re.compile("(?:set_if_not_defined|set)\(FSO_VERSION_MAJOR (\d+)\)")
@@ -249,8 +250,14 @@ def main():
 			stability = "rc"
 		else:
 			stability = "nightly"
+		# The same notes the GitHub release page carries, so the launcher shows what
+		# changed in this build rather than an empty release.
+		notes = release_notes.build_release_notes(tag_name, config["github"]["repo"])
+		print("Release notes:")
+		print(notes)
+
 		nebula.submit_release(
-			nebula.render_nebula_release(version, stability, files, config),
+			nebula.render_nebula_release(version, stability, files, config, notes),
 			config)
 
 	else:

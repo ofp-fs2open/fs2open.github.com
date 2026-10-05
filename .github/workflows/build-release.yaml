@@ -16,25 +16,29 @@ jobs:
     permissions:
       contents: write   # required to create the GitHub release (repo default token is read-only)
     steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        # Creates a release package page on github
-        # create_release.inputs:      (notable inputs)
-        #   allowUpdates=false        if true, update an existing release if it exists
-        #   artifactErrorsFailBuild=false   if true, fails the build should artifact read/write errors occur
-        #   artifacts                 optional set of paths to artifacts to upload to the release. comma delimited.
-        #   removeArtifacts=false     if true, remove existing artifacts
-        #   replaceArtifacts=false    if true, replace/overwrite existing artifacts
-        # create_release.outputs:
-        #   id          id of the created release
-        #   html_url    HTML URL of the release
-        #   upload_url  FTP URL of the release where assets are uploaded
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          fetch-depth: 0    # full history and tags, so the notes can find the previous release
+      - name: Build release notes
+        # OFP's own changes since the previous release, plus one line for the upstream merges
+        # folded in over the same window. ci/post/main.py sends the same text to Nebula.
+        # shell: bash is deliberate: it runs with -o pipefail, so a crash in the script
+        # fails the step instead of letting tee succeed and the release get an empty body.
+        shell: bash
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+        run: python3 ci/post/release_notes.py "${{ github.ref_name }}" | tee release_notes.md
+      - name: Create Release
+        # Creates the release page the three build jobs then attach their packages to. Those
+        # jobs call this action without a body, which leaves this one in place.
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body_path: release_notes.md
           draft: false
           # Any tag with a - suffix (RCs, date-stamped nightlies like 26_1_0-20260713) is a prerelease; a clean release_MM_mm_bb is a full release
           prerelease: ${{ contains(github.ref_name, '-') }}
@@ -151,7 +155,7 @@ jobs:
           path: ${{ steps.generate_package.outputs.package_path }}
       - name: Publish result package
         # publish the zipped result
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -352,7 +356,7 @@ jobs:
           path: ${{ steps.generate_package.outputs.debug_path }}
 
       - name: Publish packages
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -465,7 +469,7 @@ jobs:
           name: ${{ steps.generate_package.outputs.package_name }}
           path: ${{ steps.generate_package.outputs.package_path }}
       - name: Publish result package
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

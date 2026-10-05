@@ -68,11 +68,12 @@ subdirs = {
 }
 
 
-def render_nebula_release(version, stability, files, config):
+def render_nebula_release(version, stability, files, config, notes=""):
     meta = metadata.copy()
     meta['version'] = str(version)
     meta['stability'] = stability  # This can be one of ('stable', 'rc', 'nightly')
     meta['private'] = config['nebula'].get('private', True)  # OFP: default private until explicitly published
+    meta['notes'] = notes  # OFP: per-release changelog, shown by the launcher
 
     for file in files:
         if file.content_hashes is None:
