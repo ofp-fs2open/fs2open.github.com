@@ -261,6 +261,7 @@ struct CapturedWaypointList {
 	int        color_b   = 0;
 	SCP_string fred_layer;
 	bool       fred_locked = false;
+	int        fred_groups = 0;
 };
 
 // Build a CapturedWaypointList for list at Waypoint_lists[listIndex], recording
@@ -294,6 +295,7 @@ struct CapturedJumpNode {
 	bool   has_special_model = false;
 	SCP_string fred_layer;
 	bool       fred_locked = false;
+	int        fred_groups = 0;
 };
 
 CapturedJumpNode captureJumpNode(int objNum);
@@ -312,6 +314,7 @@ struct CapturedProp {
 	bool       no_collide      = false; // !Objects[].flags[Object_Flags::Collides]
 	SCP_string fred_layer;
 	bool       fred_locked = false;
+	int        fred_groups = 0;
 
 	// ---- Spawn / despawn ----
 	int spawn_cue_dup   = SHIP_CUE_NONE; // owned dup; see SHIP_CUE_* sentinels
@@ -343,7 +346,7 @@ struct CapturedCoordinatePoint {
 	vec3d  pos       = vmd_zero_vector;
 	SCP_string name;
 	SCP_string display_name;
-	SCP_string group;
+	SCP_string category;
 	color      display_color{};
 	CoordinatePointShapeKind shape_kind = CoordinatePointShapeKind::NGon;
 	int   shape_sides        = 4;
@@ -357,6 +360,7 @@ struct CapturedCoordinatePoint {
 	flagset<CoordinatePoint::Flags> flags;
 	SCP_string fred_layer;
 	bool       fred_locked = false;
+	int        fred_groups = 0;
 };
 
 CapturedCoordinatePoint captureCoordinatePoint(int objNum);

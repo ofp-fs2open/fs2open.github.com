@@ -5247,6 +5247,14 @@ int Fred_mission_save::save_waypoints()
 					fout("\n+Transform Locked:");
 				fout(" true");
 			}
+
+			if (save_config.save_format != MissionFormat::RETAIL && jn.GetFredGroups() > 0) {
+				if (optional_string_fred("+Group:", "$Jump Node:"))
+					parse_comments();
+				else
+					fout("\n+Group:");
+				fout(" %d", jn.GetFredGroups());
+			}
 		}
 
 		fso_comment_pop();
@@ -5298,6 +5306,14 @@ int Fred_mission_save::save_waypoints()
 				else
 					fout("\n+Transform Locked:");
 				fout(" true");
+			}
+
+			if (save_config.save_format != MissionFormat::RETAIL && ii.get_fred_groups() > 0) {
+				if (optional_string_fred("+Group:", "$List:"))
+					parse_comments();
+				else
+					fout("\n+Group:");
+				fout(" %d", ii.get_fred_groups());
 			}
 		}
 
@@ -5686,6 +5702,14 @@ int Fred_mission_save::save_props()
 					fout(" true");
 				}
 
+				if (save_config.save_format != MissionFormat::RETAIL && p->fred_groups > 0) {
+					if (optional_string_fred("+Group:", "$Name:"))
+						parse_comments();
+					else
+						fout("\n+Group:");
+					fout(" %d", p->fred_groups);
+				}
+
 				// texture replacement - only the instance-level entries; class replacements
 				// live in props.tbl and are re-applied on load
 				bool needs_tex_header = true;
@@ -5796,7 +5820,7 @@ int Fred_mission_save::save_coordinate_points()
 
 		count++;
 
-		// Display name and group are player-facing, so save them as XSTR for translation.
+		// Display name and category are player-facing, so save them as XSTR for translation.
 		if (!cp.display_name.empty()) {
 			if (optional_string_fred("+Display Name:", "$Location:")) {
 				parse_comments();
@@ -5810,13 +5834,13 @@ int Fred_mission_save::save_coordinate_points()
 		parse_comments(0);
 		save_vector(Objects[cp.objnum].pos);
 
-		if (!cp.group.empty()) {
-			if (optional_string_fred("+Group:", "$Name:")) {
+		if (!cp.category.empty()) {
+			if (optional_string_fred("+Category:", "$Name:")) {
 				parse_comments();
 			} else {
-				fout("\n+Group:");
+				fout("\n+Category:");
 			}
-			fout_ext(" ", "%s", cp.group.c_str());
+			fout_ext(" ", "%s", cp.category.c_str());
 		}
 
 		const bool color_is_default =
@@ -5950,6 +5974,14 @@ int Fred_mission_save::save_coordinate_points()
 			else
 				fout("\n+Transform Locked:");
 			fout(" true");
+		}
+
+		if (save_config.save_format != MissionFormat::RETAIL && cp.fred_groups > 0) {
+			if (optional_string_fred("+Group:", "$Name:"))
+				parse_comments();
+			else
+				fout("\n+Group:");
+			fout(" %d", cp.fred_groups);
 		}
 
 		fso_comment_pop();

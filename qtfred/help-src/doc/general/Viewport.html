@@ -27,6 +27,35 @@ the viewport. Each dropdown is paired with its own modifier chord:</p>
         select all objects within it.</li>
     <li><strong>Double-click</strong> an object to open its editor dialog.</li>
 </ul>
+<p>The <strong>Select</strong> menu has:</p>
+<ul>
+    <li><strong>Select All</strong> (<strong>Ctrl+A</strong>) - adds every object you could
+        click to the selection.</li>
+    <li><strong>Select None</strong> (<strong>Ctrl+Shift+A</strong>) - clears the
+        selection.</li>
+    <li><strong>Invert Selection</strong> (<strong>Ctrl+I</strong>) - selects the objects
+        that aren't selected and deselects the ones that are.</li>
+    <li><strong>Select Group &rsaquo; Group 1</strong> to <strong>Group 9</strong> (<strong>Ctrl+1</strong> to
+        <strong>Ctrl+9</strong>) - selects a <a href="SelectionGroups.html">selection
+        group</a>.</li>
+    <li><strong>Select Layer</strong> - selects everything on a layer.</li>
+    <li><strong>Select IFF</strong> - selects the ships and player starts of an IFF. Every IFF
+        in the loaded tables is listed.</li>
+    <li><strong>Select Ship Type</strong> - selects the ships and player starts of a type,
+        such as fighter or bomber. Only the types the mission has are listed.</li>
+    <li><strong>Select Object Type</strong> - selects all ships, player starts, props,
+        waypoints, jump nodes or coordinate points.</li>
+    <li><strong>Selection Lock</strong> (<strong>Space</strong>) - stops clicks in the
+        viewport from changing the selection.</li>
+    <li><strong>Lock Marked Objects</strong> / <strong>Unlock All Objects</strong> - makes
+        the selected objects unselectable for the rest of the session, and undoes that.</li>
+</ul>
+<p>The Select Group, Layer, IFF, Ship Type and Object Type items replace the selection. The
+Layer, IFF, Ship Type and Object Type items show how many objects they would select, and are
+grayed out when that's none.</p>
+<p>Select All, Invert Selection and the select submenus leave out what you couldn't click:
+hidden objects, objects on hidden layers, object types (or ship IFFs) filtered out in the
+Layer Manager, and objects made unselectable by Lock Marked Objects.</p>
 
 <h2>Moving objects</h2>
 <p><strong>Drag</strong> a selected object to reposition it in the mission.</p>
@@ -66,7 +95,7 @@ selected and everything else about it can be edited: its name, cues, flags, and 
 </ul>
 <p>Locks are saved in the mission file. They are editor-only: the game ignores them, and
 a mission with locked objects needs FSO 26.1 or later to load.</p>
-<div class="note">This is not the same as <strong>Edit &rsaquo; Lock Marked
+<div class="note">This is not the same as <strong>Select &rsaquo; Lock Marked
 Objects</strong>, which makes objects unselectable until you use <strong>Unlock All
 Objects</strong> and isn't saved.</div>
 

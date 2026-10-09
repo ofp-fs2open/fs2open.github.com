@@ -30,7 +30,7 @@ struct mission_coordinate_point
 {
 	SCP_string name;
 	SCP_string display_name;             // shown on the HUD instead of name when set; need not be unique
-	SCP_string group;
+	SCP_string category;
 	color      display_color;
 
 	CoordinatePointShapeKind shape_kind = CoordinatePointShapeKind::NGon;
@@ -46,6 +46,7 @@ struct mission_coordinate_point
 	flagset<CoordinatePoint::Flags> flags;
 	SCP_string fred_layer = "Default";   // FRED view layer assignment
 	bool       fred_locked = false;      // FRED transform lock: position can't be edited
+	int        fred_groups = 0;          // FRED selection groups (bit N-1 = group N)
 	int        objnum = -1;
 
 	mission_coordinate_point();
@@ -57,7 +58,7 @@ struct parsed_coordinate_point
 {
 	SCP_string name;
 	SCP_string display_name;
-	SCP_string group;
+	SCP_string category;
 	vec3d      position;
 	color      display_color;
 
@@ -74,6 +75,7 @@ struct parsed_coordinate_point
 	flagset<CoordinatePoint::Flags> flags;
 	SCP_string fred_layer = "Default";
 	bool       fred_locked = false;
+	int        fred_groups = 0;
 
 	parsed_coordinate_point();
 };

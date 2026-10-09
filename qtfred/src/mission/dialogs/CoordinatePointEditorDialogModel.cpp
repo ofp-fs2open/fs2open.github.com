@@ -38,7 +38,7 @@ void CoordinatePointEditorDialogModel::initializeData()
 {
 	_selectedObjnums.clear();
 	_displayNameMixed = false;
-	_groupMixed = false;
+	_categoryMixed = false;
 	_redMixed = _greenMixed = _blueMixed = _alphaMixed = false;
 	_shapeKindMixed = false;
 	_sidesMixed = false;
@@ -61,7 +61,7 @@ void CoordinatePointEditorDialogModel::initializeData()
 		if (first != nullptr) {
 			_currentName      = first->name;
 			_displayName      = first->display_name;
-			_group         = first->group;
+			_category      = first->category;
 			_colorR           = first->display_color.red;
 			_colorG           = first->display_color.green;
 			_colorB           = first->display_color.blue;
@@ -80,7 +80,7 @@ void CoordinatePointEditorDialogModel::initializeData()
 				const auto* other = getSelected(_selectedObjnums[i]);
 				if (other == nullptr) continue;
 				if (other->display_name   != _displayName)   _displayNameMixed = true;
-				if (other->group          != _group)         _groupMixed = true;
+				if (other->category       != _category)      _categoryMixed = true;
 				if (other->display_color.red   != _colorR)         _redMixed = true;
 				if (other->display_color.green != _colorG)         _greenMixed = true;
 				if (other->display_color.blue  != _colorB)         _blueMixed = true;
@@ -104,7 +104,7 @@ void CoordinatePointEditorDialogModel::initializeData()
 	} else {
 		_currentName.clear();
 		_displayName.clear();
-		_group.clear();
+		_category.clear();
 		_colorR = _colorG = _colorB = _colorA = 255;
 		_shapeKind = CoordinatePointShapeKind::NGon;
 		_shapeTableIndex = -1;
@@ -236,16 +236,16 @@ void CoordinatePointEditorDialogModel::setDisplayName(const SCP_string& displayN
 	_suppressRefresh = false;
 }
 
-const SCP_string& CoordinatePointEditorDialogModel::getGroup() const { return _group; }
-bool CoordinatePointEditorDialogModel::isGroupMixed() const { return _groupMixed; }
+const SCP_string& CoordinatePointEditorDialogModel::getCategory() const { return _category; }
+bool CoordinatePointEditorDialogModel::isCategoryMixed() const { return _categoryMixed; }
 
-void CoordinatePointEditorDialogModel::setGroup(const SCP_string& group)
+void CoordinatePointEditorDialogModel::setCategory(const SCP_string& category)
 {
-	_group = group;
-	_groupMixed = false;
+	_category = category;
+	_categoryMixed = false;
 	for (int objnum : _selectedObjnums) {
 		auto* cp = getSelected(objnum);
-		if (cp != nullptr) cp->group = group;
+		if (cp != nullptr) cp->category = category;
 	}
 	_suppressRefresh = true;
 	set_modified();

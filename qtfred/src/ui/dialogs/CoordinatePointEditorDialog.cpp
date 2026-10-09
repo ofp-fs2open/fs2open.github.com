@@ -207,7 +207,7 @@ void CoordinatePointEditorDialog::initializeUi()
 
 	ui->nameEdit->setEnabled(enabled && !multi);
 	ui->displayNameEdit->setEnabled(enabled);
-	ui->groupEdit->setEnabled(enabled);
+	ui->categoryEdit->setEnabled(enabled);
 	// Shape kind radios + the tabled-shape combo are gated in updateUi(): NGon/Star follow the
 	// selection, Custom additionally needs at least one tabled shape, and the combo is only live
 	// for Custom. Baseline-disable here so they grey out when no point is selected.
@@ -228,6 +228,7 @@ void CoordinatePointEditorDialog::initializeUi()
 	ui->flagsButton->setEnabled(enabled);
 	ui->layerCombo->setEnabled(enabled);
 	ui->transformLockCheck->setEnabled(enabled);
+	ui->groupsButton->setEnabled(enabled);
 	ui->colorRSpinBox->setEnabled(enabled);
 	ui->colorGSpinBox->setEnabled(enabled);
 	ui->colorBSpinBox->setEnabled(enabled);
@@ -259,12 +260,12 @@ void CoordinatePointEditorDialog::updateUi()
 		ui->displayNameEdit->setText(QString::fromStdString(_model->getDisplayName()));
 	}
 
-	if (_model->isGroupMixed()) {
-		ui->groupEdit->setPlaceholderText("<mixed>");
-		ui->groupEdit->setText("");
+	if (_model->isCategoryMixed()) {
+		ui->categoryEdit->setPlaceholderText("<mixed>");
+		ui->categoryEdit->setText("");
 	} else {
-		ui->groupEdit->setPlaceholderText("");
-		ui->groupEdit->setText(QString::fromStdString(_model->getGroup()));
+		ui->categoryEdit->setPlaceholderText("");
+		ui->categoryEdit->setText(QString::fromStdString(_model->getCategory()));
 	}
 
 	// Shape kind is chosen by the NGon / Star / Custom radios; the combo lists the tabled shapes
@@ -339,6 +340,7 @@ void CoordinatePointEditorDialog::updateUi()
 		ui->transformLockCheck->setTristate(lockState == Qt::PartiallyChecked);
 		ui->transformLockCheck->setCheckState(lockState);
 	}
+	ui->groupsButton->setText(tr("Groups: %1").arg(selectionGroupsText(transformLockObjects())));
 
 	ui->colorRSpinBox->setValue(_model->isColorRMixed() ? ui->colorRSpinBox->minimum() : _model->getColorR());
 	ui->colorGSpinBox->setValue(_model->isColorGMixed() ? ui->colorGSpinBox->minimum() : _model->getColorG());
@@ -419,16 +421,16 @@ void CoordinatePointEditorDialog::on_displayNameEdit_editingFinished()
 	updateUi();
 }
 
-void CoordinatePointEditorDialog::on_groupEdit_editingFinished()
+void CoordinatePointEditorDialog::on_categoryEdit_editingFinished()
 {
 	// editingFinished also fires on plain focus-out; don't let that overwrite a <mixed> field.
-	if (!ui->groupEdit->isModified())
+	if (!ui->categoryEdit->isModified())
 		return;
-	const SCP_string group = ui->groupEdit->text().toUtf8().constData();
-	pushCoordinatePointField<SCP_string>(FieldId::CP_Group, tr("Change Coordinate Point Group"),
-		[](mission_coordinate_point& cp) { return cp.group; },
-		[](mission_coordinate_point& cp, const SCP_string& v) { cp.group = v; },
-		[&] { _model->setGroup(group); });
+	const SCP_string category = ui->categoryEdit->text().toUtf8().constData();
+	pushCoordinatePointField<SCP_string>(FieldId::CP_Category, tr("Change Coordinate Point Category"),
+		[](mission_coordinate_point& cp) { return cp.category; },
+		[](mission_coordinate_point& cp, const SCP_string& v) { cp.category = v; },
+		[&] { _model->setCategory(category); });
 	updateUi();
 }
 
@@ -654,6 +656,12 @@ void CoordinatePointEditorDialog::on_colorASpinBox_valueChanged(int value)
 SCP_vector<int> CoordinatePointEditorDialog::transformLockObjects() const
 {
 	return _model->getSelectedObjnums();
+}
+
+void CoordinatePointEditorDialog::on_groupsButton_clicked()
+{
+	_fredView->editSelectionGroups(transformLockObjects(), this);
+	updateUi();
 }
 
 void CoordinatePointEditorDialog::on_transformLockCheck_clicked()

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Selection Groups - QtFRED Help</title>
+    <link rel="stylesheet" type="text/css" href="../css/help.css"/>
+</head>
+<body>
+<nav class="breadcrumb"><a href="../index.html">QtFRED Help</a> &rsaquo; Selection Groups</nav>
+<h1>Selection Groups</h1>
+<p>Found in the <strong>Select</strong> menu, on the right-click menu's <strong>Set
+Group</strong>, and on the <strong>Groups</strong> button in each object editor.</p>
+<p>Selection groups are nine saved selections. Put a set of objects you often work on together
+into a group, and you can select all of them again with one keystroke instead of clicking each
+one in the viewport or the Scene Browser.</p>
+<p>Ships, player starts, props, waypoint paths, jump nodes and coordinate points can all be in
+groups, and an object can be in several groups at once. A waypoint path is grouped as a whole:
+every point of a path is in the same groups.</p>
+<p>Groups are an editor convenience only. They have no effect in the game, and they are not
+wings, layers or anything a SEXP can refer to. Unlike a layer, a group can take objects from
+several layers, and an object can be in more than one group. To select everything on a layer,
+right-click it in the <a href="SceneBrowserDialog.html">Scene Browser</a> and choose
+<strong>Select All</strong>.</p>
+
+<h2>Selecting a group</h2>
+<p>Choose <strong>Select &rsaquo; Select Group &rsaquo; Group 1</strong> through <strong>Group 9</strong>, or press
+<strong>Ctrl+1</strong> through <strong>Ctrl+9</strong>. The current selection is cleared and
+every object in that group is selected. Selecting a group with nothing in it clears the
+selection. Like Select All, it leaves out objects you couldn't click, such as those on hidden
+layers.</p>
+
+<h2>Adding objects to a group</h2>
+<p>Right-click an object in the viewport or the Scene Browser and open <strong>Set
+Group</strong>. Groups the selected objects are all in are checked, and a group only some of
+them are in is marked <em>(some)</em>. Click an unchecked group to add all the selected objects
+to it, or a checked one to take them all out. Their other groups don't change. Right-clicking a
+wing or a waypoint path in the Scene Browser works the same way for the whole wing or path.</p>
+
+<h2>Seeing and changing an object's groups</h2>
+<p>Each object editor has a <strong>Groups</strong> button next to the layer. It shows the
+groups the object is in, for example <em>Groups: 1, 4</em>, or <em>Groups: None</em>. Click it
+for a checklist of the nine groups, then check or clear them.</p>
+<p>When the editor is showing several objects, the button lists the groups all of them are in,
+followed by the groups only some of them are in, marked <em>(some)</em>. In the checklist those
+are partly checked. A group you leave partly checked is left alone; check it to add all the
+objects to it, or clear it to take them all out.</p>
+<p>Changing an object's groups this way doesn't touch any other object, so it's also how you
+take something out of a group or empty a group.</p>
+
+<h2>Undo</h2>
+<p>Set Group and changes made from the Groups button can be undone and redone like any other
+edit.</p>
+
+<h2>Saving</h2>
+<p>Groups are saved with the mission, in each object's entry, so they are still there the next
+time you open it. FRED2 can select and set groups of ships only, but it keeps the other
+objects' groups when it saves.</p>
+<p>Older versions of QtFRED stored ship groups differently from FRED2, so groups set in a
+mission saved by one of them may now select the wrong ships. Set those groups again.</p>
+</body>
+</html>

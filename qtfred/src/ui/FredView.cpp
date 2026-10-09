@@ -80,6 +80,7 @@
 #include <iff_defs/iff_defs.h>
 
 #include "mission/Editor.h"
+#include "ui/dialogs/General/CheckBoxListDialog.h"
 #include "mission/commands/CameraTransformCommand.h"
 #include "mission/commands/FredCommands.h"
 #include "mission/management.h"
@@ -2388,6 +2389,7 @@ void FredView::showContextMenu(int objNum, const QPoint& globalPos) {
 	_moveToLayerMenu->menuAction()->setVisible(canAssignLayer);
 	if (canAssignLayer)
 		populateMoveToLayerMenu(objNum);
+	populateSetGroupMenu(_setGroupMenu);
 
 	const bool isShip = (objType == OBJ_SHIP) || (objType == OBJ_START);
 	const bool inWing = isShip && Ships[Objects[objNum].instance].wingnum >= 0;
@@ -2420,6 +2422,7 @@ void FredView::showContextMenu(const QPoint& globalPos) {
 		if (canAssignLayer) {
 			populateMoveToLayerMenu(obj);
 		}
+		populateSetGroupMenu(_setGroupMenu);
 
 		// Control Edit Wing / Select Wing visibility and enabled state
 		const bool isShip = (objType == OBJ_SHIP) || (objType == OBJ_START);
@@ -2507,6 +2510,10 @@ void FredView::showWingContextMenu(int wingIndex, const QPoint& globalPos)
 		populateMoveToLayerMenu(firstObjNum, localLayerMenu);
 	menu.addMenu(localLayerMenu);
 
+	auto* localGroupMenu = new QMenu(tr("Set Group"), &menu);
+	populateSetGroupMenu(localGroupMenu);
+	menu.addMenu(localGroupMenu);
+
 	menu.addSeparator();
 
 	auto* zoomSelAction = menu.addAction(tr("Zoom to Selected"));
@@ -2565,6 +2572,10 @@ void FredView::showWaypointPathContextMenu(int pathIndex, const QPoint& globalPo
 	if (firstObjNum >= 0)
 		populateMoveToLayerMenu(firstObjNum, localLayerMenu);
 	menu.addMenu(localLayerMenu);
+
+	auto* localGroupMenu = new QMenu(tr("Set Group"), &menu);
+	populateSetGroupMenu(localGroupMenu);
+	menu.addMenu(localGroupMenu);
 
 	menu.addSeparator();
 
@@ -2721,6 +2732,8 @@ void FredView::initializePopupMenus() {
 	_moveToLayerMenu = new QMenu(tr("Move to Layer"), _editPopup);
 	_moveToLayerMenu->setStyleSheet("QMenu { menu-scrollable: 1; }");
 	_editPopup->addMenu(_moveToLayerMenu);
+	_setGroupMenu = new QMenu(tr("Set Group"), _editPopup);
+	_editPopup->addMenu(_setGroupMenu);
 
 	_editPopup->addSeparator();
 	auto* deleteAction = new QAction(tr("Delete"), _editPopup);
@@ -2778,6 +2791,34 @@ void FredView::populateCreatePropSubmenu() {
 				CreateKind::Prop, _viewport->cur_other_kind, objNum, fred, _viewport)); // first redo() is a no-op
 		}
 	});
+}
+
+void FredView::populateSetGroupMenu(QMenu* dest) {
+	dest->clear();
+
+	SCP_vector<int> marked;
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (objp->flags[Object::Object_Flags::Marked])
+			marked.push_back(OBJ_INDEX(objp));
+	}
+	const auto objs = fso::fred::selectionGroupObjects(marked);
+	dest->menuAction()->setEnabled(!objs.empty());
+	if (objs.empty())
+		return;
+
+	const auto states = fso::fred::selectionGroupStates(objs);
+	for (int g = 0; g < fso::fred::NUM_SELECTION_GROUPS; ++g) {
+		const int bit = 1 << g;
+		const bool all = states[g] == Qt::Checked;
+		// a menu can't show a partial check, so say it in the text
+		const QString text = states[g] == Qt::PartiallyChecked ? tr("Group %1 (some)").arg(g + 1) : tr("Group %1").arg(g + 1);
+		auto* action = dest->addAction(text);
+		action->setCheckable(true);
+		action->setChecked(all);
+		connect(action, &QAction::triggered, this, [this, objs, bit, all]() {
+			fso::fred::pushSelectionGroups(objs, all ? 0 : bit, all ? bit : 0, fred, _mainStack);
+		});
+	}
 }
 
 void FredView::populateMoveToLayerMenu(int targetObject, QMenu* targetMenu) {
@@ -3051,6 +3092,29 @@ void FredView::on_actionLock_Marked_Objects_triggered(bool  /*enabled*/) {
 }
 void FredView::on_actionUnlock_All_Objects_triggered(bool  /*enabled*/) {
 	fred->unlockAllObjects();
+}
+// Select All and Invert Selection work on what a click or box could select (see
+// EditorViewport::isObjectSelectable). Invert also deselects marked objects outside that.
+void FredView::on_actionSelect_All_triggered(bool  /*enabled*/) {
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (_viewport->isObjectSelectable(objp))
+			fred->markObject(OBJ_INDEX(objp));
+	}
+}
+void FredView::on_actionSelect_None_triggered(bool  /*enabled*/) {
+	fred->unmark_all();
+	if (fred->currentEnvironment != EnvironmentObject::None)
+		fred->clearEnvironment();
+}
+void FredView::on_actionInvert_Selection_triggered(bool  /*enabled*/) {
+	SCP_vector<int> select;
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (_viewport->isObjectSelectable(objp) && !objp->flags[Object::Object_Flags::Marked])
+			select.push_back(OBJ_INDEX(objp));
+	}
+	fred->unmark_all();
+	for (const int objnum : select)
+		fred->markObject(objnum);
 }
 void FredView::onUpdateViewSpeeds() {
 	ui->actionx1->setChecked(_viewport->camera.getPhysicsSpeed() == 1);
@@ -3773,8 +3837,6 @@ void FredView::onUpdateEditorActions() {
 	ui->actionPrev_Subsystem->setEnabled(subsysActive);
 	ui->actionCancel_Subsystem->setEnabled(subsysActive);
 
-	// Set Group submenu — requires at least one marked object to assign
-	ui->menuSet_Group->setEnabled(hasMarked);
 }
 void FredView::on_actionWingForm_triggered(bool  /*enabled*/) {
 	object* ptr = GET_FIRST(&obj_used_list);
@@ -3979,57 +4041,139 @@ void FredView::initializeGroupActions() {
 	connect(ui->actionGroup_8, &QAction::triggered, this, [this]() { onGroupSelected(8); });
 	connect(ui->actionGroup_9, &QAction::triggered, this, [this]() { onGroupSelected(9); });
 
-
-	connect(ui->actionSetGroup_1, &QAction::triggered, this, [this]() { onSetGroup(1); });
-	connect(ui->actionSetGroup_2, &QAction::triggered, this, [this]() { onSetGroup(2); });
-	connect(ui->actionSetGroup_3, &QAction::triggered, this, [this]() { onSetGroup(3); });
-	connect(ui->actionSetGroup_4, &QAction::triggered, this, [this]() { onSetGroup(4); });
-	connect(ui->actionSetGroup_5, &QAction::triggered, this, [this]() { onSetGroup(5); });
-	connect(ui->actionSetGroup_6, &QAction::triggered, this, [this]() { onSetGroup(6); });
-	connect(ui->actionSetGroup_7, &QAction::triggered, this, [this]() { onSetGroup(7); });
-	connect(ui->actionSetGroup_8, &QAction::triggered, this, [this]() { onSetGroup(8); });
-	connect(ui->actionSetGroup_9, &QAction::triggered, this, [this]() { onSetGroup(9); });
+	populateSelectByMenus();
 }
-void FredView::onGroupSelected(int group) {
+void FredView::selectMatching(const std::function<bool(const object&)>& matches) {
 	fred->unmark_all();
-	auto objp = GET_FIRST(&obj_used_list);
-	while (objp != END_OF_LIST(&obj_used_list)) {
-		if (objp->type == OBJ_SHIP) {
-			if (Ships[objp->instance].group & group) {
-				fred->markObject(OBJ_INDEX(objp));
-			}
-		}
-
-		objp = GET_NEXT(objp);
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (_viewport->isObjectSelectable(objp) && matches(*objp))
+			fred->markObject(OBJ_INDEX(objp));
 	}
 }
-void FredView::onSetGroup(int group) {
-	bool err = false;
-
-	for (auto i = 0; i < MAX_SHIPS; i++) {
-		Ships[i].group &= ~group;
+int FredView::countSelectable(const std::function<bool(const object&)>& matches) const {
+	int count = 0;
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (_viewport->isObjectSelectable(objp) && matches(*objp))
+			++count;
 	}
+	return count;
+}
+void FredView::populateSelectByMenus() {
+	// One item per set: "Name (count)", disabled when there's nothing in it to select
+	auto addItem = [this](QMenu* menu, const QString& name, const std::function<bool(const object&)>& matches) {
+		const int count = countSelectable(matches);
+		auto* action = menu->addAction(tr("%1 (%2)").arg(name).arg(count));
+		action->setEnabled(count > 0);
+		connect(action, &QAction::triggered, this, [this, matches]() { selectMatching(matches); });
+	};
+	auto isShip = [](const object& o) { return o.type == OBJ_SHIP || o.type == OBJ_START; };
 
-	auto objp = GET_FIRST(&obj_used_list);
-	while (objp != END_OF_LIST(&obj_used_list)) {
-		if (objp->flags[Object::Object_Flags::Marked]) {
-			if (objp->type == OBJ_SHIP) {
-				Ships[objp->instance].group |= group;
-
-			} else {
-				err = true;
-			}
+	connect(ui->menuSelect_Layer, &QMenu::aboutToShow, this, [this, addItem]() {
+		ui->menuSelect_Layer->clear();
+		for (const auto& layerName : _viewport->getLayerNames()) {
+			addItem(ui->menuSelect_Layer, QString::fromStdString(layerName), [this, layerName](const object& o) {
+				return _viewport->getObjectLayerName(OBJ_INDEX(&o)) == layerName;
+			});
 		}
+	});
 
-		objp = GET_NEXT(objp);
+	// every IFF the tables define, so a mod's IFFs show up
+	connect(ui->menuSelect_IFF, &QMenu::aboutToShow, this, [this, addItem, isShip]() {
+		ui->menuSelect_IFF->clear();
+		for (int team = 0; team < static_cast<int>(Iff_info.size()); ++team) {
+			addItem(ui->menuSelect_IFF, QString::fromUtf8(Iff_info[team].iff_name), [team, isShip](const object& o) {
+				return isShip(o) && Ships[o.instance].team == team;
+			});
+		}
+	});
+
+	// only the ship types the mission has, in ships.tbl order; there are many more in the table
+	connect(ui->menuSelect_Ship_Type, &QMenu::aboutToShow, this, [this, addItem, isShip]() {
+		ui->menuSelect_Ship_Type->clear();
+		auto typeOf = [](const object& o) {
+			const int cls = Ships[o.instance].ship_info_index;
+			return (cls >= 0 && cls < ship_info_size()) ? Ship_info[cls].class_type : -1;
+		};
+		SCP_vector<bool> present(Ship_types.size(), false);
+		for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+			if (!isShip(*objp))
+				continue;
+			const int type = typeOf(*objp);
+			if (SCP_vector_inbounds(present, type))
+				present[type] = true;
+		}
+		for (int type = 0; type < static_cast<int>(Ship_types.size()); ++type) {
+			if (!present[type])
+				continue;
+			QString name = QString::fromUtf8(Ship_types[type].name);
+			if (!name.isEmpty())
+				name[0] = name[0].toUpper();
+			addItem(ui->menuSelect_Ship_Type, name, [type, isShip, typeOf](const object& o) {
+				return isShip(o) && typeOf(o) == type;
+			});
+		}
+		if (ui->menuSelect_Ship_Type->isEmpty())
+			ui->menuSelect_Ship_Type->addAction(tr("No ships"))->setEnabled(false);
+	});
+
+	connect(ui->menuSelect_Object_Type, &QMenu::aboutToShow, this, [this, addItem]() {
+		ui->menuSelect_Object_Type->clear();
+		// separate like the Layer Manager's Ships and Player Starts filters
+		const std::pair<int, QString> types[] = {
+			{OBJ_SHIP, tr("Ships")},
+			{OBJ_START, tr("Player Starts")},
+			{OBJ_PROP, tr("Props")},
+			{OBJ_WAYPOINT, tr("Waypoints")},
+			{OBJ_JUMP_NODE, tr("Jump Nodes")},
+			{OBJ_COORDINATE_POINT, tr("Coordinate Points")},
+		};
+		for (const auto& [type, name] : types) {
+			addItem(ui->menuSelect_Object_Type, name, [type = type](const object& o) { return o.type == type; });
+		}
+	});
+}
+// Selection groups are a bitmask with group N as bit N-1, as in FRED2, so an object can be in
+// several groups (see Editor::getSelectionGroups). A waypoint path is grouped as a whole.
+void FredView::onGroupSelected(int group) {
+	const int bit = 1 << (group - 1);
+	fred->unmark_all();
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		const int objnum = OBJ_INDEX(objp);
+		// as Select All: hidden objects and hidden layers are left out
+		if ((Editor::getSelectionGroups(objnum) & bit) != 0 && _viewport->isObjectSelectable(objp)) {
+			fred->markObject(objnum);
+		}
+	}
+}
+void FredView::editSelectionGroups(const SCP_vector<int>& objnums, QWidget* parent) {
+	const auto states = fso::fred::selectionGroupStates(objnums);
+	QVector<std::pair<QString, int>> options;
+	bool mixed = false;
+	for (int g = 0; g < fso::fred::NUM_SELECTION_GROUPS; ++g) {
+		options.append({tr("Group %1").arg(g + 1), states[g]});
+		mixed = mixed || states[g] == Qt::PartiallyChecked;
 	}
 
-	if (err) {
-		showButtonDialog(DialogType::Error, "Error", "Only ships can be in groups, and not players or waypoints, etc.\n"
-			"These illegal objects you marked were not placed in the group", { DialogButton::Ok });
-	}
+	fso::fred::dialogs::CheckBoxListDialog dlg(parent);
+	dlg.setCaption(tr("Groups"));
+	// before setOptions: the items are built tristate or not
+	dlg.setTristate(mixed);
+	dlg.setOptions(options);
+	if (dlg.exec() != QDialog::Accepted)
+		return;
 
-	fred->updateAllViewports();
+	int add = 0, remove = 0;
+	for (const auto& [name, state] : dlg.getFlags()) {
+		for (int g = 0; g < fso::fred::NUM_SELECTION_GROUPS; ++g) {
+			if (name != options[g].first)
+				continue;
+			if (state == Qt::Checked)
+				add |= 1 << g;
+			else if (state == Qt::Unchecked)
+				remove |= 1 << g;
+		}
+	}
+	fso::fred::pushSelectionGroups(objnums, add, remove, fred, _mainStack);
 }
 void FredView::on_actionControl_Object_triggered(bool) {
 	_viewport->camera.toggleControlMode();

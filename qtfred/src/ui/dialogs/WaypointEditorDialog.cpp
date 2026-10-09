@@ -120,6 +120,7 @@ void WaypointEditorDialog::initializeUi()
 	ui->customColorCheck->setEnabled(enabled);
 	ui->layerCombo->setEnabled(enabled);
 	ui->transformLockCheck->setEnabled(enabled);
+	ui->groupsButton->setEnabled(enabled);
 	ui->prevPathButton->setEnabled(hasAny);
 	ui->nextPathButton->setEnabled(hasAny);
 
@@ -140,6 +141,7 @@ void WaypointEditorDialog::updateUi()
 		ui->transformLockCheck->setTristate(lockState == Qt::PartiallyChecked);
 		ui->transformLockCheck->setCheckState(lockState);
 	}
+	ui->groupsButton->setText(tr("Groups: %1").arg(selectionGroupsText(transformLockObjects())));
 
 	const int noDrawState = _model->getNoDrawLinesState();
 	ui->noDrawLinesCheck->setTristate(noDrawState == Qt::PartiallyChecked);
@@ -446,6 +448,12 @@ SCP_vector<int> WaypointEditorDialog::transformLockObjects() const
 		objs.push_back(Waypoint_lists[idx].get_waypoints().front().get_objnum());
 	}
 	return objs;
+}
+
+void WaypointEditorDialog::on_groupsButton_clicked()
+{
+	_fredView->editSelectionGroups(transformLockObjects(), this);
+	updateUi();
 }
 
 void WaypointEditorDialog::on_transformLockCheck_clicked()

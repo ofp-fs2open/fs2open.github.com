@@ -727,8 +727,8 @@ void HudGaugeBrackets::renderBoundingBrackets(int x1, int y1, int x2, int y2, in
 				auto* cp = find_coordinate_point_by_objnum(target_objnum);
 				if (cp != nullptr) {
 					tinfo_name = coordinate_point_get_display_name(*cp);
-					if (!cp->group.empty())
-						tinfo_class = cp->group.c_str();
+					if (!cp->category.empty())
+						tinfo_class = cp->category.c_str();
 				}
 				break;
 			}
@@ -746,7 +746,7 @@ void HudGaugeBrackets::renderBoundingBrackets(int x1, int y1, int x2, int y2, in
 	gr_reset_screen_scale();
 }
 
-// Labels for coordinate points flagged Always_render_labels: name and group beside the shape,
+// Labels for coordinate points flagged Always_render_labels: name and category beside the shape,
 // placed where a bracketed target's labels go, whether or not the point is targeted.
 void HudGaugeBrackets::renderCoordinatePointLabels()
 {
@@ -793,8 +793,8 @@ void HudGaugeBrackets::renderCoordinatePointLabels()
 
 		gr_set_color_fast(&cp.display_color);
 		gr_string(x2 + 3, y1, coordinate_point_get_display_name(cp));
-		if (!cp.group.empty()) {
-			gr_string(x2 + 3, y1 + gr_get_font_height(), cp.group.c_str());
+		if (!cp.category.empty()) {
+			gr_string(x2 + 3, y1 + gr_get_font_height(), cp.category.c_str());
 		}
 		gr_reset_screen_scale();
 	}

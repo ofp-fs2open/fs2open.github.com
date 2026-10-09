@@ -24,7 +24,7 @@ private slots:
 	void on_nextPointButton_clicked();
 	void on_nameEdit_editingFinished();
 	void on_displayNameEdit_editingFinished();
-	void on_groupEdit_editingFinished();
+	void on_categoryEdit_editingFinished();
 	void on_shapeNGonRadio_toggled(bool checked);
 	void on_shapeStarRadio_toggled(bool checked);
 	void on_shapeCustomRadio_toggled(bool checked);
@@ -38,6 +38,7 @@ private slots:
 	void on_multiTeamCombo_currentIndexChanged(int index);
 	void on_layerCombo_currentIndexChanged(int index);
 	void on_transformLockCheck_clicked();
+	void on_groupsButton_clicked();
 	// the objects the lock checkbox covers (a waypoint stands for its path)
 	SCP_vector<int> transformLockObjects() const;
 	void on_flagsButton_clicked();

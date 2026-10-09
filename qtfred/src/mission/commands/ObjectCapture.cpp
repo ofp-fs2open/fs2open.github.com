@@ -611,6 +611,7 @@ CapturedWaypointList captureWaypointList(int listIndex,
 	cwl.color_b    = wl.get_color_b();
 	cwl.fred_layer = wl.get_fred_layer();
 	cwl.fred_locked = wl.get_fred_locked();
+	cwl.fred_groups = wl.get_fred_groups();
 
 	for (int i = 0; i < (int)wpts.size(); i++) {
 		const int objNum = wpts[i].get_objnum();
@@ -643,6 +644,7 @@ void restoreWaypointListProperties(const CapturedWaypointList& data)
 		wl->clear_color();
 	wl->set_fred_layer(data.fred_layer);
 	wl->set_fred_locked(data.fred_locked);
+	wl->set_fred_groups(data.fred_groups);
 }
 
 // ===========================================================================
@@ -681,6 +683,7 @@ CapturedJumpNode captureJumpNode(int objNum)
 		cjn.hidden     = jn.IsHidden();
 		cjn.fred_layer = jn.GetFredLayer();
 		cjn.fred_locked = jn.GetFredLocked();
+		cjn.fred_groups = jn.GetFredGroups();
 		break;
 	}
 	return cjn;
@@ -705,6 +708,7 @@ int restoreJumpNode(const CapturedJumpNode& data, Editor* /*editor*/)
 
 	jn.SetFredLayer(data.fred_layer);
 	jn.SetFredLocked(data.fred_locked);
+	jn.SetFredGroups(data.fred_groups);
 
 	const int newObj = jn.GetSCPObjectNumber();
 	Jump_nodes.push_back(std::move(jn));
@@ -742,6 +746,7 @@ CapturedProp& CapturedProp::operator=(CapturedProp&& o) noexcept
 	no_collide      = o.no_collide;
 	fred_layer      = std::move(o.fred_layer);
 	fred_locked     = o.fred_locked;
+	fred_groups     = o.fred_groups;
 
 	spawn_cue_dup     = o.spawn_cue_dup;
 	o.spawn_cue_dup   = SHIP_CUE_NONE;
@@ -774,6 +779,7 @@ CapturedProp captureProp(int objNum)
 		strcpy_s(cp.prop_name, propp->prop_name);
 		cp.fred_layer = propp->fred_layer;
 		cp.fred_locked = propp->fred_locked;
+		cp.fred_groups = propp->fred_groups;
 		cp.spawn_cue_dup   = captureSexpCue(propp->spawn_cue);
 		cp.despawn_cue_dup = captureSexpCue(propp->despawn_cue);
 		cp.spawn_delay     = propp->spawn_delay;
@@ -799,6 +805,7 @@ int restoreProp(const CapturedProp& data, Editor* /*editor*/)
 		strcpy_s(propp->prop_name, data.prop_name);
 		propp->fred_layer = data.fred_layer;
 		propp->fred_locked = data.fred_locked;
+		propp->fred_groups = data.fred_groups;
 		propp->spawn_cue    = materializeSexpCue(data.spawn_cue_dup);
 		propp->despawn_cue  = materializeSexpCue(data.despawn_cue_dup);
 		propp->spawn_delay  = data.spawn_delay;
@@ -831,7 +838,7 @@ CapturedCoordinatePoint captureCoordinatePoint(int objNum)
 	if (cp != nullptr) {
 		ccp.name               = cp->name;
 		ccp.display_name       = cp->display_name;
-		ccp.group              = cp->group;
+		ccp.category           = cp->category;
 		ccp.display_color      = cp->display_color;
 		ccp.shape_kind         = cp->shape_kind;
 		ccp.shape_sides        = cp->shape_sides;
@@ -845,6 +852,7 @@ CapturedCoordinatePoint captureCoordinatePoint(int objNum)
 		ccp.flags              = cp->flags;
 		ccp.fred_layer         = cp->fred_layer;
 		ccp.fred_locked        = cp->fred_locked;
+		ccp.fred_groups        = cp->fred_groups;
 	}
 	return ccp;
 }
@@ -865,7 +873,7 @@ int restoreCoordinatePoint(const CapturedCoordinatePoint& data, Editor* /*editor
 	if (cp != nullptr) {
 		cp->name               = data.name;
 		cp->display_name       = data.display_name;
-		cp->group              = data.group;
+		cp->category           = data.category;
 		cp->display_color      = data.display_color;
 		cp->shape_kind         = data.shape_kind;
 		cp->shape_sides        = data.shape_sides;
@@ -879,6 +887,7 @@ int restoreCoordinatePoint(const CapturedCoordinatePoint& data, Editor* /*editor
 		cp->flags              = data.flags;
 		cp->fred_layer         = data.fred_layer;
 		cp->fred_locked        = data.fred_locked;
+		cp->fred_groups        = data.fred_groups;
 	}
 	return newObj;
 }

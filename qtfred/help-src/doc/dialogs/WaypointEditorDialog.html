@@ -16,7 +16,7 @@ be used for any purpose a mission designer can express through SEXPs and AI goal
 
 <p>The dialog tracks the viewport selection. Select waypoint objects in the viewport
 to edit their path. When multiple paths are selected, display property changes
-(No Draw Lines, Custom Color, Layer, Lock path position) apply to all selected paths at once.</p>
+(No Draw Lines, Custom Color, Layer, Groups, Lock path position) apply to all selected paths at once.</p>
 
 <h2>Navigation</h2>
 <table>
@@ -34,6 +34,7 @@ to edit their path. When multiple paths are selected, display property changes
         single paths individually.</td></tr>
     <tr><td>Layer</td><td>The layer the waypoint path is assigned to. Applied to all
         selected paths.</td></tr>
+    <tr><td>Groups</td><td>The <a href="../general/SelectionGroups.html">selection groups</a> the path is in, shown on the button. Click it to change them in a checklist. With several paths selected, a group only some of them are in is partly checked and is left alone unless you change it. Every point of a path is in the same groups.</td></tr>
     <tr><td>Lock path position</td><td>Stops every point of the path from being moved, and stops new points from being inserted into it. Points can still be deleted. Partly checked when the selected paths differ; clicking it then locks them all. See <a href="../general/Viewport.html#locking">Locking objects in place</a>.</td></tr>
     <tr><td>No Draw Lines</td><td>When checked, the connecting lines between waypoints
         are hidden in the viewport. The waypoint points themselves are still

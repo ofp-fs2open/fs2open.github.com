@@ -49,6 +49,7 @@ class waypoint_list
 		void clear_color();
 		void set_fred_layer(const SCP_string& layer) { m_fred_layer = layer; }
 		void set_fred_locked(bool locked) { m_fred_locked = locked; }
+		void set_fred_groups(int groups) { m_fred_groups = groups; }
 
 		// display property accessors
 		bool get_no_draw_lines() const;
@@ -58,6 +59,7 @@ class waypoint_list
 		int get_color_b() const;
 		const SCP_string& get_fred_layer() const { return m_fred_layer; }
 		bool get_fred_locked() const { return m_fred_locked; }
+		int get_fred_groups() const { return m_fred_groups; }
 
 	private:
 		char m_name[NAME_LENGTH];
@@ -67,6 +69,7 @@ class waypoint_list
 		int m_color_r, m_color_g, m_color_b;
 		SCP_string m_fred_layer = "Default";	// FRED view layer assignment
 		bool m_fred_locked = false;				// FRED transform lock on the whole path
+		int m_fred_groups = 0;					// FRED selection groups of the whole path (bit N-1 = group N)
 };
 
 //********************GLOBALS********************

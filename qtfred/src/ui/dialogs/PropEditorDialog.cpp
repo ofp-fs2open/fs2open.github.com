@@ -195,6 +195,7 @@ void PropEditorDialog::initializeUi() {
 	ui->prevButton->setEnabled(has_props);
 	ui->layerCombo->setEnabled(enable);
 	ui->transformLockCheck->setEnabled(enable);
+	ui->groupsButton->setEnabled(enable);
 	ui->propClassCombo->setEnabled(enable);
 	// texture replacement operates on a single prop
 	ui->textureReplacementButton->setEnabled(_model->getSelectedPropObject() >= 0);
@@ -210,6 +211,7 @@ void PropEditorDialog::updateUi() {
 		ui->transformLockCheck->setTristate(lockState == Qt::PartiallyChecked);
 		ui->transformLockCheck->setCheckState(lockState);
 	}
+	ui->groupsButton->setText(tr("Groups: %1").arg(selectionGroupsText(transformLockObjects())));
 	ui->propClassCombo->setCurrentIndex(ui->propClassCombo->findData(_model->getPropClass()));
 }
 
@@ -506,6 +508,12 @@ SCP_vector<int> PropEditorDialog::transformLockObjects() const
 			objs.push_back(obj_idx);
 	}
 	return objs;
+}
+
+void PropEditorDialog::on_groupsButton_clicked()
+{
+	_fredView->editSelectionGroups(transformLockObjects(), this);
+	updateUi();
 }
 
 void PropEditorDialog::on_transformLockCheck_clicked()

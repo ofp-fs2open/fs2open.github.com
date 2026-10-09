@@ -258,8 +258,9 @@ void clone_prop_instance_data(int src_prop_id, int dest_prop_id)
 	Assertion(src && dest, "clone_prop_instance_data: invalid src or dest prop id");
 	Assertion(src->prop_info_index == dest->prop_info_index, "clone_prop_instance_data: dest must be the same prop class as src");
 
-	// fred view layer
+	// fred view layer and selection groups
 	dest->fred_layer = src->fred_layer;
+	dest->fred_groups = src->fred_groups;
 
 	// object flag the prop editor exposes (see save_props)
 	if (Objects[src->objnum].flags[Object::Object_Flags::Collides]) {
@@ -315,8 +316,9 @@ void clone_jump_node_instance_data(const CJumpNode& src, CJumpNode& dest)
 	// hidden state
 	dest.SetVisibility(!src.IsHidden());
 
-	// fred view layer
+	// fred view layer and selection groups
 	dest.SetFredLayer(src.GetFredLayer());
+	dest.SetFredGroups(src.GetFredGroups());
 }
 
 // Per-path field handling here MUST stay in sync with:
@@ -337,4 +339,5 @@ void clone_waypoint_path_instance_data(int src_list_index, int dest_list_index)
 		dest->clear_color();
 	}
 	dest->set_fred_layer(src->get_fred_layer());
+	dest->set_fred_groups(src->get_fred_groups());
 }

@@ -603,8 +603,8 @@ void FredRenderer::display_ship_info(int cur_object_index) {
 					} else if (objp->type == OBJ_COORDINATE_POINT) {
 						auto* cp = find_coordinate_point_by_objnum(OBJ_INDEX(objp));
 						if (cp != nullptr) {
-							if (!cp->group.empty()) {
-								sprintf(buf, "%s\n%s", cp->name.c_str(), cp->group.c_str());
+							if (!cp->category.empty()) {
+								sprintf(buf, "%s\n%s", cp->name.c_str(), cp->category.c_str());
 							} else {
 								sprintf(buf, "%s", cp->name.c_str());
 							}

@@ -112,14 +112,28 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QComboBox" name="layerCombo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="layerGroupsLayout" stretch="1,0">
+         <item>
+          <widget class="QComboBox" name="layerCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="groupsButton">
+           <property name="toolTip">
+            <string>The selection groups this is in (Select menu, Ctrl+1 to Ctrl+9 to select a group). Click to change them.</string>
+           </property>
+           <property name="text">
+            <string>Groups: None</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="5" column="1">
         <widget class="QCheckBox" name="transformLockCheck">
@@ -132,17 +146,17 @@
         </widget>
        </item>
        <item row="6" column="0">
-        <widget class="QLabel" name="groupLabel">
+        <widget class="QLabel" name="categoryLabel">
          <property name="text">
-          <string>&amp;Group</string>
+          <string>&amp;Category</string>
          </property>
          <property name="buddy">
-          <cstring>groupEdit</cstring>
+          <cstring>categoryEdit</cstring>
          </property>
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QLineEdit" name="groupEdit"/>
+        <widget class="QLineEdit" name="categoryEdit"/>
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="shapeLabel">

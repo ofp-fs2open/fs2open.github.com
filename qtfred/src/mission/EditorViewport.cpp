@@ -306,6 +306,30 @@ bool EditorViewport::incMissionTime() {
 
 	return true;
 }
+bool EditorViewport::isObjectSelectable(const object* ptr) const {
+	if (ptr->flags.any_of(Object::Object_Flags::Hidden, Object::Object_Flags::Locked_from_editing))
+		return false;
+	if (!isObjectVisibleInLayer(ptr))
+		return false;
+
+	switch (ptr->type) {
+	case OBJ_WAYPOINT:
+		return Show_waypoints;
+	case OBJ_START:
+		return view.Show_starts && view.Show_ships;
+	case OBJ_SHIP:
+		return view.Show_ships && view.Show_iff[Ships[ptr->instance].team];
+	case OBJ_PROP:
+		return view.Show_props;
+	case OBJ_JUMP_NODE:
+		return view.Show_jump_nodes;
+	case OBJ_COORDINATE_POINT:
+		return view.Show_coordinate_points;
+	default:
+		return true;
+	}
+}
+
 void EditorViewport::select_objects(const Marking_box& box) {
 	int x, y, valid;
 	vertex v;
@@ -328,57 +352,8 @@ void EditorViewport::select_objects(const Marking_box& box) {
 
 	ptr = GET_FIRST(&obj_used_list);
 	while (ptr != END_OF_LIST(&obj_used_list)) {
-		valid = 1;
-		if (ptr->flags.any_of(Object::Object_Flags::Hidden,Object::Object_Flags::Locked_from_editing)) {
-			valid = 0;
-		}
-		if (!isObjectVisibleInLayer(ptr)) {
-			valid = 0;
-		}
-
 		Assert(ptr->type != OBJ_NONE);
-		switch (ptr->type) {
-		case OBJ_WAYPOINT:
-			if (!Show_waypoints) {
-				valid = 0;
-			}
-			break;
-
-		case OBJ_START:
-			if (!view.Show_starts || !view.Show_ships) {
-				valid = 0;
-			}
-			break;
-
-		case OBJ_SHIP:
-			if (!view.Show_ships) {
-				valid = 0;
-			}
-
-			if (!view.Show_iff[Ships[ptr->instance].team]) {
-				valid = 0;
-			}
-
-			break;
-
-		case OBJ_PROP:
-			if (!view.Show_props) {
-				valid = 0;
-			}
-			break;
-
-		case OBJ_JUMP_NODE:
-			if (!view.Show_jump_nodes) {
-				valid = 0;
-			}
-			break;
-
-		case OBJ_COORDINATE_POINT:
-			if (!view.Show_coordinate_points) {
-				valid = 0;
-			}
-			break;
-		}
+		valid = isObjectSelectable(ptr) ? 1 : 0;
 
 		g3_rotate_vertex(&v, &ptr->pos);
 		if (!(v.codes & CC_BEHIND) && valid) {

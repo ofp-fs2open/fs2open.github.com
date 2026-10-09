@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <QMainWindow>
 #include <QAction>
 #include <QActionGroup>
@@ -110,6 +112,10 @@ class FredView: public QMainWindow, public IDialogProvider {
 
 	void on_actionLock_Marked_Objects_triggered(bool enabled);
 	void on_actionUnlock_All_Objects_triggered(bool enabled);
+
+	void on_actionSelect_All_triggered(bool enabled);
+	void on_actionSelect_None_triggered(bool enabled);
+	void on_actionInvert_Selection_triggered(bool enabled);
 
 	void on_actionx1_triggered(bool enabled);
 	void on_actionx2_triggered(bool enabled);
@@ -265,6 +271,9 @@ class FredView: public QMainWindow, public IDialogProvider {
 	void updateUndoStatusIndicator();
 	void initializePopupMenus();
 	void populateMoveToLayerMenu(int targetObject, QMenu* targetMenu = nullptr);
+	// Fills a context menu's Set Group submenu for the marked objects: a group they're all in is
+	// checked, and clicking a group adds them all to it, or takes them all out if it was checked
+	void populateSetGroupMenu(QMenu* dest);
 	void populateCreateShipSubmenu();
 	void populateCreatePropSubmenu();
 	void openLayerManagerDialog();
@@ -272,7 +281,13 @@ class FredView: public QMainWindow, public IDialogProvider {
 	void enforceSideDockAreas();
 
 	void onGroupSelected(int group);
-	void onSetGroup(int group);
+	// Select > Select Layer / IFF / Ship Type / Object Type: each fills its submenu when it opens,
+	// one item per set with how many objects it would select
+	void populateSelectByMenus();
+	// Replaces the selection with the objects a click could select (see
+	// EditorViewport::isObjectSelectable) that match
+	void selectMatching(const std::function<bool(const object&)>& matches);
+	int countSelectable(const std::function<bool(const object&)>& matches) const;
 
 	QLabel* _statusBarObjectCount = nullptr;
 	QLabel* _statusBarLastSaved   = nullptr;
@@ -300,6 +315,7 @@ class FredView: public QMainWindow, public IDialogProvider {
 	QAction* _editWingAction = nullptr;
 	QAction* _selectWingAction = nullptr;
 	QMenu* _moveToLayerMenu = nullptr;
+	QMenu* _setGroupMenu = nullptr;
 	QAction* _viewZoomSelectedAction = nullptr;
 
 	QMenu* _controlModeMenu = nullptr;
@@ -432,6 +448,9 @@ class FredView: public QMainWindow, public IDialogProvider {
 	// Opens the editor for an object (the Ship Editor for several marked objects), as
 	// double-clicking it in the viewport does; the Scene Browser's double-click uses it too
 	void handleObjectEditor(int objNum);
+	// Opens the group checklist for the objects an editor is showing and applies the result as one
+	// undo step. A group only some of them are in starts partly checked and is left alone unless changed.
+	void editSelectionGroups(const SCP_vector<int>& objnums, QWidget* parent);
 
 	DialogButton showButtonDialog(DialogType type,
 								  const SCP_string& title,

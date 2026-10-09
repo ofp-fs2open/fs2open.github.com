@@ -143,7 +143,7 @@ void post_process_mission_coordinate_points()
 		}
 
 		cp->display_name       = parsed.display_name;
-		cp->group              = parsed.group;
+		cp->category           = parsed.category;
 		cp->display_color      = parsed.display_color;
 		cp->shape_kind         = parsed.shape_kind;
 		cp->shape_sides        = parsed.shape_sides;
@@ -156,6 +156,7 @@ void post_process_mission_coordinate_points()
 		cp->flags              = parsed.flags;
 		cp->fred_layer         = parsed.fred_layer;
 		cp->fred_locked        = parsed.fred_locked;
+		cp->fred_groups        = parsed.fred_groups;
 
 		// Resolve a tabled-shape name to an index. If the name doesn't match anything in the
 		// registry (default table + TBMs), fall back to NGon(3) with a warning so the mission

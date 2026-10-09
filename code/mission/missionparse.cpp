@@ -640,7 +640,7 @@ flag_def_list_new<CoordinatePoint::Flags> Parse_coordinate_point_flags[] = {
 
 parse_object_flag_description<CoordinatePoint::Flags> Parse_coordinate_point_flag_descriptions[] = {
     { CoordinatePoint::Flags::Visible_in_mission,					"Render the shape in-game so the player can see and target it, not just in the editor."},
-    { CoordinatePoint::Flags::Always_render_labels,				"While the point is visible in mission, draw its name and group on the HUD even when it isn't targeted."},
+    { CoordinatePoint::Flags::Always_render_labels,				"While the point is visible in mission, draw its name and category on the HUD even when it isn't targeted."},
 };
 
 const size_t Num_parse_coordinate_point_flags = sizeof(Parse_coordinate_point_flags) / sizeof(flag_def_list_new<CoordinatePoint::Flags>);
@@ -5502,6 +5502,9 @@ void parse_prop(mission* /*pm*/)
 	if (optional_string("+Transform Locked:"))
 		stuff_boolean(&p.fred_locked);
 
+	if (optional_string("+Group:"))
+		stuff_int(&p.fred_groups);
+
 	// texture replacement - mirrors the ship $Texture Replace: handling.  These are the
 	// instance-level (from_table == false) replacements; class replacements are layered on
 	// automatically at prop_create time.
@@ -5624,8 +5627,8 @@ void parse_coordinate_point(mission* /*pm*/)
 	required_string("$Location:");
 	stuff_vec3d(&cp.position);
 
-	if (optional_string("+Group:")) {
-		stuff_string(cp.group, F_NAME);
+	if (optional_string("+Category:")) {
+		stuff_string(cp.category, F_NAME);
 	}
 
 	if (optional_string("+Color:")) {
@@ -5727,6 +5730,9 @@ void parse_coordinate_point(mission* /*pm*/)
 
 	if (optional_string("+Transform Locked:"))
 		stuff_boolean(&cp.fred_locked);
+
+	if (optional_string("+Group:"))
+		stuff_int(&cp.fred_groups);
 
 	Parse_coordinate_points.emplace_back(std::move(cp));
 }
@@ -5894,6 +5900,7 @@ static int create_prop_from_parsed(parsed_prop& propp)
 	if (createdProp != nullptr) {
 		createdProp->fred_layer = propp.fred_layer;
 		createdProp->fred_locked = propp.fred_locked;
+		createdProp->fred_groups = propp.fred_groups;
 
 		// layer the mission's instance-level texture replacements on top of the class
 		// replacements already seeded by prop_create, then (re)apply them all
@@ -6481,6 +6488,10 @@ void parse_waypoint_list(mission *pm)
 	if (optional_string("+Transform Locked:"))
 		stuff_boolean(&wpt_fred_locked);
 
+	int wpt_fred_groups = 0;
+	if (optional_string("+Group:"))
+		stuff_int(&wpt_fred_groups);
+
 	SCP_vector<vec3d> vec_list;
 	required_string("$List:");
 	stuff_vec3d_list(vec_list);
@@ -6497,6 +6508,7 @@ void parse_waypoint_list(mission *pm)
 		}
 		wl->set_fred_layer(wpt_fred_layer);
 		wl->set_fred_locked(wpt_fred_locked);
+		wl->set_fred_groups(wpt_fred_groups);
 	}
 }
 
@@ -6565,6 +6577,12 @@ void parse_waypoints_and_jumpnodes(mission *pm)
 			bool locked = false;
 			stuff_boolean(&locked);
 			jnp.SetFredLocked(locked);
+		}
+
+		if (optional_string("+Group:")) {
+			int groups = 0;
+			stuff_int(&groups);
+			jnp.SetFredGroups(groups);
 		}
 
 		Jump_nodes.push_back(std::move(jnp));
@@ -10517,6 +10535,17 @@ bool check_for_26_1_data()
 		return true;
 	if (std::any_of(Jump_nodes.begin(), Jump_nodes.end(), [](const CJumpNode& jn) { return jn.GetFredLocked(); }))
 		return true;
-	return std::any_of(Coordinate_points.begin(), Coordinate_points.end(),
-		[](const mission_coordinate_point& cp) { return cp.fred_locked; });
+	if (std::any_of(Coordinate_points.begin(), Coordinate_points.end(),
+		[](const mission_coordinate_point& cp) { return cp.fred_locked; }))
+		return true;
+
+	// Editor selection groups on props, waypoint paths and jump nodes (+Group:). Ships have always
+	// had +Group:, and coordinate points are new in this version, so neither needs the bump.
+	for (const auto& p : Props) {
+		if (p.has_value() && p->fred_groups > 0)
+			return true;
+	}
+	if (std::any_of(Waypoint_lists.begin(), Waypoint_lists.end(), [](const waypoint_list& wl) { return wl.get_fred_groups() > 0; }))
+		return true;
+	return std::any_of(Jump_nodes.begin(), Jump_nodes.end(), [](const CJumpNode& jn) { return jn.GetFredGroups() > 0; });
 }

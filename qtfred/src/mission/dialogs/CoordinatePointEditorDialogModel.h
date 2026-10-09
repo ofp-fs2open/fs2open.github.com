@@ -32,10 +32,10 @@ public:
 	bool isDisplayNameMixed() const;
 	void setDisplayName(const SCP_string& displayName);
 
-	// Group (free-form string).
-	const SCP_string& getGroup() const;
-	bool isGroupMixed() const;
-	void setGroup(const SCP_string& group);
+	// Category (free-form string the HUD shows).
+	const SCP_string& getCategory() const;
+	bool isCategoryMixed() const;
+	void setCategory(const SCP_string& category);
 
 	// Color, per-channel.
 	int getColorR() const;
@@ -130,7 +130,7 @@ private: // NOLINT(readability-redundant-access-specifiers)
 
 	SCP_string _currentName;
 	SCP_string _displayName;
-	SCP_string _group;
+	SCP_string _category;
 	int        _colorR = 255, _colorG = 255, _colorB = 255, _colorA = 255;
 
 	CoordinatePointShapeKind _shapeKind = CoordinatePointShapeKind::NGon;
@@ -145,7 +145,7 @@ private: // NOLINT(readability-redundant-access-specifiers)
 	int        _multiTeam = -1;
 
 	bool _displayNameMixed = false;
-	bool _groupMixed = false;
+	bool _categoryMixed = false;
 	bool _redMixed = false, _greenMixed = false, _blueMixed = false, _alphaMixed = false;
 	bool _shapeKindMixed = false;
 	bool _sidesMixed = false;

@@ -65,12 +65,12 @@ ADE_VIRTVAR(DisplayName,
 	return ade_set_args(L, "s", cp->display_name.c_str());
 }
 
-ADE_VIRTVAR(Group,
+ADE_VIRTVAR(Category,
 	l_CoordinatePoint,
 	"string",
-	"Designer-defined group string (may be empty).",
+	"Designer-defined category string, shown on the HUD where a ship shows its class (may be empty).",
 	"string",
-	"Coordinate point group, or empty string if handle is invalid")
+	"Coordinate point category, or empty string if handle is invalid")
 {
 	object_h* objh;
 	const char* s = nullptr;
@@ -85,10 +85,10 @@ ADE_VIRTVAR(Group,
 		return ade_set_error(L, "s", "");
 
 	if (ADE_SETTING_VAR && s != nullptr) {
-		cp->group = s;
+		cp->category = s;
 	}
 
-	return ade_set_args(L, "s", cp->group.c_str());
+	return ade_set_args(L, "s", cp->category.c_str());
 }
 
 ADE_VIRTVAR(EscortPriority,
@@ -146,7 +146,7 @@ ADE_VIRTVAR(VisibleInMission,
 ADE_VIRTVAR(AlwaysRenderLabels,
 	l_CoordinatePoint,
 	"boolean",
-	"Whether the HUD draws this coordinate point's name and group even when it isn't targeted. Only has an effect while VisibleInMission is true. Defaults to false.",
+	"Whether the HUD draws this coordinate point's name and category even when it isn't targeted. Only has an effect while VisibleInMission is true. Defaults to false.",
 	"boolean",
 	"true if labels always render, false otherwise (also false if handle is invalid)")
 {

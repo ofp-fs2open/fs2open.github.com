@@ -604,15 +604,24 @@ void SceneBrowserPanel::onCustomContextMenuRequested(const QPoint& pos)
 		return;
 	}
 
-	// Layer header item: offer a small menu to rename the layer
+	// Layer header item: select everything on the layer, or rename it
 	auto varLayer = item->data(0, IsLayerItemRole);
 	if (!varLayer.isNull()) {
 		const auto layerName = item->data(0, LayerNameRole).toString();
+		// a hidden layer's objects can't be selected, so it has nothing to select
+		const auto layerObjects = _model->getLayerObjects(layerName);
 
 		QMenu menu;
+		auto* selectAction = menu.addAction(tr("Select All"));
+		selectAction->setEnabled(!layerObjects.isEmpty());
+		menu.addSeparator();
 		auto* renameAction = menu.addAction(tr("Rename Layer"));
 		renameAction->setEnabled(!dialogs::SceneBrowserModel::isDefaultLayer(layerName));
-		if (menu.exec(globalPos) == renameAction) {
+		auto* chosen = menu.exec(globalPos);
+		if (chosen == selectAction) {
+			_model->multiSelectFromBrowser(layerObjects);
+			syncSelection();
+		} else if (chosen == renameAction) {
 			renameLayer(layerName);
 		}
 		return;

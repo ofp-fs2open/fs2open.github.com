@@ -50,6 +50,9 @@ public:
 	QVector<QString> getLayerNames() const;
 
 	void toggleLayerVisibility(const QString& layerName);
+	bool isLayerVisible(const QString& layerName) const;
+	// The objects on a layer, in object-list order; empty for a hidden layer
+	QVector<int> getLayerObjects(const QString& layerName) const;
 	bool renameLayer(const QString& oldName, const QString& newName, SCP_string* error);
 	static bool isDefaultLayer(const QString& name);
 	void moveObjectToLayer(int objNum, const QString& layerName);

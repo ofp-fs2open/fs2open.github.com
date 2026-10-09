@@ -798,11 +798,13 @@ void ShipEditorDialog::initializeUi()
 	ui->layerCombo->setCurrentIndex(ui->layerCombo->findData(QString::fromStdString(_model->getLayer())));
 	ui->layerCombo->setEnabled(_model->getNumSelectedObjects() > 0);
 	ui->transformLockCheck->setEnabled(_model->getNumSelectedObjects() > 0);
+	ui->groupsButton->setEnabled(_model->getNumSelectedObjects() > 0);
 	{
 		const auto lockState = transformLockState(transformLockObjects());
 		ui->transformLockCheck->setTristate(lockState == Qt::PartiallyChecked);
 		ui->transformLockCheck->setCheckState(lockState);
 	}
+	ui->groupsButton->setText(tr("Groups: %1").arg(selectionGroupsText(transformLockObjects())));
 
 	// Arrival target combo — contents depend on which ships are currently marked
 	object* objp;
@@ -2957,6 +2959,12 @@ SCP_vector<int> ShipEditorDialog::transformLockObjects()
 			objs.push_back(OBJ_INDEX(p));
 	}
 	return objs;
+}
+
+void ShipEditorDialog::on_groupsButton_clicked()
+{
+	_fredView->editSelectionGroups(transformLockObjects(), this);
+	initializeUi();
 }
 
 void ShipEditorDialog::on_transformLockCheck_clicked()

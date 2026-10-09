@@ -37,6 +37,7 @@ typedef struct prop {
 	float alpha_mult;
 	SCP_string fred_layer = "Default";
 	bool fred_locked = false;	// FRED transform lock: position and orientation can't be edited
+	int fred_groups = 0;		// FRED selection groups, a bitmask with group N as bit N-1
 	// glow points
 	SCP_deque<bool> glow_point_bank_active;
 	flagset<Prop::Prop_Flags> flags;
@@ -63,6 +64,7 @@ typedef struct parsed_prop {
 	flagset<Mission::Parse_Object_Flags> flags;
 	SCP_string fred_layer = "Default";
 	bool fred_locked = false;
+	int fred_groups = 0;
 	SCP_vector<texture_replace> replacement_textures;
 	// spawn/despawn cues (default to Locked_sexp_true/false in parse_prop).  In-game these props
 	// stay pending until the spawn cue fires; 'spawned' tracks whether the object has been created.

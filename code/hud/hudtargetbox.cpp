@@ -1404,8 +1404,8 @@ void HudGaugeTargetBox::renderTargetCoordinatePoint(object *target_objp)
 
 	renderString(position[0] + Name_offsets[0], position[1] + Name_offsets[1], EG_TBOX_NAME, coordinate_point_get_display_name(*cp));
 
-	if (!cp->group.empty()) {
-		renderString(position[0] + Class_offsets[0], position[1] + Class_offsets[1], EG_TBOX_CLASS, cp->group.c_str());
+	if (!cp->category.empty()) {
+		renderString(position[0] + Class_offsets[0], position[1] + Class_offsets[1], EG_TBOX_CLASS, cp->category.c_str());
 	}
 
 	float dist = Player_ai->current_target_distance;

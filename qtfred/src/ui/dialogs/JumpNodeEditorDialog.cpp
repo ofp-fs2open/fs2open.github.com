@@ -117,6 +117,7 @@ void JumpNodeEditorDialog::initializeUi()
 	ui->hiddenByDefaultCheckBox->setEnabled(enabled);
 	ui->layerCombo->setEnabled(enabled);
 	ui->transformLockCheck->setEnabled(enabled);
+	ui->groupsButton->setEnabled(enabled);
 	ui->prevNodeButton->setEnabled(hasAny);
 	ui->nextNodeButton->setEnabled(hasAny);
 
@@ -150,6 +151,7 @@ void JumpNodeEditorDialog::updateUi()
 		ui->transformLockCheck->setTristate(lockState == Qt::PartiallyChecked);
 		ui->transformLockCheck->setCheckState(lockState);
 	}
+	ui->groupsButton->setText(tr("Groups: %1").arg(selectionGroupsText(transformLockObjects())));
 
 	updateColorSwatch();
 }
@@ -478,6 +480,12 @@ void JumpNodeEditorDialog::on_layerCombo_currentIndexChanged(int index)
 SCP_vector<int> JumpNodeEditorDialog::transformLockObjects() const
 {
 	return _model->getSelectedObjNums();
+}
+
+void JumpNodeEditorDialog::on_groupsButton_clicked()
+{
+	_fredView->editSelectionGroups(transformLockObjects(), this);
+	updateUi();
 }
 
 void JumpNodeEditorDialog::on_transformLockCheck_clicked()

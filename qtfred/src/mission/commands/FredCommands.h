@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <memory>
 #include <typeinfo>
@@ -186,6 +187,45 @@ public:
 	void undo() override;
 	void redo() override;
 };
+
+// ---------------------------------------------------------------------------
+// SelectionGroupsCommand - change objects' selection groups (Select menu groups)
+// ---------------------------------------------------------------------------
+
+constexpr int NUM_SELECTION_GROUPS = 9;
+
+struct SelectionGroupsChange {
+	int signature; // any object of a waypoint path stands for the whole path
+	int before;
+	int after;
+};
+
+class SelectionGroupsCommand : public QUndoCommand {
+	SCP_vector<SelectionGroupsChange> _changes;
+	Editor*                           _editor;
+
+	void apply(bool after);
+
+public:
+	SelectionGroupsCommand(SCP_vector<SelectionGroupsChange> changes,
+	                       Editor*                           editor,
+	                       const QString&                    text,
+	                       QUndoCommand*                     parent = nullptr);
+	void undo() override;
+	void redo() override;
+};
+
+// The groupable objects among objnums, with a waypoint path's points reduced to one
+SCP_vector<int> selectionGroupObjects(const SCP_vector<int>& objnums);
+// Adds the addGroups bits to and removes the removeGroups bits from every listed object, as one undo
+// step on stack. Pushes nothing if nothing would change.
+void pushSelectionGroups(const SCP_vector<int>& objnums, int addGroups, int removeGroups, Editor* editor, QUndoStack* stack);
+// For each group (index N-1 for group N): Qt::Checked if every listed object is in it, Qt::Unchecked
+// if none is (or the list is empty), Qt::PartiallyChecked if they differ
+std::array<Qt::CheckState, NUM_SELECTION_GROUPS> selectionGroupStates(const SCP_vector<int>& objnums);
+// The listed objects' groups for a button or label: "None", "1, 4", or "1, 4 (some)" when the objects
+// differ, the (some) groups being the ones only some of them are in
+QString selectionGroupsText(const SCP_vector<int>& objnums);
 
 // ---------------------------------------------------------------------------
 // TransformLockCommand - lock or unlock objects' position and orientation
@@ -1025,7 +1065,7 @@ namespace FieldId {
     // per field so consecutive spinbox scrubs of the same control merge into a
     // single undo step while distinct controls do not. Name is a RenameObjectCommand
     // (updates SEXP refs); layer moves push a MoveLayerCommand instead.
-    constexpr int CP_Group          = 7801;
+    constexpr int CP_Category       = 7801;
     constexpr int CP_ColorR         = 7802;
     constexpr int CP_ColorG         = 7803;
     constexpr int CP_ColorB         = 7804;

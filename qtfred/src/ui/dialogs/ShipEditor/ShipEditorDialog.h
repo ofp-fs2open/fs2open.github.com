@@ -71,6 +71,7 @@ class ShipEditorDialog : public QDialog, public SexpTreeEditorInterface {
 	void on_teamCombo_currentIndexChanged(int);
 	void on_layerCombo_currentIndexChanged(int);
 	void on_transformLockCheck_clicked();
+	void on_groupsButton_clicked();
 
 	// column two
 	void on_hotkeyCombo_currentIndexChanged(int);

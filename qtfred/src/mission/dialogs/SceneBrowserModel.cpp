@@ -224,6 +224,27 @@ void SceneBrowserModel::toggleLayerVisibility(const QString& layerName)
 	// setLayerVisibility calls editor->notifyLayerVisibilityChanged() → onLayerVisibilityChanged()
 }
 
+bool SceneBrowserModel::isLayerVisible(const QString& layerName) const
+{
+	bool visible = true;
+	_viewport->getLayerVisibility(layerName.toUtf8().constData(), &visible);
+	return visible;
+}
+
+QVector<int> SceneBrowserModel::getLayerObjects(const QString& layerName) const
+{
+	QVector<int> objNums;
+	if (!isLayerVisible(layerName))
+		return objNums;
+	const SCP_string name = layerName.toUtf8().constData();
+	for (auto* ptr = GET_FIRST(&obj_used_list); ptr != END_OF_LIST(&obj_used_list); ptr = GET_NEXT(ptr)) {
+		const int objNum = OBJ_INDEX(ptr);
+		if (_viewport->getObjectLayerName(objNum) == name)
+			objNums.push_back(objNum);
+	}
+	return objNums;
+}
+
 bool SceneBrowserModel::renameLayer(const QString& oldName, const QString& newName, SCP_string* error)
 {
 	// renameLayer fires editor->notifyLayerStructureChanged() → onLayerStructureChanged(),

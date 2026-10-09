@@ -73,10 +73,6 @@
     <addaction name="actionDelete"/>
     <addaction name="actionDelete_Wing"/>
     <addaction name="separator"/>
-    <addaction name="actionLock_Marked_Objects"/>
-    <addaction name="actionUnlock_All_Objects"/>
-    <addaction name="actionSelectionLock"/>
-    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -155,35 +151,57 @@
     <addaction name="menuMovement"/>
     <addaction name="menuRotation"/>
    </widget>
-   <widget class="QMenu" name="menuGroups">
+   <widget class="QMenu" name="menuSelect">
     <property name="title">
-     <string>&amp;Groups</string>
+     <string>&amp;Select</string>
     </property>
-    <widget class="QMenu" name="menuSet_Group">
+    <widget class="QMenu" name="menuSelect_Group">
      <property name="title">
-      <string>&amp;Set Group</string>
+      <string>Select &amp;Group</string>
      </property>
-     <addaction name="actionSetGroup_1"/>
-     <addaction name="actionSetGroup_2"/>
-     <addaction name="actionSetGroup_3"/>
-     <addaction name="actionSetGroup_4"/>
-     <addaction name="actionSetGroup_5"/>
-     <addaction name="actionSetGroup_6"/>
-     <addaction name="actionSetGroup_7"/>
-     <addaction name="actionSetGroup_8"/>
-     <addaction name="actionSetGroup_9"/>
+     <addaction name="actionGroup_1"/>
+     <addaction name="actionGroup_2"/>
+     <addaction name="actionGroup_3"/>
+     <addaction name="actionGroup_4"/>
+     <addaction name="actionGroup_5"/>
+     <addaction name="actionGroup_6"/>
+     <addaction name="actionGroup_7"/>
+     <addaction name="actionGroup_8"/>
+     <addaction name="actionGroup_9"/>
     </widget>
-    <addaction name="actionGroup_1"/>
-    <addaction name="actionGroup_2"/>
-    <addaction name="actionGroup_3"/>
-    <addaction name="actionGroup_4"/>
-    <addaction name="actionGroup_5"/>
-    <addaction name="actionGroup_6"/>
-    <addaction name="actionGroup_7"/>
-    <addaction name="actionGroup_8"/>
-    <addaction name="actionGroup_9"/>
+    <widget class="QMenu" name="menuSelect_Layer">
+     <property name="title">
+      <string>Select &amp;Layer</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSelect_IFF">
+     <property name="title">
+      <string>Select I&amp;FF</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSelect_Ship_Type">
+     <property name="title">
+      <string>Select Ship &amp;Type</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSelect_Object_Type">
+     <property name="title">
+      <string>Select &amp;Object Type</string>
+     </property>
+    </widget>
+    <addaction name="actionSelect_All"/>
+    <addaction name="actionSelect_None"/>
+    <addaction name="actionInvert_Selection"/>
     <addaction name="separator"/>
-    <addaction name="menuSet_Group"/>
+    <addaction name="menuSelect_Group"/>
+    <addaction name="menuSelect_Layer"/>
+    <addaction name="menuSelect_IFF"/>
+    <addaction name="menuSelect_Ship_Type"/>
+    <addaction name="menuSelect_Object_Type"/>
+    <addaction name="separator"/>
+    <addaction name="actionSelectionLock"/>
+    <addaction name="actionLock_Marked_Objects"/>
+    <addaction name="actionUnlock_All_Objects"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -267,8 +285,8 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuSelect"/>
    <addaction name="menuSpeed"/>
-   <addaction name="menuGroups"/>
    <addaction name="menuObjects"/>
    <addaction name="menuEnvironment"/>
    <addaction name="menuMission"/>
@@ -490,7 +508,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>SelectionLock</string>
+    <string>Selection Loc&amp;k</string>
    </property>
    <property name="toolTip">
     <string>Prevent selection from changing (Spacebar)</string>
@@ -1288,54 +1306,34 @@
     <string>Ctrl+9</string>
    </property>
   </action>
-  <action name="actionSet_Group">
+  <action name="actionSelect_All">
    <property name="text">
-    <string>Set Group</string>
+    <string>Select &amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select every object you could click in the viewport (Ctrl+A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionSetGroup_1">
+  <action name="actionSelect_None">
    <property name="text">
-    <string>&amp;Group 1</string>
+    <string>Select &amp;None</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
-  <action name="actionSetGroup_2">
+  <action name="actionInvert_Selection">
    <property name="text">
-    <string>Group &amp;2</string>
+    <string>&amp;Invert Selection</string>
    </property>
-  </action>
-  <action name="actionSetGroup_3">
-   <property name="text">
-    <string>Group &amp;3</string>
+   <property name="toolTip">
+    <string>Select what isn't selected and deselect what is, among the objects you could click in the viewport (Ctrl+I)</string>
    </property>
-  </action>
-  <action name="actionSetGroup_4">
-   <property name="text">
-    <string>Group &amp;4</string>
-   </property>
-  </action>
-  <action name="actionSetGroup_5">
-   <property name="text">
-    <string>Group &amp;5</string>
-   </property>
-  </action>
-  <action name="actionSetGroup_6">
-   <property name="text">
-    <string>Group &amp;6</string>
-   </property>
-  </action>
-  <action name="actionSetGroup_7">
-   <property name="text">
-    <string>Group &amp;7</string>
-   </property>
-  </action>
-  <action name="actionSetGroup_8">
-   <property name="text">
-    <string>Group &amp;8</string>
-   </property>
-  </action>
-  <action name="actionSetGroup_9">
-   <property name="text">
-    <string>Group &amp;9</string>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
   <action name="actionNext_Object">

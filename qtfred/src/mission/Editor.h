@@ -144,6 +144,10 @@ class Editor : public QObject {
 	static bool supportsTransformLock(int objnum);
 	static bool isTransformLocked(int objnum);
 	static void setTransformLocked(int objnum, bool locked);
+	// Selection groups (Select > Group N): a bitmask with group N as bit N-1, 0 for none. Every object
+	// type that can be locked can be grouped, and waypoints share their path's groups.
+	static int getSelectionGroups(int objnum);
+	static void setSelectionGroups(int objnum, int groups);
 	// Locked, or docked (directly or through others) to a locked ship: docked ships move together,
 	// so one locked ship holds its whole dock group
 	static bool isTransformHeld(int objnum);

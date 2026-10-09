@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+#include <QStringList>
 #include <QUndoStack>
 
 #include <object/object.h>
@@ -1009,6 +1010,108 @@ void ChangeIFFCommand::redo()
 		Ships[Objects[objNum].instance].team = c.iffAfter;
 	}
 	_editor->missionChanged();
+}
+
+// ===========================================================================
+// SelectionGroupsCommand
+// ===========================================================================
+
+SelectionGroupsCommand::SelectionGroupsCommand(SCP_vector<SelectionGroupsChange> changes,
+                                               Editor*                           editor,
+                                               const QString&                    text,
+                                               QUndoCommand*                     parent)
+    : QUndoCommand(text, parent)
+    , _changes(std::move(changes))
+    , _editor(editor)
+{}
+
+void SelectionGroupsCommand::apply(bool after)
+{
+	for (const auto& c : _changes) {
+		const int objNum = obj_get_by_signature(c.signature);
+		if (objNum < 0) continue;
+		Editor::setSelectionGroups(objNum, after ? c.after : c.before);
+	}
+	_editor->missionChanged();
+}
+
+void SelectionGroupsCommand::undo()
+{
+	apply(false);
+}
+
+void SelectionGroupsCommand::redo()
+{
+	apply(true);
+}
+
+SCP_vector<int> selectionGroupObjects(const SCP_vector<int>& objnums)
+{
+	SCP_vector<int> result;
+	SCP_vector<const waypoint_list*> pathsSeen;
+	for (const int objnum : objnums) {
+		if (!Editor::supportsTransformLock(objnum))
+			continue;
+		if (Objects[objnum].type == OBJ_WAYPOINT) {
+			const auto* wl = find_waypoint_list_with_instance(Objects[objnum].instance);
+			if (std::find(pathsSeen.begin(), pathsSeen.end(), wl) != pathsSeen.end())
+				continue;
+			pathsSeen.push_back(wl);
+		}
+		result.push_back(objnum);
+	}
+	return result;
+}
+
+void pushSelectionGroups(const SCP_vector<int>& objnums, int addGroups, int removeGroups, Editor* editor, QUndoStack* stack)
+{
+	SCP_vector<SelectionGroupsChange> changes;
+	for (const int objnum : selectionGroupObjects(objnums)) {
+		const int before = Editor::getSelectionGroups(objnum);
+		const int after = (before & ~removeGroups) | addGroups;
+		if (after != before)
+			changes.push_back({Objects[objnum].signature, before, after});
+	}
+	if (changes.empty())
+		return;
+	stack->push(new SelectionGroupsCommand(std::move(changes), editor, QObject::tr("Change Groups")));
+}
+
+std::array<Qt::CheckState, NUM_SELECTION_GROUPS> selectionGroupStates(const SCP_vector<int>& objnums)
+{
+	std::array<Qt::CheckState, NUM_SELECTION_GROUPS> states{};
+	const auto objs = selectionGroupObjects(objnums);
+	for (int g = 0; g < NUM_SELECTION_GROUPS; ++g) {
+		const int bit = 1 << g;
+		const auto in = std::count_if(objs.begin(), objs.end(),
+			[bit](int objnum) { return (Editor::getSelectionGroups(objnum) & bit) != 0; });
+		if (in == 0)
+			states[g] = Qt::Unchecked;
+		else
+			states[g] = in == static_cast<std::ptrdiff_t>(objs.size()) ? Qt::Checked : Qt::PartiallyChecked;
+	}
+	return states;
+}
+
+QString selectionGroupsText(const SCP_vector<int>& objnums)
+{
+	const auto states = selectionGroupStates(objnums);
+	QStringList all, some;
+	for (int g = 0; g < NUM_SELECTION_GROUPS; ++g) {
+		if (states[g] == Qt::Checked)
+			all << QString::number(g + 1);
+		else if (states[g] == Qt::PartiallyChecked)
+			some << QString::number(g + 1);
+	}
+	if (all.isEmpty() && some.isEmpty())
+		return QObject::tr("None");
+	QString text = all.join(QStringLiteral(", "));
+	if (!some.isEmpty()) {
+		if (!text.isEmpty())
+			text += QStringLiteral(", ");
+		text += QObject::tr("%1 (some)").arg(some.join(QStringLiteral(", ")));
+	}
+	return text;
 }
 
 // ===========================================================================

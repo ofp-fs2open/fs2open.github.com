@@ -966,6 +966,67 @@ bool Editor::isTransformLocked(int objnum) {
 	}
 }
 
+int Editor::getSelectionGroups(int objnum) {
+	if (!supportsTransformLock(objnum))
+		return 0;
+	const object& obj = Objects[objnum];
+	switch (obj.type) {
+	case OBJ_SHIP:
+	case OBJ_START:
+		// ships keep FRED2's -1 for no groups
+		return std::max(Ships[obj.instance].group, 0);
+	case OBJ_PROP: {
+		const auto* p = prop_id_lookup(obj.instance);
+		return p != nullptr ? std::max(p->fred_groups, 0) : 0;
+	}
+	case OBJ_WAYPOINT: {
+		const auto* wl = find_waypoint_list_with_instance(obj.instance);
+		return wl != nullptr ? std::max(wl->get_fred_groups(), 0) : 0;
+	}
+	case OBJ_JUMP_NODE: {
+		const auto* jn = jumpnode_get_by_objnum(objnum);
+		return jn != nullptr ? std::max(jn->GetFredGroups(), 0) : 0;
+	}
+	case OBJ_COORDINATE_POINT: {
+		const auto* cp = find_coordinate_point_by_objnum(objnum);
+		return cp != nullptr ? std::max(cp->fred_groups, 0) : 0;
+	}
+	default:
+		return 0;
+	}
+}
+
+void Editor::setSelectionGroups(int objnum, int groups) {
+	if (!supportsTransformLock(objnum))
+		return;
+	groups = std::max(groups, 0);
+	const object& obj = Objects[objnum];
+	switch (obj.type) {
+	case OBJ_SHIP:
+	case OBJ_START:
+		Ships[obj.instance].group = groups > 0 ? groups : -1;
+		break;
+	case OBJ_PROP:
+		if (auto* p = prop_id_lookup(obj.instance))
+			p->fred_groups = groups;
+		break;
+	case OBJ_WAYPOINT:
+		if (auto* wl = find_waypoint_list_with_instance(obj.instance))
+			wl->set_fred_groups(groups);
+		break;
+	case OBJ_JUMP_NODE:
+		if (auto* jn = jumpnode_get_by_objnum(objnum))
+			jn->SetFredGroups(groups);
+		break;
+	case OBJ_COORDINATE_POINT:
+		if (auto* cp = find_coordinate_point_by_objnum(objnum))
+			cp->fred_groups = groups;
+		break;
+	default:
+		break;
+	}
+}
+
 void Editor::setTransformLocked(int objnum, bool locked) {
 	if (!supportsTransformLock(objnum))
 		return;
@@ -1162,7 +1223,7 @@ int Editor::dup_object(object* objp) {
 				// Copy every field except the auto-generated unique name and the objnum.
 				// display_name needn't be unique, so the clone keeps it.
 				clone->display_name       = src->display_name;
-				clone->group              = src->group;
+				clone->category           = src->category;
 				clone->display_color      = src->display_color;
 				clone->shape_kind         = src->shape_kind;
 				clone->shape_sides        = src->shape_sides;
@@ -1175,6 +1236,7 @@ int Editor::dup_object(object* objp) {
 				clone->multi_team         = src->multi_team;
 				clone->flags              = src->flags;
 				clone->fred_layer         = src->fred_layer;
+				clone->fred_groups        = src->fred_groups;
 			}
 		}
 	}

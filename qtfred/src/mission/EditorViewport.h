@@ -348,6 +348,10 @@ class EditorViewport {
 	void registerObjectInLayer(int objectIndex);
 
 	bool isObjectVisibleInLayer(const object* objp) const;
+	// Whether the user could select ptr in the viewport: not hidden or locked from editing, on a
+	// shown layer, and of a type (and for ships an IFF) the Layer Manager's filters show. Box select and
+	// Select > Select All / Invert Selection use it.
+	bool isObjectSelectable(const object* ptr) const;
 
 
 	// viewpoint -> attach camera to current ship.
