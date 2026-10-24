@@ -133,6 +133,30 @@ struct sexp_tree_item {
 };
 
 // -----------------------------------------------------------------------
+// ArgumentListValue - one value an argument provider such as any-of lists
+// -----------------------------------------------------------------------
+
+// The values of an argument list, as Edit Arguments As Text and Choose Arguments edit them. Written
+// one per line in mission file syntax: a variable is @name, a container &&name, and anything else
+// is a plain value (quoted when it would otherwise read as one of those).
+struct ArgumentListValue {
+	enum class Kind {
+		Data,
+		Variable,
+		Container,
+	};
+	Kind kind = Kind::Data;
+	SCP_string text;     // the value, or the variable or container name
+	bool number = false; // a plain value that's a whole number
+
+	bool operator==(const ArgumentListValue& other) const
+	{
+		return kind == other.kind && text == other.text && number == other.number;
+	}
+	bool operator!=(const ArgumentListValue& other) const { return !(*this == other); }
+};
+
+// -----------------------------------------------------------------------
 // sexp_list_item — linked list node for building option listings
 // -----------------------------------------------------------------------
 
@@ -470,6 +494,25 @@ public:
 	int find_ancestral_argument_number(int parent_op, int child_node) const;
 	// Check if a node is inside a when-argument/every-time-argument action list (eligible for <argument>)
 	bool is_node_eligible_for_special_argument(int parent_node) const;
+
+	// --- Argument lists (any-of, every-of, random-of, random-multiple-of, number-of, first-of,
+	// in-sequence: the providers that list their values) ---
+
+	// The provider whose list node is: node itself, or the provider of one of its listed values.
+	// -1 for anything else, including number-of's and first-of's count.
+	int argument_list_provider(int node) const;
+	// Whether every listed value is a plain value, variable or container name, so the list can be
+	// edited as text. An operator or container data among them can't be.
+	bool argument_list_is_editable(int provider) const;
+	// Whether the provider can list containers (random-of and in-sequence can't)
+	bool argument_list_accepts_containers(int provider) const;
+	// The provider's listed values, in order (number-of's and first-of's count isn't one)
+	SCP_vector<ArgumentListValue> get_argument_list(int provider) const;
+	// A value as one line of text, and back. parse_argument_list_line() returns false, with a
+	// reason in error, for a line it can't use; an empty line is no value and returns false with
+	// no error.
+	static SCP_string argument_list_value_text(const ArgumentListValue& value);
+	bool parse_argument_list_line(int provider, const SCP_string& line, ArgumentListValue* value, SCP_string* error) const;
 
 	// --- Tree node management ---
 

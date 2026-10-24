@@ -80,6 +80,32 @@ lists depends on the argument:</p>
 <p>Variables and containers are not in the search; use <strong>Replace Variable</strong>
 and <strong>Replace Container Data</strong> from the right-click menu.</p>
 
+<h3 id="argument-lists">Editing argument lists</h3>
+<p>The operators that list values for <code>&lt;argument&gt;</code> (any-of, every-of, random-of,
+random-multiple-of, number-of, first-of and in-sequence) have two extra items in the
+right-click menu, on the operator or on any of its values:</p>
+<ul>
+    <li><strong>Edit Arguments As Text...</strong> shows the values one per line. Type, paste or
+        delete lines, then press OK to replace the list. A variable is written
+        <code>@name</code> and a container <code>&amp;&amp;name</code>, as in the mission file; put
+        a plain value in quotes if it starts with <code>@</code>, <code>&amp;&amp;</code> or a quote
+        mark. A line that can't be used, such as one longer than 31 characters or naming a
+        variable that doesn't exist, is highlighted and keeps OK disabled until it's fixed.</li>
+    <li><strong>Choose Arguments...</strong> opens checklists of names that are often listed:
+        ships, wings, props, waypoint paths, jump nodes, coordinate points, messages, events,
+        goals, ship, weapon and prop classes, IFFs, variables and containers, with the list
+        itself beside them, in order. Checking a name adds it to the end of the list and clearing
+        it removes it, so values go in the order you check them. Drag values in the list, or use
+        <strong>Move Up</strong> and <strong>Move Down</strong>, to reorder them, which matters for
+        in-sequence and first-of. <strong>Remove</strong> (or <kbd>Delete</kbd>) takes values out,
+        including typed-in ones that aren't in any checklist.</li>
+</ul>
+<p>To list a set of objects quickly, select them in the viewport or the Scene Browser, right-click
+and choose <strong>Copy Names</strong>, then paste into Edit Arguments As Text.</p>
+<p>Each change is one undo step, and pressing OK without changing anything leaves the list
+alone. number-of's and first-of's count isn't part of the list. random-of and in-sequence
+can't list containers. A list holding an operator or container data can't be edited this way.</p>
+
 <div class="note">
     <strong>Note:</strong> The full SEXP reference is maintained on the
     <a href="https://wiki.hard-light.net/index.php/SEXPs">Hard Light Productions wiki</a>.

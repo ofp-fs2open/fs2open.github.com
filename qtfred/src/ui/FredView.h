@@ -3,6 +3,7 @@
 #include <functional>
 
 #include <QMainWindow>
+#include <QStringList>
 #include <QAction>
 #include <QActionGroup>
 #include <QElapsedTimer>
@@ -276,6 +277,10 @@ class FredView: public QMainWindow, public IDialogProvider {
 	// Fills a context menu's Set Group submenu for the marked objects: a group they're all in is
 	// checked, and clicking a group adds them all to it, or takes them all out if it was checked
 	void populateSetGroupMenu(QMenu* dest);
+	// The marked objects' names, for the clipboard (say, to paste into Edit Arguments As Text).
+	// Each waypoint is its own object, named Path:N; the Scene Browser's path menu copies path names.
+	static QStringList markedObjectNames();
+	void copyNamesToClipboard(const QStringList& names);
 	void populateCreateShipSubmenu();
 	void populateCreatePropSubmenu();
 	void openLayerManagerDialog();
@@ -316,6 +321,7 @@ class FredView: public QMainWindow, public IDialogProvider {
 	QAction* _editOrientPositionAction = nullptr;
 	QAction* _editWingAction = nullptr;
 	QAction* _selectWingAction = nullptr;
+	QAction* _copyNamesAction = nullptr;
 	QMenu* _moveToLayerMenu = nullptr;
 	QMenu* _setGroupMenu = nullptr;
 	QAction* _viewZoomSelectedAction = nullptr;

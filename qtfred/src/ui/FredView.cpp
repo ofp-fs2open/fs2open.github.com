@@ -19,6 +19,8 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QApplication>
+#include <QClipboard>
+#include <QGuiApplication>
 #include <QProcess>
 #include <QSignalBlocker>
 #include <QStyle>
@@ -2411,6 +2413,7 @@ void FredView::showContextMenu(int objNum, const QPoint& globalPos) {
 		objName = object_name(objNum);
 	}
 	_editObjectAction->setText(tr("Edit %1").arg(objName.c_str()));
+	_copyNamesAction->setText(markedObjectNames().size() > 1 ? tr("Copy Names") : tr("Copy Name"));
 	_editPopup->exec(globalPos);
 }
 
@@ -2447,6 +2450,7 @@ void FredView::showContextMenu(const QPoint& globalPos) {
 		}
 
 		_editObjectAction->setText(tr("Edit %1").arg(objName.c_str()));
+		_copyNamesAction->setText(markedObjectNames().size() > 1 ? tr("Copy Names") : tr("Copy Name"));
 
 		_editPopup->exec(globalPos);
 	} else {
@@ -2508,6 +2512,11 @@ void FredView::showWingContextMenu(int wingIndex, const QPoint& globalPos)
 
 	auto* editAction = menu.addAction(tr("Edit %1").arg(wingName));
 	connect(editAction, &QAction::triggered, this, &FredView::on_actionWings_triggered);
+
+	auto* copyWingAction = menu.addAction(tr("Copy Wing Name"));
+	connect(copyWingAction, &QAction::triggered, this, [this, wingName]() { copyNamesToClipboard({wingName}); });
+	auto* copyShipsAction = menu.addAction(tr("Copy Ship Names"));
+	connect(copyShipsAction, &QAction::triggered, this, [this]() { copyNamesToClipboard(markedObjectNames()); });
 
 	menu.addSeparator();
 
@@ -2571,6 +2580,20 @@ void FredView::showWaypointPathContextMenu(int pathIndex, const QPoint& globalPo
 
 	auto* editAction = menu.addAction(tr("Edit %1").arg(pathName));
 	connect(editAction, &QAction::triggered, this, &FredView::on_actionWaypoint_Paths_triggered);
+
+	auto* copyPathAction = menu.addAction(tr("Copy Path Name"));
+	connect(copyPathAction, &QAction::triggered, this, [this, pathName]() { copyNamesToClipboard({pathName}); });
+	auto* copyPointsAction = menu.addAction(tr("Copy Point Names"));
+	connect(copyPointsAction, &QAction::triggered, this, [this, pathIndex]() {
+		QStringList names;
+		if (SCP_vector_inbounds(Waypoint_lists, pathIndex)) {
+			for (const auto& wp : Waypoint_lists[pathIndex].get_waypoints()) {
+				if (query_valid_object(wp.get_objnum()))
+					names << QString::fromUtf8(object_name(wp.get_objnum())); // Path:N
+			}
+		}
+		copyNamesToClipboard(names);
+	});
 
 	menu.addSeparator();
 
@@ -2734,6 +2757,10 @@ void FredView::initializePopupMenus() {
 	});
 	_editPopup->addAction(_selectWingAction);
 
+	_copyNamesAction = new QAction(tr("Copy Name"), _editPopup);
+	connect(_copyNamesAction, &QAction::triggered, this, [this]() { copyNamesToClipboard(markedObjectNames()); });
+	_editPopup->addAction(_copyNamesAction);
+
 	_editPopup->addSeparator();
 	_moveToLayerMenu = new QMenu(tr("Move to Layer"), _editPopup);
 	_moveToLayerMenu->setStyleSheet("QMenu { menu-scrollable: 1; }");
@@ -2797,6 +2824,22 @@ void FredView::populateCreatePropSubmenu() {
 				CreateKind::Prop, _viewport->cur_other_kind, objNum, fred, _viewport)); // first redo() is a no-op
 		}
 	});
+}
+
+QStringList FredView::markedObjectNames() {
+	QStringList names;
+	for (auto objp = GET_FIRST(&obj_used_list); objp != END_OF_LIST(&obj_used_list); objp = GET_NEXT(objp)) {
+		if (objp->flags[Object::Object_Flags::Marked])
+			names << QString::fromUtf8(object_name(OBJ_INDEX(objp)));
+	}
+	return names;
+}
+
+void FredView::copyNamesToClipboard(const QStringList& names) {
+	if (names.isEmpty())
+		return;
+	QGuiApplication::clipboard()->setText(names.join(QLatin1Char('\n')));
+	fred->statusMessage(names.size() == 1 ? tr("Copied %1").arg(names.first()) : tr("Copied %1 names").arg(names.size()));
 }
 
 void FredView::populateSetGroupMenu(QMenu* dest) {

@@ -138,7 +138,7 @@
        <item row="5" column="1">
         <widget class="QCheckBox" name="transformLockCheck">
          <property name="toolTip">
-          <string>Locked coordinate points stay where they are: dragging, the transform toolbar, and the Orient editor leave them alone.</string>
+          <string>Locked coordinate points stay where they are: dragging, the transform toolbar, and the Orient editor leave them alone. Editor only: the lock has no effect in the game, where the object moves as it normally would.</string>
          </property>
          <property name="text">
           <string>Lock position</string>

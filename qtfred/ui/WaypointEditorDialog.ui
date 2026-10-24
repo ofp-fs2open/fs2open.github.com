@@ -92,7 +92,7 @@
        <item row="3" column="1">
         <widget class="QCheckBox" name="transformLockCheck">
          <property name="toolTip">
-          <string>Locks every point of the path: dragging, the transform toolbar, and the Orient editor leave them alone, and new points can't be inserted into it. Points can still be deleted.</string>
+          <string>Locks every point of the path: dragging, the transform toolbar, and the Orient editor leave them alone, and new points can't be inserted into it. Points can still be deleted. Editor only: the lock has no effect in the game, where the object moves as it normally would.</string>
          </property>
          <property name="text">
           <string>Lock path position</string>

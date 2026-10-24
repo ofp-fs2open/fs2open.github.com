@@ -467,6 +467,12 @@ class sexp_tree_view: public QTreeWidget, public ISexpTreeUI {
 	//! Deletes the selected item. Root items: emits rootNodeDeleted(), calls _model.free_node2().
 	//! Non-root: calls _model.free_node(). Removes the Qt item and emits modified().
 	void deleteActionHandler();
+	// Argument lists (any-of and the others that list their values; see
+	// SexpTreeModel::argument_list_provider): the context menu's Edit Arguments As Text and
+	// Choose Arguments, and the shared step that replaces the list
+	void editArgumentsAsText(int provider);
+	void chooseArguments(int provider);
+	void applyArgumentList(int provider, const SCP_vector<ArgumentListValue>& values);
 
 	//! Copies selected subtree to clipboard via _actions.clipboard_copy(), then deletes it.
 	void cutActionHandler();

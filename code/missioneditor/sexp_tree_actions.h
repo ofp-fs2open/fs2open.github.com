@@ -124,6 +124,10 @@ public:
 	// Returns true if any nodes were renamed.
 	bool rename_container_nodes(const SCP_string& old_name, const SCP_string& new_name);
 
+	// Replace the values an argument provider lists (see SexpTreeModel::argument_list_provider)
+	// with these, keeping number-of's and first-of's count. Leaves the provider selected.
+	void set_argument_list(int provider, const SCP_vector<ArgumentListValue>& values);
+
 private:
 	// Update model flags and synchronize the widget's inline editability.
 	void set_node_flags(int node_index, int flags);

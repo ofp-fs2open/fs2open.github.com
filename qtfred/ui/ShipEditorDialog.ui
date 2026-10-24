@@ -472,7 +472,7 @@
            <item row="2" column="1">
             <widget class="QCheckBox" name="transformLockCheck">
              <property name="toolTip">
-              <string>Locked objects stay where they are: dragging, the transform toolbar, the Orient editor, Level and Align, and formation changes all leave them alone. A ship docked to a locked ship is held too.</string>
+              <string>Locked objects stay where they are: dragging, the transform toolbar, the Orient editor, Level and Align, and formation changes all leave them alone. A ship docked to a locked ship is held too. Editor only: the lock has no effect in the game, where the object moves as it normally would.</string>
              </property>
              <property name="text">
               <string>Lock position and orientation</string>

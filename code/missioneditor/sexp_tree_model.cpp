@@ -2275,3 +2275,188 @@ SexpTreeModel::NodeVisualInfo SexpTreeModel::compute_node_visual_info(int node_i
 
 	return info;
 }
+
+// -----------------------------------------------------------------------
+// Argument lists
+// -----------------------------------------------------------------------
+
+namespace {
+
+// any-of and the others that list their values, as opposed to the for-* providers that generate them
+bool lists_its_arguments(int op_const)
+{
+	return is_argument_provider_op(op_const) && !is_implicit_argument_provider_op(op_const);
+}
+
+// number-of and first-of take a count before their values
+bool has_count_argument(int op_const)
+{
+	return op_const == OP_NUMBER_OF || op_const == OP_FIRST_OF;
+}
+
+bool is_whole_number(const SCP_string& text)
+{
+	size_t i = (!text.empty() && text[0] == '-') ? 1 : 0;
+	if (i >= text.size())
+		return false;
+	for (; i < text.size(); ++i) {
+		if (text[i] < '0' || text[i] > '9')
+			return false;
+	}
+	return true;
+}
+
+SCP_string trimmed(const SCP_string& text)
+{
+	const auto first = text.find_first_not_of(" \t\r\n");
+	if (first == SCP_string::npos)
+		return {};
+	const auto last = text.find_last_not_of(" \t\r\n");
+	return text.substr(first, last - first + 1);
+}
+
+} // namespace
+
+int SexpTreeModel::argument_list_provider(int node) const
+{
+	if (node < 0)
+		return -1;
+
+	auto is_provider = [this](int n) {
+		return (tree_nodes[n].type & SEXPT_OPERATOR) && lists_its_arguments(get_operator_const(tree_nodes[n].text));
+	};
+
+	if (is_provider(node))
+		return node;
+
+	const int parent = tree_nodes[node].parent;
+	if (parent < 0 || !is_provider(parent))
+		return -1;
+	// the count isn't a listed value
+	if (has_count_argument(get_operator_const(tree_nodes[parent].text)) && tree_nodes[parent].child == node)
+		return -1;
+	return parent;
+}
+
+namespace {
+
+// the first listed value, past number-of's and first-of's count
+int first_argument_list_value(const SCP_vector<sexp_tree_item>& nodes, int provider)
+{
+	int n = nodes[provider].child;
+	if (n >= 0 && has_count_argument(get_operator_const(nodes[provider].text)))
+		n = nodes[n].next;
+	return n;
+}
+
+} // namespace
+
+bool SexpTreeModel::argument_list_is_editable(int provider) const
+{
+	for (int n = first_argument_list_value(tree_nodes, provider); n >= 0; n = tree_nodes[n].next) {
+		if ((tree_nodes[n].type & (SEXPT_OPERATOR | SEXPT_CONTAINER_DATA)) || tree_nodes[n].child >= 0)
+			return false;
+	}
+	return true;
+}
+
+bool SexpTreeModel::argument_list_accepts_containers(int provider) const
+{
+	const int op = get_operator_index(tree_nodes[provider].text);
+	if (op < 0)
+		return false;
+	// the values' type: the second argument's, past number-of's and first-of's count
+	return query_operator_argument_type(op, 1) == OPF_DATA_OR_STR_CONTAINER;
+}
+
+SCP_vector<ArgumentListValue> SexpTreeModel::get_argument_list(int provider) const
+{
+	SCP_vector<ArgumentListValue> values;
+	for (int n = first_argument_list_value(tree_nodes, provider); n >= 0; n = tree_nodes[n].next) {
+		const auto& node = tree_nodes[n];
+		ArgumentListValue value;
+		if (node.type & SEXPT_VARIABLE) {
+			char name[SEXP_TREE_NODE_TEXT_SIZE];
+			get_variable_name_from_sexp_tree_node_text(node.text, name);
+			value.kind = ArgumentListValue::Kind::Variable;
+			value.text = name;
+		} else if (node.type & SEXPT_CONTAINER_NAME) {
+			value.kind = ArgumentListValue::Kind::Container;
+			value.text = node.text;
+		} else {
+			value.text = node.text;
+			value.number = (node.type & SEXPT_NUMBER) != 0;
+		}
+		values.push_back(std::move(value));
+	}
+	return values;
+}
+
+SCP_string SexpTreeModel::argument_list_value_text(const ArgumentListValue& value)
+{
+	switch (value.kind) {
+	case ArgumentListValue::Kind::Variable:
+		return SCP_string(1, SEXP_VARIABLE_CHAR) + value.text;
+	case ArgumentListValue::Kind::Container:
+		return sexp_container::NAME_NODE_PREFIX + value.text;
+	default:
+		break;
+	}
+	// quote a value that would otherwise read as a variable, a container or a number, or lose its spaces
+	const bool ambiguous = value.text.empty() || value.text[0] == SEXP_VARIABLE_CHAR || value.text[0] == '"' ||
+		(!value.number && is_whole_number(value.text)) ||
+		value.text.compare(0, sexp_container::NAME_NODE_PREFIX.size(), sexp_container::NAME_NODE_PREFIX) == 0 ||
+		trimmed(value.text) != value.text;
+	return ambiguous ? '"' + value.text + '"' : value.text;
+}
+
+bool SexpTreeModel::parse_argument_list_line(int provider, const SCP_string& line, ArgumentListValue* value, SCP_string* error) const
+{
+	error->clear();
+	const SCP_string text = trimmed(line);
+	if (text.empty())
+		return false;
+
+	ArgumentListValue result;
+	if (text.size() >= 2 && text.front() == '"' && text.back() == '"') {
+		// quoted: always a plain value
+		result.text = text.substr(1, text.size() - 2);
+		result.number = false;
+	} else if (text[0] == SEXP_VARIABLE_CHAR) {
+		// @name, or @name[value] as the mission file writes it
+		SCP_string name = trimmed(text.substr(1, text.find('[') == SCP_string::npos ? SCP_string::npos : text.find('[') - 1));
+		if (get_index_sexp_variable_name(name.c_str()) < 0) {
+			*error = "There's no variable named \"" + name + "\".";
+			return false;
+		}
+		result.kind = ArgumentListValue::Kind::Variable;
+		result.text = name;
+	} else if (text.compare(0, sexp_container::NAME_NODE_PREFIX.size(), sexp_container::NAME_NODE_PREFIX) == 0) {
+		const SCP_string name = trimmed(text.substr(sexp_container::NAME_NODE_PREFIX.size()));
+		const auto* container = get_sexp_container(name.c_str());
+		if (container == nullptr) {
+			*error = "There's no container named \"" + name + "\".";
+			return false;
+		}
+		if (!argument_list_accepts_containers(provider)) {
+			*error = SCP_string(tree_nodes[provider].text) + " can't list containers.";
+			return false;
+		}
+		if (!container->is_of_string_type()) {
+			*error = "Container \"" + name + "\" doesn't hold strings, so it can't be listed.";
+			return false;
+		}
+		result.kind = ArgumentListValue::Kind::Container;
+		result.text = name;
+	} else {
+		result.text = text;
+		result.number = is_whole_number(text);
+	}
+
+	if (result.kind == ArgumentListValue::Kind::Data && result.text.size() >= TOKEN_LENGTH) {
+		*error = "Longer than " + std::to_string(TOKEN_LENGTH - 1) + " characters.";
+		return false;
+	}
+	*value = std::move(result);
+	return true;
+}

@@ -8,6 +8,7 @@
 #include <ui/util/menu.h>
 #include <ui/util/SignalBlockers.h>
 #include <ui/dialogs/VariableDialog.h>
+#include <ui/dialogs/General/ArgumentListDialogs.h>
 #include <ui/Theme.h>
 #include <ui/widgets/data_list_menu.h>
 
@@ -1292,6 +1293,20 @@ std::unique_ptr<QMenu> sexp_tree_view::buildContextMenu(QTreeWidgetItem* h,
 	edit_comment_act->setEnabled(state.can_edit_comment);
 	edit_color_act->setEnabled(state.can_edit_bg_color);
 
+	// any-of and the other providers that list their values
+	const int argument_provider = (item_index >= 0) ? _model.argument_list_provider(item_index) : -1;
+	if (argument_provider >= 0) {
+		popup_menu->addSection(tr("Arguments"));
+		// a list holding an operator or container data can't be shown as plain values
+		const bool editable = _model.argument_list_is_editable(argument_provider);
+		auto* text_act = popup_menu->addAction(tr("Edit Arguments As Text..."), this,
+			[this, argument_provider]() { editArgumentsAsText(argument_provider); });
+		auto* choose_act = popup_menu->addAction(tr("Choose Arguments..."), this,
+			[this, argument_provider]() { chooseArguments(argument_provider); });
+		text_act->setEnabled(editable);
+		choose_act->setEnabled(editable);
+	}
+
 	popup_menu->addSection(tr("Copy operations"));
 	auto cut_act = popup_menu->addAction(tr("Cut"), QKeySequence::Cut, this, [this]() { cutActionHandler(); });
 	cut_act->setEnabled(false);
@@ -2160,6 +2175,106 @@ void sexp_tree_view::handleItemChange(QTreeWidgetItem* item, int  /*column*/) {
 	}
 }
 // Copy handler: copies the selected subtree to the internal clipboard via _actions.clipboard_copy().
+void sexp_tree_view::editArgumentsAsText(int provider) {
+	dialogs::ArgumentListTextDialog dlg(this,
+		tr("Edit Arguments - %1").arg(QString::fromUtf8(tree_nodes[provider].text)),
+		_model.get_argument_list(provider),
+		[this, provider](const SCP_string& line, ArgumentListValue* value, SCP_string* error) {
+			return _model.parse_argument_list_line(provider, line, value, error);
+		});
+	if (dlg.exec() == QDialog::Accepted)
+		applyArgumentList(provider, dlg.values());
+}
+
+void sexp_tree_view::chooseArguments(int provider) {
+	SCP_vector<dialogs::ChooseArgumentsTab> tabs;
+
+	// names from the same listings the tree's dropdowns use, so dialogs' unsaved messages,
+	// events and goals are offered too
+	auto addListingTab = [this, provider, &tabs](const QString& title, int opf) {
+		dialogs::ChooseArgumentsTab tab{title, {}};
+		sexp_list_item* list = _model._opf.get_listing_opf(opf, provider, 1);
+		for (auto* item = list; item != nullptr; item = item->next) {
+			if ((item->type & SEXPT_OPERATOR) || item->text.empty() || item->text == SEXP_ARGUMENT_STRING)
+				continue;
+			ArgumentListValue value;
+			value.text = item->text.substr(0, TOKEN_LENGTH - 1);
+			tab.options.push_back(std::move(value));
+		}
+		if (list != nullptr)
+			list->destroy();
+		if (!tab.options.empty())
+			tabs.push_back(std::move(tab));
+	};
+
+	addListingTab(tr("Ships"), OPF_SHIP);
+	addListingTab(tr("Wings"), OPF_WING);
+	addListingTab(tr("Props"), OPF_PROP);
+	addListingTab(tr("Waypoint Paths"), OPF_WAYPOINT_PATH);
+	addListingTab(tr("Jump Nodes"), OPF_JUMP_NODE_NAME);
+	addListingTab(tr("Coordinate Points"), OPF_COORDINATE_POINT);
+	addListingTab(tr("Messages"), OPF_MESSAGE);
+	addListingTab(tr("Events"), OPF_EVENT_NAME);
+	addListingTab(tr("Goals"), OPF_GOAL_NAME);
+	addListingTab(tr("Ship Classes"), OPF_SHIP_CLASS_NAME);
+	addListingTab(tr("Weapon Classes"), OPF_WEAPON_NAME);
+	addListingTab(tr("Prop Classes"), OPF_PROP_CLASS_NAME);
+	addListingTab(tr("IFFs"), OPF_IFF);
+
+	// variables and containers go in as references (@name, &&name), not their names as text
+	dialogs::ChooseArgumentsTab variables{tr("Variables"), {}};
+	for (const auto& var : Sexp_variables) {
+		if (!(var.type & SEXP_VARIABLE_SET) || (var.type & SEXP_VARIABLE_BLOCK))
+			continue;
+		ArgumentListValue value;
+		value.kind = ArgumentListValue::Kind::Variable;
+		value.text = var.variable_name;
+		variables.options.push_back(std::move(value));
+	}
+	if (!variables.options.empty())
+		tabs.push_back(std::move(variables));
+
+	if (_model.argument_list_accepts_containers(provider)) {
+		dialogs::ChooseArgumentsTab containers{tr("Containers"), {}};
+		for (const auto& container : get_all_sexp_containers()) {
+			if (!container.is_of_string_type())
+				continue;
+			ArgumentListValue value;
+			value.kind = ArgumentListValue::Kind::Container;
+			value.text = container.container_name;
+			containers.options.push_back(std::move(value));
+		}
+		if (!containers.options.empty())
+			tabs.push_back(std::move(containers));
+	}
+
+	dialogs::ChooseArgumentsDialog dlg(this,
+		tr("Choose Arguments - %1").arg(QString::fromUtf8(tree_nodes[provider].text)),
+		std::move(tabs),
+		_model.get_argument_list(provider));
+	if (dlg.exec() == QDialog::Accepted)
+		applyArgumentList(provider, dlg.values());
+}
+
+void sexp_tree_view::applyArgumentList(int provider, const SCP_vector<ArgumentListValue>& values) {
+	// an unchanged list leaves the tree (and undo) alone
+	if (values == _model.get_argument_list(provider))
+		return;
+
+	// select the provider first, so removing the old values doesn't move the selection onto
+	// nodes that are about to go
+	if (auto* item = tree_item_handle(tree_nodes[provider]))
+		setCurrentItem(item);
+
+	_actions.set_argument_list(provider, values);
+
+	if (auto* item = tree_item_handle(tree_nodes[provider])) {
+		item->setExpanded(true);
+		setCurrentItem(item);
+	}
+	Q_EMIT modified();
+}
+
 void sexp_tree_view::copyActionHandler() {
 	_actions.clipboard_copy();
 }

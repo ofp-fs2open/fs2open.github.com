@@ -1036,3 +1036,58 @@ bool SexpTreeActions::rename_container_nodes(const SCP_string& old_name, const S
 
 	return renamed_anything;
 }
+
+// -----------------------------------------------------------------------
+// Argument lists
+// -----------------------------------------------------------------------
+
+void SexpTreeActions::set_argument_list(int provider, const SCP_vector<ArgumentListValue>& values)
+{
+	Assertion(provider >= 0 && (_model.tree_nodes[provider].type & SEXPT_OPERATOR),
+		"set_argument_list called with invalid provider node %d", provider);
+
+	// number-of and first-of keep their count, the first child
+	const int op_const = get_operator_const(_model.tree_nodes[provider].text);
+	const int count = (op_const == OP_NUMBER_OF || op_const == OP_FIRST_OF) ? _model.tree_nodes[provider].child : -1;
+	const int first_value = (count >= 0) ? _model.tree_nodes[count].next : _model.tree_nodes[provider].child;
+
+	// remove the current values, the widget items first since freeing clears their handles
+	if (first_value >= 0) {
+		for (int n = first_value; n >= 0; n = _model.tree_nodes[n].next) {
+			if (_model.tree_nodes[n].handle != nullptr)
+				_ui.ui_delete_item(_model.tree_nodes[n].handle);
+		}
+		_model.free_node2(first_value);
+		if (count >= 0)
+			_model.tree_nodes[count].next = -1;
+		else
+			_model.tree_nodes[provider].child = -1;
+	}
+
+	// the add_* functions append under the selected node
+	_model.item_index = provider;
+	for (const auto& value : values) {
+		switch (value.kind) {
+		case ArgumentListValue::Kind::Variable: {
+			const int var = get_index_sexp_variable_name(value.text.c_str());
+			Assertion(var >= 0, "Unknown variable %s in argument list", value.text.c_str());
+			char node_text[SEXP_TREE_NODE_TEXT_SIZE];
+			snprintf(node_text, sizeof(node_text), "%s(%s)", value.text.c_str(), Sexp_variables[var].text);
+			const int type = SEXPT_VALID | SEXPT_VARIABLE |
+				((Sexp_variables[var].type & SEXP_VARIABLE_NUMBER) ? SEXPT_NUMBER : SEXPT_STRING);
+			add_variable_data(node_text, type);
+			break;
+		}
+		case ArgumentListValue::Kind::Container:
+			add_container_name(value.text.c_str());
+			break;
+		default:
+			add_data(value.text.c_str(), SEXPT_VALID | (value.number ? SEXPT_NUMBER : SEXPT_STRING));
+			break;
+		}
+		_model.item_index = provider;
+	}
+
+	if (_model.modified)
+		*_model.modified = 1;
+}
