@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#118](https://github.com/ofp-fs2open/fs2open.github.com/pull/118)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **fonts.tbl** defines the fonts the game can use. The HUD gauges, the show-subtitle-text SEXP, the [fiction viewer](https://wiki.hard-light.net/index.php/Fiction_Viewer) and many other places can be set to any font in fonts.tbl. Other text (such as the tech room) uses one of the first three fonts.
