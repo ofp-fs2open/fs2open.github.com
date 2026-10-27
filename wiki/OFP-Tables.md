@@ -17,19 +17,20 @@ This page lists every table documented on this wiki, in alphabetical order. Tabl
 
 | Table | Modular extension | Code | Purpose |
 |---|---|---|---|
-| [ai.tbl](ai.tbl)\* | `xxx-aic.tbm` | /ai/aicode.cpp | AI classes: skill values per difficulty level, and AI profile overrides |
-| [ai_profiles.tbl](ai_profiles.tbl)\* | `xxx-aip.tbm`, `xxx-msp.tbm` | /ai/ai_profiles.cpp | AI profiles: difficulty scaling, AI behavior flags and bug-fix toggles a mission can pick |
-| [animation.tbl](animation.tbl)\*\* | `xxx-anim.tbm` | /model/animation/modelanimation.cpp | Model subobject animations and moveables (modular tables only) |
-| [armor.tbl](armor.tbl)\* | `xxx-amr.tbm` | /ship/ship.cpp | Armor types and how much damage each damage type does to them |
-| [asteroid.tbl](asteroid.tbl)\* | `xxx-ast.tbm` | /asteroid/asteroid.cpp | Asteroids and debris pieces for asteroid and debris fields |
-| [autopilot.tbl](autopilot.tbl)\* | `xxx-aplt.tbm` | /autopilot/autopilot.cpp | Autopilot link distance, interruptions and messages |
-| [cheats.tbl](cheats.tbl)\* | `xxx-cht.tbm` | /cheats_table/cheats_table.cpp | Custom cheat codes that show a message, run a script hook or summon a ship |
-| [colors.tbl](colors.tbl)\* | `xxx-clr.tbm` | /globalincs/alphacolors.cpp | Named colors, team colors, interface colors and text color tags |
-| [coordinate_points.tbl](coordinate_points.tbl)\* | `xxx-cps.tbm` | /coordinate_points/coordinate_shapes.cpp | Custom 2D shapes for coordinate points (OFP only) |
-| [editor.tbl](editor.tbl)\* | `xxx-edt.tbm` | /mission/missionparse.cpp | Editor settings, and custom data fields for missions, campaigns and ships (OFP only, editor only) |
-| [generated_nebula.tbl](generated_nebula.tbl)\* | `xxx-gneb.tbm` | /starfield/nebula.cpp | Patterns and colors for the generated (FS1-style) background nebula (OFP only) |
-| [props.tbl](props.tbl)\* | `xxx-prp.tbm` | /prop/prop.cpp | Prop classes (only OFP's additions documented so far) |
-| [species.tbl](species.tbl)\* | `xxx-intl.tbm` | /menuui/techmenu.cpp | Tech room intel entries (only OFP's additions documented so far) |
+| [ai.tbl](ai.tbl)\* | `xxx-aic.tbm` | [/ai/aicode.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/aicode.cpp) | AI classes: skill values per difficulty level, and AI profile overrides |
+| [ai_profiles.tbl](ai_profiles.tbl)\* | `xxx-aip.tbm`, `xxx-msp.tbm` | [/ai/ai_profiles.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/ai_profiles.cpp) | AI profiles: difficulty scaling, AI behavior flags and bug-fix toggles a mission can pick |
+| [animation.tbl](animation.tbl)\*\* | `xxx-anim.tbm` | [/model/animation/modelanimation.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/animation/modelanimation.cpp) | Model subobject animations and moveables (modular tables only) |
+| [armor.tbl](armor.tbl)\* | `xxx-amr.tbm` | [/ship/ship.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ship/ship.cpp) | Armor types and how much damage each damage type does to them |
+| [asteroid.tbl](asteroid.tbl)\* | `xxx-ast.tbm` | [/asteroid/asteroid.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/asteroid/asteroid.cpp) | Asteroids and debris pieces for asteroid and debris fields |
+| [autopilot.tbl](autopilot.tbl)\* | `xxx-aplt.tbm` | [/autopilot/autopilot.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/autopilot/autopilot.cpp) | Autopilot link distance, interruptions and messages |
+| [cheats.tbl](cheats.tbl)\* | `xxx-cht.tbm` | [/cheats_table/cheats_table.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/cheats_table/cheats_table.cpp) | Custom cheat codes that show a message, run a script hook or summon a ship |
+| [colors.tbl](colors.tbl)\* | `xxx-clr.tbm` | [/globalincs/alphacolors.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/globalincs/alphacolors.cpp) | Named colors, team colors, interface colors and text color tags |
+| [controlconfigdefaults.tbl](controlconfigdefaults.tbl) | (not modular) | [/controlconfig/controlsconfigcommon.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/controlconfig/controlsconfigcommon.cpp) | Default key, mouse and joystick bindings, control presets and controls menu settings |
+| [coordinate_points.tbl](coordinate_points.tbl)\* | `xxx-cps.tbm` | [/coordinate_points/coordinate_shapes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/coordinate_points/coordinate_shapes.cpp) | Custom 2D shapes for coordinate points (OFP only) |
+| [editor.tbl](editor.tbl)\* | `xxx-edt.tbm` | [/mission/missionparse.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionparse.cpp) | Editor settings, and custom data fields for missions, campaigns and ships (OFP only, editor only) |
+| [generated_nebula.tbl](generated_nebula.tbl)\* | `xxx-gneb.tbm` | [/starfield/nebula.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/nebula.cpp) | Patterns and colors for the generated (FS1-style) background nebula (OFP only) |
+| [props.tbl](props.tbl)\* | `xxx-prp.tbm` | [/prop/prop.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/prop/prop.cpp) | Prop classes (only OFP's additions documented so far) |
+| [species.tbl](species.tbl)\* | `xxx-intl.tbm` | [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp) | Tech room intel entries (only OFP's additions documented so far) |
 
 ---
 

@@ -8,7 +8,7 @@ The **cheats.tbl** adds custom cheat codes: text the player types during a missi
 
 This table is one of the Modular Tables and can be extended with **xxx-cht.tbm**.
 
-Code: /cheats_table/cheats_table.cpp. See [OFP Tables](OFP-Tables) for every table.
+Code: [/cheats_table/cheats_table.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/cheats_table/cheats_table.cpp). See [OFP Tables](OFP-Tables) for every table.
 
 ## Contents
 

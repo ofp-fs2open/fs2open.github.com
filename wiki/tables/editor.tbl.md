@@ -10,6 +10,8 @@ Custom data is a set of named values attached to a mission, a campaign, or an in
 
 This table is one of the Modular Tables and can be extended with **xxx-edt.tbm**.
 
+Code: [/mission/missionparse.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionparse.cpp). See [OFP Tables](OFP-Tables) for every table.
+
 **Editor only.** FRED2 and qtFRED read this table; the game never does. At runtime every custom data value is plain text, and a key exists only if the mission or campaign saved it or a SEXP or script set it.
 
 ## Contents
@@ -52,14 +54,16 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### $Disable Hard Coded Message Head Ani Files:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Removes the built-in head animations from the head ani list in the Events editor's message properties, leaving only the mod's own heads.
 - **Syntax:** *Boolean*
 - Optional. Default: false.
 
 ### $Add Message Head Ani Files:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Adds head animations to that list, one `+Head:` line each. The file extension is optional.
 - **Syntax:**
   - `+Head:` *String*, repeated
@@ -67,7 +71,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### $Enable scripting in FRED:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Runs the mod's scripts in the editors, for example so Lua SEXPs appear in the SEXP menus and On Game Init hooks can register custom data with `mn.addDefaultCustomData()`.
 - Off by default because many mods' scripts aren't written to run in the editor.
 - **Syntax:** *Boolean*
@@ -75,7 +80,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### $Ignore Music Files In Music Player:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Hides music files from the editor's Music Player, one `+File:` line each. The file extension is optional.
 - **Syntax:**
   - `+File:` *String*, repeated
@@ -83,7 +89,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### $FRED spacemouse nonlinearities:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Response curve of a 3D mouse (spacemouse) for the viewport camera, per axis: the input is raised to the exponent, then multiplied by the scale.
 - Axes, in this order: `Sideways`, `Forwards`, `Upwards`, `Pitch`, `Bank`, `Heading`. Each axis has an exponent and a scale field; any field can be left out, and only the fields given change.
 - **Syntax:**
@@ -103,7 +110,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### $Key:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The field's name. Scripts and SEXPs refer to the value by it.
 - Keys can't contain spaces or tabs.
 - Keys are unique within a section, like `$Name:` in the object tables. Repeating a key that already exists (typically in a `*-edt.tbm`) modifies that entry: any field left out, including `+Type:`, keeps its current value. Repeating a key within the same file gives a warning.
@@ -112,7 +120,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### +Type:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - `string`, `int` or `bool`. Controls how the editor lets you enter the value: plain text, whole numbers only, or a true/false dropdown.
 - An unknown type gives a warning and is treated as `string`.
 - **Syntax:** *String*
@@ -120,7 +129,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### +Default:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The value a new mission, campaign or ship starts with, and the value the dialog's **Reset to Default** button restores.
 - If omitted: empty for `string`, `0` for `int`, `false` for `bool`.
 - A default that doesn't match the type (e.g. `many` for an `int`) gives a warning and falls back to `0` or `false`. `bool` defaults are stored as lowercase `true` / `false`.
@@ -129,7 +139,8 @@ Editor settings. These are the same entries as the `#FRED SETTINGS` section of `
 
 ### +Description:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Help text shown in the Custom Data dialog when the key is selected.
 - One line. `XSTR` is supported.
 - **Syntax:** *String*

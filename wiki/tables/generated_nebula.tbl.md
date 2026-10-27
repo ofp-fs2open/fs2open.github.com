@@ -8,6 +8,8 @@ The **generated_nebula.tbl** defines the patterns and colors of the generated ne
 
 This table is one of the Modular Tables and can be extended with **xxx-gneb.tbm**.
 
+Code: [/starfield/nebula.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/nebula.cpp). See [OFP Tables](OFP-Tables) for every table.
+
 The engine includes a built-in copy of this table with FS1's three patterns (**Nebula01**, **Nebula02**, **Nebula03**) and nine colors. A mod that ships its own `generated_nebula.tbl` replaces the built-in copy entirely; a `*-gneb.tbm` adds to it or overrides entries by name.
 
 ## Contents
@@ -48,19 +50,22 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ## #Generated Nebula Colors
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Section header for the tint colors. Ends with `#End`.
 
 ### $Name:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The name of the color. Missions refer to it in `+Color:`.
 - Names are case-insensitive. Using an existing name overrides that color.
 - **Syntax:** *String*
 
 ### +RGB:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The color of the brightest parts of the nebula. Dimmer parts fade evenly toward black.
 - Each value is clamped to 0 to 255.
 - The built-in colors are FS1's exactly. Each FS1 mission palette held a 20-step ramp from black to one color, and `+RGB` is that ramp's brightest entry.
@@ -83,26 +88,30 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ## #Generated Nebula Patterns
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Section header for the patterns. Ends with `#End`.
 
 ### $Name:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The name of the pattern. Missions refer to it in `+Nebula:`.
 - Names are case-insensitive. Using an existing name overrides that pattern, changing only the fields the entry lists.
 - **Syntax:** *String*
 
 ### +Clouds Only:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - `YES` draws only the placed clouds, with no procedural background.
 - **Default:** `NO`
 - **Syntax:** *Boolean*
 
 ### +Cloud Detail:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - How much the pattern's noise breaks up the placed clouds: `0` leaves them as smooth soft shapes, `1` carves them into ragged wisps. The clouds keep about the same overall brightness either way.
 - Clamped to 0 to 1.
 - **Default:** `0.35`
@@ -110,7 +119,8 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Cloud:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - A placed cloud: a soft ellipse on the nebula. Repeat the field once per cloud.
 - Listing any `+Cloud:` in an entry replaces that pattern's whole cloud list, so an override restates every cloud it wants.
 - **Syntax:** *Float list*, `lon lat width height angle brightness`
@@ -123,14 +133,16 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Density:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Procedural background: roughly how much of the sky has bright patches, 0 to 1.
 - **Default:** `0.30`
 - **Syntax:** *Float*
 
 ### +Frequency:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Noise frequency around the sphere and from pole to pole. Unequal values stretch the noise into streaks.
 - Each value is clamped to 0.1 to 64.
 - **Default:** `2 5`
@@ -138,7 +150,8 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Octaves:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Layers of noise detail. Fewer gives broader, smoother masses; more gives a busier look.
 - Clamped to 1 to 8.
 - **Default:** `4`
@@ -146,7 +159,8 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Warp:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - How much the noise is swirled, stretching it into wisps.
 - Clamped to 0 to 8.
 - **Default:** `0.4`
@@ -154,7 +168,8 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Contrast:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Procedural background: the falloff curve of the bright patches. Higher values give tighter, harder-edged patches.
 - Clamped to 0.05 to 10.
 - **Default:** `1.5`
@@ -162,14 +177,16 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Intensity:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Overall brightness multiplier for the whole pattern. `0` turns it off.
 - **Default:** `1`
 - **Syntax:** *Float*
 
 ### +Seed:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Noise seed. Patterns with the same settings and different seeds look different.
 - Clamped to -1000000 to 1000000.
 - **Default:** `0`
@@ -177,14 +194,16 @@ The engine includes a built-in copy of this table with FS1's three patterns (**N
 
 ### +Resolution:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - How finely the background sphere is built, around and from pole to pole. The brightness is drawn per pixel either way, so this only affects how round the sphere is.
 - **Default:** `24 12`
 - **Syntax:** *Integer list*, `around along`
 
 ### +Band:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The part of the sphere covered, from 0 (one pole) to 1 (the other).
 - **Default:** `0 1`
 - **Syntax:** *Float list*, `start end`
@@ -218,7 +237,7 @@ The mission's `#Background bitmaps` section picks the pattern and color with the
 | `+Nebula:` | Pattern name |
 | `+Color:` | Color name |
 | `+Pitch:`, `+Bank:`, `+Heading:` | Orientation, in degrees |
-| `+Generated Nebula: true` | **OFP, 26.1.** Draws the nebula. Without it the mission shows nothing, even with the fields above. |
+| `+Generated Nebula: true` | ![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg) Draws the nebula. Without it the mission shows nothing, even with the fields above. |
 
 `+Generated Nebula:` exists because many missions saved by older FRED versions carry an unchosen `+Nebula: Nebula01` and `+Color: Blue`. Those missions stay as they always were.
 

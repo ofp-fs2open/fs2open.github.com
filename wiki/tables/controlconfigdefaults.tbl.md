@@ -1,0 +1,730 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **controlconfigdefaults.tbl** changes the default key, mouse and joystick bindings, adds control presets the player can pick, and changes how controls appear in the controls menu.
+
+This table is **not** modular: only controlconfigdefaults.tbl itself is read. When a mod has none, the engine uses its built-in one.
+
+Code: [/controlconfig/controlsconfigcommon.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/controlconfig/controlsconfigcommon.cpp). See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [#ControlConfigOverride](#controlconfigoverride)
+2. [#ControlConfigPreset](#controlconfigpreset)
+3. [Sample](#sample)
+4. [Table of Bindings](#table-of-bindings)
+5. [Allowed Keys](#allowed-keys)
+6. [Debug Commands](#debug-commands)
+
+---
+
+## #ControlConfigOverride
+
+- Starts an Override section
+- Begins with **#ControlConfigOverride** and ends with **#End**.
+- Only entries that you want to change are required, the rest will use the default binding
+- Entries not listed will be assigned to their default/hardcoded values.
+- Only an Override section can change a control's `$Category:`, `$Text:`, `$Has XStr:`, `$Type:`, `$Disable:` and `$Locked:`; a Preset section changes only bindings.
+- An unknown `$Bind:` or `$Bind Name:` is an error, and that binding is skipped.
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Multiple #ControlConfigOverride...#End blocks can be provided.
+  - Each block defines a separate control config preset
+  - The "Defaults" button in the control config screen may be used to reset to the selected preset, then cycle through to the next preset.
+  - The first given block is used as the "global" defaults, and is used when working with the key-pressed SEXP and LUA scripts.
+  - Note: It's a good idea to also use [strings.tbl](strings.tbl) to change the "Defaults" text on the button to for example "Cycle\nPresets".
+
+## #ControlConfigPreset
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- Starts a Preset section
+- Begins with **#ControlConfigPreset** and ends with **#End**.
+- All keybinds you wish to have bound must be specified, any unspecified keys will be unbound.
+- A Preset can't share a name with an existing preset: that's an error and stops reading the table. A Preset whose bindings match an existing preset under a different name is ignored, with a warning.
+
+### $Name:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- The name of this control config preset, displayed at the top left corner of the control config screen when selected through the "Defaults" button.
+- If not provided, the first [#ControlConfigOverride](#controlconfigoverride) block will override the hardcoded defaults, all subsequent blocks will be **<unnamed preset>.**
+- An Override named `default` also replaces the hardcoded defaults.
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- If not provided, the [#ControlConfigPreset](#controlconfigpreset) block will be **<unnamed preset>**
+
+  - Syntax: ***String***
+
+### $Bind Name:
+
+- Name of the bind or action to modify the default key of.
+- Valid entries: [Table of Bindings](#table-of-bindings)
+- Required
+- Syntax: **String**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+#### $Key Default:
+
+- Key to set as default
+- Valid entries: [Allowed Keys](#allowed-keys)
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- May be unbound by specifying **NONE** instead of a key
+
+- Optional
+- Syntax: **String**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+#### $Joy Default:
+
+- Joystick button to set as default
+- Optional
+- Syntax: **Integer**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+#### $Key Mod Shift:
+
+- Sets the key to require the Shift key
+- **1** for yes, **0** for no
+- Optional
+- Syntax: **Integer**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+#### $Key Mod Alt:
+
+- Sets the key to require the Alt key
+- **1** for yes, **0** for no
+- Optional
+- Syntax: **Integer**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+#### $Key Mod Ctrl:
+
+- Sets the key to require the Ctrl key
+- **1** for yes, **0** for no
+- Optional
+- Syntax: **Integer**
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) **$Bind Name:**, **$Key Default:**, **$Joy Default:**, **$Key Mod Shift:**, **$Key Mod Alt:**, and **$Key Mod Ctrl:** are deprecated in favor of **$Bind:** and its suboptions, but still work.
+
+### $Bind:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- The IoActionID of the action to bind to.
+- Valid entries: [Table of Bindings](#table-of-bindings)
+- Required
+- Syntax: **String**
+
+#### $Primary:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Denotes the following binding is a Primary binding of the control
+- Optional
+- Syntax: (No arguments)
+
+##### $Controller:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Denotes which controller this binding is for
+- Required
+- Syntax: **String**, any of the following:
+  - **CID_NONE**
+  - **CID_KEYBOARD**
+  - **CID_MOUSE**
+  - **CID_JOY0**
+  - **CID_JOY1**
+  - **CID_JOY2**
+  - **CID_JOY3**
+
+##### $Flags:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Denotes a number of flags for button behavior
+- Required
+- Syntax: **String**, any of the following:
+
+|   |   |
+|---|---|
+| **AXIS_BTN** | An axis that's treated as a digital control should it be deflected past a certain threshold (Note: WIP) |
+| **RELATIVE** | A relative axis which increases or decreases the control's value instead of directly setting its value. (Example: Relative Throttle) |
+| **INVERTED** | An axis who's input is inverted |
+| **AXIS** | Input is an axis |
+| **HAT** | Input is a POV HAT switch |
+| **BALL** | Input is a trackball |
+| **NONE** | Input is assumed to be a standard button or key |
+
+##### $Input:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Which button, key, or axis is bound
+- Required
+- Syntax: **string**, any of the following:
+
+Joystick axes:
+- **X_AXIS**
+- **Y_AXIS**
+- **Z_AXIS**
+- **RX_AXIS**
+- **RY_AXIS**
+- **RZ_AXIS**
+
+Joystick Buttons:
+- Buttons are simply the button number, such as "1" for button 1.
+
+Mouse Buttons:
+- **LEFT_BUTTON**
+- **RIGHT_BUTTON**
+- **MIDDLE_BUTTON**
+- **X1_BUTTON**
+- **X2_BUTTON**
+- **WHEEL_UP**
+- **WHEEL_DOWN**
+- **WHEEL_LEFT**
+- **WHEEL_RIGHT**
+
+Keyboard Keys:
+[Allowed Keys](#allowed-keys)
+- Key modifiers **ALT-** and **SHIFT-** can be prepended to the Key ID.
+  - Example: **ALT-J**, **SHIFT-KEY_Q**, **ALT-SHIFT-KEY_1**
+
+#### $Secondary:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Denotes the following binding is a Secondary binding of the control
+- Has the same suboptions as [$Primary](#primary)
+- Optional
+- Syntax: (No Arguments)
+
+### $Category:
+
+- Tab where the binding appears in the options menu.
+- Valid entries: TARGET_TAB, SHIP_TAB, WEAPON_TAB, COMPUTER_TAB, or NO_TAB (not shown in the menu)
+- An unknown category logs a warning and is ignored.
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax: **String**
+
+### $Text:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- The label of the control to use in the controls config menu.
+- Is overridden by XSTR, if provided
+  - **Note:** This is meant to be a lazy temporary substitution to modifying [strings.tbl](strings.tbl).  Your released mod should still provide its own strings.tbl.
+- Optional
+- Syntax: **String**
+
+### $Has XStr:
+
+- Whether or not the binding has an entry in [strings.tbl](strings.tbl)
+  - If **0**, assumes no XSTR is provided
+  - If **1**, assumes an XSTR is provided alongside the other ControlConfig strings according to its internal, hardcoded index
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- If any nonzero integer >1, is the exact XSTR index within [strings.tbl](strings.tbl)
+
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax: **Integer**
+
+### $Type:
+
+- Determines the type of control this is.
+
+- Valid entries:
+  - CC_TYPE_TRIGGER
+    - Normal control that activates upon the first press. Resetting devices (such as weapons) will keep firing as long as the key/button is held down.
+  - CC_TYPE_CONTINUOUS
+    - Control that activates when the key/button is held down, and stays activated until the key/button is released. Ex: Afterburner key.
+  - CC_TYPE_AXIS_ABS, CC_TYPE_AXIS_REL
+    - Absolute and relative axis controls, such as pitch or throttle.
+  - CC_TYPE_AXIS_BTN_NEG, CC_TYPE_AXIS_BTN_POS
+    - Controls triggered by moving an axis past a threshold, in the negative or positive direction.
+- An unknown type logs a warning and is ignored.
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax **String**
+
+### $Disable:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- Determines whether the binding can be used and appears in the options menu. Can be used to hide bindings which are not needed, or to enable bindings which are hidden by default.
+- Syntax: ***Boolean***
+
+### +Disable
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- Disables the control
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax: (No arguments)
+
+### $Locked:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Keeps the control in the options menu and bindable, but its key or button doesn't trigger it. Scripts can still use the control.
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax: ***Boolean***
+
+### +Locked
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Same as `$Locked: YES`.
+- Optional
+- Only valid in [#ControlConfigOverride](#controlconfigoverride) blocks
+- Syntax: (No arguments)
+
+## #End
+
+- All [#ControlConfigOverride](#controlconfigoverride) and [#ControlConfigPreset](#controlconfigpreset) sections must be terminated by #End
+
+## Sample
+
+### 22.2 and later
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) This example uses the 22.2 format and does the following:
+- Sets Clear Escort List to Alt-Shift-Q
+- Sets Target Target's Attacker to Alt-Shift-J and Button 2 on Joystick 0, moves it to the Ship Tab, denotes it's type as a trigger and sets it to not have a XString
+- Sets Transfer Energy from Shield to Laser to R
+
+Builds from 22.2 on still read the older format.
+
+Note: the indents are optional, and are provided to improve readability.
+
+```
+#ControlConfigOverride
+
+$Bind: ESCORT_CLEAR
+  $Primary:
+    $Controller: CID_KEYBOARD
+    $Flags: NONE
+    $Input: ALT-SHIFT-KEY_Q
+
+$Bind: TARGET_CLOSEST_SHIP_ATTACKING_TARGET
+  $Primary:
+    $Controller: CID_KEYBOARD
+    $Flags: NONE
+    $Input: ALT-SHIFT-KEY_J
+  $Secondary:
+    $Controller: CID_JOY0
+    $Flags: NONE
+    $Input: 2
+  $Category: SHIP_TAB
+  $Has XStr: 0
+  $TYPE:     CC_TYPE_TRIGGER
+
+$Bind: XFER_LASER
+  $Primary:
+    $Controller: CID_KEYBOARD
+    $FLAGS: NONE
+    $Input: KEY_R
+
+#End
+```
+
+### Before 22.2
+
+This example uses the older format and does the following:
+- Sets Clear Escort List to Alt-Shift-Q
+- Sets Target Target's Attacker to Ctrl-Alt-Shift-J, moves it to the Ship Tab, denotes it's type as a trigger and sets it to not have a XString
+- Sets Transfer Energy from Shield to Laser to R
+
+```
+#ControlConfigOverride
+
+$Bind Name:		Clear Escort List
+$Key Default:		KEY_Q
+$Key Mod Shift:		1
+$Key Mod Alt:		1
+
+$Bind Name:		Target Target's Nearest Attacker
+$Key Default:		KEY_J
+$Key Mod Shift:		1
+$Key Mod Alt:		1
+$Key Mod Ctrl:		1
+$Category:		SHIP_TAB
+$Has XStr:		0
+$TYPE:			CC_TYPE_TRIGGER
+
+$Bind Name:		Transfer Energy Shield->Laser
+$Key Default:		KEY_R
+
+#End
+```
+
+## Table of Bindings
+
+- This is a table of all possible bindings that can be modified, grouped into smaller tables for easier reference.
+- **$Bind Name:** column is to be used with **$Bind Name:** entries, and **$Bind:** column is to be used with **$Bind:** entries.
+- These bindings are case-sensitive
+- Show Objectives, Show Nav Map and the Custom Controls are disabled by default; use `$Disable: NO` in an Override to turn them on.
+- Controls added after 22.2 might not have a **$Bind Name:**.  Use the **$Bind:** identifier instead.
+**Targeting**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Target Next Ship | TARGET_NEXT |
+| Target Previous Ship | TARGET_PREV |
+| Target Next Closest Hostile Ship | TARGET_NEXT_CLOSEST_HOSTILE |
+| Target Previous Closest Hostile Ship | TARGET_PREV_CLOSEST_HOSTILE |
+| Toggle Auto Targeting | TOGGLE_AUTO_TARGETING |
+| Target Next Closest Friendly Ship | TARGET_NEXT_CLOSEST_FRIENDLY |
+| Target Previous Closest Friendly Ship | TARGET_PREV_CLOSEST_FRIENDLY |
+| Target Ship in Reticle | TARGET_SHIP_IN_RETICLE |
+| Target Target's Nearest Attacker | TARGET_CLOSEST_SHIP_ATTACKING_TARGET |
+| Target Last Ship to Send Transmission | TARGET_LAST_TRANMISSION_SENDER |
+| Turn Off Targeting | STOP_TARGETING_SHIP |
+| Target Closest Attacking Ship | TARGET_CLOSEST_SHIP_ATTACKING_SELF |
+| Target Next Escort Ship | TARGET_NEXT_ESCORT_SHIP |
+| Target Closest Repair Ship | TARGET_CLOSEST_REPAIR_SHIP |
+| Target Next Uninspected Cargo | TARGET_NEXT_UNINSPECTED_CARGO |
+| Target Previous Uninspected Cargo | TARGET_PREV_UNINSPECTED_CARGO |
+| Target Newest Ship in Area | TARGET_NEWEST_SHIP |
+| Target Target's Target | TARGET_TARGETS_TARGET |
+| Target Next Hostile Bomb or Bomber | TARGET_NEXT_BOMB |
+| Target Previous Hostile Bomb or Bomber | TARGET_PREV_BOMB |
+
+**Targeting Subsystems and Turrets**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Target Subsystem in Reticle | TARGET_SUBOBJECT_IN_RETICLE |
+| Target Next Subsystem | TARGET_NEXT_SUBOBJECT |
+| Target Previous Subsystem | TARGET_PREV_SUBOBJECT |
+| Turn Off Targeting of Subsystems | STOP_TARGETING_SUBSYSTEM |
+| Target Next Live Turret | TARGET_NEXT_LIVE_TURRET |
+| Target Previous Live Turret | TARGET_PREV_LIVE_TURRET |
+
+**Weapons**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Fire Primary Weapon | FIRE_PRIMARY |
+| Fire Secondary Weapon | FIRE_SECONDARY |
+| Cycle Forward Primary Weapon | CYCLE_NEXT_PRIMARY |
+| Cycle Backward Primary Weapon | CYCLE_PREV_PRIMARY |
+| Cycle Primary Weapon Firing Rate | CYCLE_PRIMARY_WEAPON_SEQUENCE |
+| Cycle Secondary Weapon Bank | CYCLE_SECONDARY |
+| Cycle Secondary Weapon Firing Rate | CYCLE_NUM_MISSLES |
+| Launch Countermeasure | LAUNCH_COUNTERMEASURE |
+| Cycle Primary Weapon Firing Pattern ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) | CYCLE_PRIMARY_WEAPON_PATTERN |
+
+**Flight Controls**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Forward Thrust | FORWARD_THRUST |
+| Reverse Thrust | REVERSE_THRUST |
+| Bank Left | BANK_LEFT |
+| Bank Right | BANK_RIGHT |
+| Pitch Forward | PITCH_FORWARD |
+| Pitch Backward | PITCH_BACK |
+| Turn Left | YAW_LEFT |
+| Turn Right | YAW_RIGHT |
+| Right Thrust | RIGHT_SLIDE_THRUST |
+| Left Thrust | LEFT_SLIDE_THRUST |
+| Up Thrust | UP_SLIDE_THRUST |
+| Down Thrust | DOWN_SLIDE_THRUST |
+| Afterburner | AFTERBURNER |
+| Glide When Pressed | GLIDE_WHEN_PRESSED |
+| Bank When Pressed | BANK_WHEN_PRESSED |
+| Match Target Speed | MATCH_TARGET_SPEED |
+
+**Throttle Control**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Set Throttle to Zero | ZERO_THROTTLE |
+| Set Throttle to Max | MAX_THROTTLE |
+| Set Throttle to One-Third | ONE_THIRD_THROTTLE |
+| Set Throttle to Two-Thirds | TWO_THIRDS_THROTTLE |
+| Increase Throttle 5 Percent | PLUS_5_PERCENT_THROTTLE |
+| Decrease Throttle 5 Percent | MINUS_5_PERCENT_THROTTLE |
+
+**HUD Controls**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Toggle High HUD Contrast | TOGGLE_HUD_CONTRAST |
+| Toggle HUD | TOGGLE_HUD |
+| Toggle HUD Wireframe Target View | HUD_TARGETBOX_TOGGLE_WIREFRAME |
+| Cycle Radar Range | RADAR_RANGE_CYCLE |
+| Communications Menu | SQUADMSG_MENU |
+| Show Objectives | SHOW_GOALS |
+| Show Nav Map | SHOW_NAVMAP |
+| Add or Remove Escort | ADD_REMOVE_ESCORT |
+| Clear Escort List | ESCORT_CLEAR |
+| Toggle HUD Drop Shadows | TOGGLE_HUD_SHADOWS |
+
+**Squadmate Messaging**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Attack My Target | ATTACK_MESSAGE |
+| Disarm My Target | DISARM_MESSAGE |
+| Disable My Target | DISABLE_MESSAGE |
+| Attack My Subsystem | ATTACK_SUBSYSTEM_MESSAGE |
+| Capture My Target | CAPTURE_MESSAGE |
+| Engage Enemy | ENGAGE_MESSAGE |
+| Form on My Wing | FORM_MESSAGE |
+| Ignore My Target | IGNORE_MESSAGE |
+| Protect My Target | PROTECT_MESSAGE |
+| Cover Me | COVER_MESSAGE |
+| Return to Base | WARP_MESSAGE |
+| Rearm Me | REARM_MESSAGE |
+| Communication Menu Move Up ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) | COMMS_MENU_MOVE_UP |
+| Communication Menu Move Down ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) | COMMS_MENU_MOVE_DOWN |
+| Communication Menu Select ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) | COMMS_MENU_SELECT |
+
+**Views**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Chase View | VIEW_CHASE |
+| External View | VIEW_EXTERNAL |
+| Toggle External Camera Lock | VIEW_EXTERNAL_TOGGLE_CAMERA_LOCK |
+| Free Look View | VIEW_SLEW |
+| Current Target View | VIEW_OTHER_SHIP |
+| Increase View Distance | VIEW_DIST_INCREASE |
+| Decrease View Distance | VIEW_DIST_DECREASE |
+| Center View | VIEW_CENTER |
+| View Up | PADLOCK_UP |
+| View Rear | PADLOCK_DOWN |
+| View Left | PADLOCK_LEFT |
+| View Right | PADLOCK_RIGHT |
+| Top-Down View | VIEW_TOPDOWN |
+| Target Padlock View | VIEW_TRACK_TARGET |
+
+**ETS and Shields**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Increase Weapon Energy | INCREASE_WEAPON |
+| Decrease Weapon Energy | DECREASE_WEAPON |
+| Increase Shield Energy | INCREASE_SHIELD |
+| Decrease Shield Energy | DECREASE_SHIELD |
+| Increase Engine Energy | INCREASE_ENGINE |
+| Decrease Engine Energy | DECREASE_ENGINE |
+| Equalize Energy Settings | ETS_EQUALIZE |
+| Equalize Shields | SHIELD_EQUALIZE |
+| Augment Forward Shield | SHIELD_XFER_TOP |
+| Augment Rear Shield | SHIELD_XFER_BOTTOM |
+| Augment Left Shield | SHIELD_XFER_LEFT |
+| Augment Right Shield | SHIELD_XFER_RIGHT |
+| Transfer Energy Laser->Shield | XFER_SHIELD |
+| Transfer Energy Shield->Laser | XFER_LASER |
+
+**Misc**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Enter Subspace (End Mission) | END_MISSION |
+| Increase Time Compression | TIME_SPEED_UP |
+| Decrease Time Compression | TIME_SLOW_DOWN |
+| Toggle Auto Pilot | AUTO_PILOT_TOGGLE |
+| Cycle Nav Points | NAV_CYCLE |
+| Toggle Gliding | TOGGLE_GLIDING |
+| Toggle Auto Speed Matching | TOGGLE_AUTO_MATCH_TARGET_SPEED |
+| Toggle Photo Mode ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | TOGGLE_PHOTO_MODE |
+| Photo Mode Previous Parameter ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | PHOTO_MODE_FILTER_PREV |
+| Photo Mode Next Parameter ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | PHOTO_MODE_FILTER_NEXT |
+| Photo Mode Reset Parameters ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | PHOTO_MODE_FILTER_RESET |
+| Photo Mode Decrease Selected Parameter ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | PHOTO_MODE_PARAM_DECREASE |
+| Photo Mode Increase Selected Parameter ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | PHOTO_MODE_PARAM_INCREASE |
+
+**Multiplayer Only**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| (Multiplayer) Message All | MULTI_MESSAGE_ALL |
+| (Multiplayer) Message Friendly | MULTI_MESSAGE_FRIENDLY |
+| (Multiplayer) Message Hostile | MULTI_MESSAGE_HOSTILE |
+| (Multiplayer) Message Target | MULTI_MESSAGE_TARGET |
+| (Multiplayer) Observer Zoom to Target | MULTI_OBSERVER_ZOOM_TO |
+| (Multiplayer) Toggle Network Info | MULTI_TOGGLE_NETINFO |
+| (Multiplayer) Self Destruct | MULTI_SELF_DESTRUCT |
+
+**Custom Controls**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| Custom Control 1 | CUSTOM_CONTROL_1 |
+| Custom Control 2 | CUSTOM_CONTROL_2 |
+| Custom Control 3 | CUSTOM_CONTROL_3 |
+| Custom Control 4 | CUSTOM_CONTROL_4 |
+| Custom Control 5 | CUSTOM_CONTROL_5 |
+
+**Analog Controls**
+
+| $Bind Name: | $Bind: |
+|---|---|
+| - | JOY_HEADING_AXIS |
+| - | JOY_PITCH_AXIS |
+| - | JOY_BANK_AXIS |
+| - | JOY_ABS_THROTTLE_AXIS |
+| - | JOY_REL_THROTTLE_AXIS |
+
+### Custom Controls
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- 'Custom Control 1'
+- 'Custom Control 2'
+- 'Custom Control 3'
+- 'Custom Control 4'
+- 'Custom Control 5'
+
+These are empty controls for modders and/or scripters to use.
+
+Disabled by default
+
+Default XSTR index is 0 (thus, they do not have an entry in [strings.tbl](strings.tbl))
+
+The default key bindings are Shift-Alt (1-5) for Custom Control 1-5, respectively.
+
+To use these, create a new entry in a [#ControlConfigOverride](#controlconfigoverride) block and with the respective name. You should specify a label in [strings.tbl](strings.tbl), otherwise they'll show up as "Custom Control" in the control config menu.
+
+Example:
+- $Bind Name: Custom Control 1
+- $Has XStr: 1570
+- $Disable: false
+
+## Allowed Keys
+
+- Not all keys are checked by FSO for key bindings, so some of these may not work.
+- The same names the engine reads, from /controlconfig/controlsconfigcommon.cpp.
+- Must use the string below (without quotes).
+- List of keys
+'KEY_0'
+'KEY_1'
+'KEY_2'
+'KEY_3'
+'KEY_4'
+'KEY_5'
+'KEY_6'
+'KEY_7'
+'KEY_8'
+'KEY_9'
+'KEY_A'
+'KEY_B'
+'KEY_C'
+'KEY_D'
+'KEY_E'
+'KEY_F'
+'KEY_G'
+'KEY_H'
+'KEY_I'
+'KEY_J'
+'KEY_K'
+'KEY_L'
+'KEY_M'
+'KEY_N'
+'KEY_O'
+'KEY_P'
+'KEY_Q'
+'KEY_R'
+'KEY_S'
+'KEY_T'
+'KEY_U'
+'KEY_V'
+'KEY_W'
+'KEY_X'
+'KEY_Y'
+'KEY_Z'
+'KEY_MINUS'
+'KEY_EQUAL'
+'KEY_DIVIDE'
+'KEY_SLASH'
+'KEY_SLASH_UK'
+'KEY_COMMA'
+'KEY_PERIOD'
+'KEY_SEMICOL'
+'KEY_LBRACKET'
+'KEY_RBRACKET'
+'KEY_RAPOSTRO'
+'KEY_LAPOSTRO'
+'KEY_ESC'
+'KEY_ENTER'
+'KEY_BACKSP'
+'KEY_TAB'
+'KEY_SPACEBAR'
+'KEY_NUMLOCK'
+'KEY_SCROLLOCK'
+'KEY_CAPSLOCK'
+'KEY_LSHIFT'
+'KEY_RSHIFT'
+'KEY_LALT'
+'KEY_RALT'
+'KEY_LCTRL'
+'KEY_RCTRL'
+'KEY_F1'
+'KEY_F2'
+'KEY_F3'
+'KEY_F4'
+'KEY_F5'
+'KEY_F6'
+'KEY_F7'
+'KEY_F8'
+'KEY_F9'
+'KEY_F10'
+'KEY_F11'
+'KEY_F12'
+'KEY_PAD0'
+'KEY_PAD1'
+'KEY_PAD2'
+'KEY_PAD3'
+'KEY_PAD4'
+'KEY_PAD5'
+'KEY_PAD6'
+'KEY_PAD7'
+'KEY_PAD8'
+'KEY_PAD9'
+'KEY_PADMINUS'
+'KEY_PADPLUS'
+'KEY_PADPERIOD'
+'KEY_PADDIVIDE'
+'KEY_PADMULTIPLY'
+'KEY_PADENTER'
+'KEY_INSERT'
+'KEY_HOME'
+'KEY_PAGEUP'
+'KEY_DELETE'
+'KEY_END'
+'KEY_PAGEDOWN'
+'KEY_UP'
+'KEY_DOWN'
+'KEY_LEFT'
+'KEY_RIGHT'
+'KEY_PRINT_SCRN'
+'KEY_PAUSE'
+'KEY_BREAK'
+
+## Debug Commands
+
+### save_ccd
+
+If running a Debug Build, the **save_ccd** command may be used on the debug console to save the current Control Configuration Defaults (in the default preset) to a .tbl.  This should allow developers to quickly modify the default preset without needing to transcribe everything by hand, or try to use a controlconfigdefaults.tbl from somewhere else.

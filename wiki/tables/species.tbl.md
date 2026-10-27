@@ -6,6 +6,10 @@ The **species.tbl** defines the tech room's intel entries (despite the name, spe
 
 This table is one of the Modular Tables and can be extended with **xxx-intl.tbm**.
 
+The OFP badge marks what OFP adds.
+
+Code: [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp). See [OFP Tables](OFP-Tables) for every table.
+
 ## Contents
 
 1. [Intel entry tech models](#intel-entry-tech-models)
@@ -21,14 +25,16 @@ These fields go in a `#Intel` `$Entry:`, straight after `$Anim:` if the entry ha
 
 ### $Tech Model:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The model file to show for this intel entry.
 - If the model loads, it is shown **instead of** the entry's `$Anim:`. If it fails to load, the tech room falls back to the animation.
 - **Syntax:** *String*, model filename (e.g. `mystation.pof`)
 
 ### +Closeup_pos:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The camera position used to view the model, the same as `+Closeup_pos:` in ships.tbl.
 - Only read directly after `$Tech Model:`.
 - If left out, it is worked out from the model's size: the camera sits on the z axis at twice the model's largest z extent.
@@ -36,7 +42,8 @@ These fields go in a `#Intel` `$Entry:`, straight after `$Anim:` if the entry ha
 
 ### +Closeup_zoom:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The camera zoom used to view the model, the same as `+Closeup_zoom:` in ships.tbl.
 - Only read directly after `$Tech Model:` (and `+Closeup_pos:` if present).
 - Must be greater than 0. Otherwise a warning is logged and the default is used.

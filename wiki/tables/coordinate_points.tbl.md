@@ -10,6 +10,8 @@ Coordinate points are an OFP object type: named locations in a mission, placed i
 
 This table is one of the Modular Tables and can be extended with **xxx-cps.tbm**.
 
+Code: [/coordinate_points/coordinate_shapes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/coordinate_points/coordinate_shapes.cpp). See [OFP Tables](OFP-Tables) for every table.
+
 The engine includes a built-in copy of this table that defines the **Cross** shape.
 
 ## Contents
@@ -39,12 +41,14 @@ The engine includes a built-in copy of this table that defines the **Cross** sha
 
 ## #Coordinate Shapes
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Section header. Required at the start of the table.
 
 ### $Name:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The name of the shape. Missions refer to the shape by this name in a coordinate point's `+Shape:` field.
 - Names are case-insensitive.
 - Must be unique across the default table and all `*-cps.tbm` files. A duplicate is skipped with a warning, and the first definition wins.
@@ -54,7 +58,8 @@ The engine includes a built-in copy of this table that defines the **Cross** sha
 
 ### $Vertices:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - The corner points of the shape, as a flat list of `x y` pairs.
 - Coordinates are in **unit radius**: `1.0` is the edge of the coordinate point's drawn radius. The built-in shapes fit inside -1 to 1 on both axes.
 - `+x` is right and `+y` is up, as seen on screen. By convention shapes point up, the same way the built-in polygons and stars do.
@@ -65,7 +70,8 @@ The engine includes a built-in copy of this table that defines the **Cross** sha
 
 ### $Triangles:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - How the vertices are filled in, as a flat list of vertex numbers, three per triangle.
 - List each triangle's vertices **counter-clockwise**, the convention used by the built-in shapes.
 - Every number must refer to an existing vertex, from `0` up to one less than the number of vertices. Otherwise the entry is skipped with a warning.
@@ -78,7 +84,8 @@ The engine includes a built-in copy of this table that defines the **Cross** sha
 
 ## #End
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Required at the end of the table.
 
 ---

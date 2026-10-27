@@ -6,6 +6,10 @@ The **props.tbl** defines prop classes: static, non-ship objects placed in a mis
 
 This table is one of the Modular Tables and can be extended with **xxx-prp.tbm**.
 
+The OFP badge marks what OFP adds.
+
+Code: [/prop/prop.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/prop/prop.cpp). See [OFP Tables](OFP-Tables) for every table.
+
 ## Contents
 
 1. [Texture replacement](#texture-replacement)
@@ -17,7 +21,8 @@ This table is one of the Modular Tables and can be extended with **xxx-prp.tbm**
 
 ### $Texture Replace:
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
+
 - Replaces textures on the prop's model for every prop of this class. It works the same as `$Texture Replace:` in ships.tbl.
 - Goes at the end of the prop entry, after `$Custom Strings` if the entry has that block.
 - Followed by any number of `+old:` / `+new:` pairs. File extensions are ignored.

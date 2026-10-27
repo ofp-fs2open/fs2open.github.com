@@ -22,6 +22,7 @@
   - [autopilot.tbl](autopilot.tbl)
   - [cheats.tbl](cheats.tbl)
   - [colors.tbl](colors.tbl)
+  - [controlconfigdefaults.tbl](controlconfigdefaults.tbl)
   - [coordinate_points.tbl](coordinate_points.tbl)
   - [editor.tbl](editor.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)

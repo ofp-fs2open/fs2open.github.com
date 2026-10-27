@@ -6,7 +6,7 @@ The **asteroid.tbl** defines the asteroids and debris pieces used in asteroid an
 
 This table is one of the Modular Tables and can be extended with **xxx-ast.tbm**.
 
-Code: /asteroid/asteroid.cpp. See [OFP Tables](OFP-Tables) for every table.
+Code: [/asteroid/asteroid.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/asteroid/asteroid.cpp). See [OFP Tables](OFP-Tables) for every table.
 
 Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
 
