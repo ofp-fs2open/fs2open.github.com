@@ -56,4 +56,4 @@ Table pages mark when a field or behavior was added with a version badge. Fields
 
 **OFP:**
 
-![OFP 26.1](images/badges/ofp-26.1.svg)
+![OFP 26.1.0](images/badges/ofp-26.1.0.svg)
