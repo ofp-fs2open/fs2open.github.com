@@ -11,10 +11,9 @@ on:
   pull_request_target:
     types: [opened, edited, reopened, closed]
 
+# The queue is updated with COMMUNITY_QUEUE_TOKEN; GITHUB_TOKEN only checks out the script.
 permissions:
   contents: read
-  discussions: write
-  pull-requests: read
 
 # Every run rewrites discussion #1, so runs go one at a time.
 concurrency:
@@ -34,6 +33,9 @@ jobs:
       - uses: actions/github-script@v8
         name: Update the queue
         with:
+          # A maintainer's token: the Active and Completed Requests categories are
+          # Announcement categories, which the built-in GITHUB_TOKEN can't move discussions into.
+          github-token: ${{ secrets.COMMUNITY_QUEUE_TOKEN }}
           script: |
             const update = require('./.github/scripts/community-queue.js');
             await update({ github, context, core });

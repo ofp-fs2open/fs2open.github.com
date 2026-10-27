@@ -91,16 +91,24 @@ module.exports = async ({ github, context, core }) => {
 		}
 	}`, { owner, repo, number })).repository.discussion;
 
-	const moveTo = async (discussion, key) => {
+	// Each event is handled in three steps, so a failure part way leaves things a rerun can
+	// finish: the Community Queue post is saved first, then discussions are moved, relabeled
+	// or closed, and comments are posted last. A step that already happened is skipped on a
+	// rerun, and a comment is only posted by the run that did the work it reports.
+	const changes = [];   // async functions, run after the queue is saved
+	const comments = [];  // [discussion, body], posted last
+
+	// Queues a move and reports whether one is needed.
+	const moveTo = (discussion, key) => {
 		if (discussion.category.id === categoryId[key])
-			return;
-		await gql(`mutation($id: ID!, $cat: ID!) { updateDiscussion(input: {discussionId: $id, categoryId: $cat}) { clientMutationId } }`,
-			{ id: discussion.id, cat: categoryId[key] });
-		core.info(`Moved #${discussion.number ?? ''} to ${CATEGORY[key]}`);
+			return false;
+		changes.push(async () => {
+			await gql(`mutation($id: ID!, $cat: ID!) { updateDiscussion(input: {discussionId: $id, categoryId: $cat}) { clientMutationId } }`,
+				{ id: discussion.id, cat: categoryId[key] });
+			core.info(`Moved #${discussion.number} to ${CATEGORY[key]}`);
+		});
+		return true;
 	};
-	const comment = (discussion, body) =>
-		gql(`mutation($id: ID!, $body: String!) { addDiscussionComment(input: {discussionId: $id, body: $body}) { clientMutationId } }`,
-			{ id: discussion.id, body });
 
 	const event = context.eventName;
 	const action = context.payload.action;
@@ -118,21 +126,26 @@ module.exports = async ({ github, context, core }) => {
 		}
 
 		if (action === 'labeled' && context.payload.label.name === QUEUE_LABEL) {
+			let added = false;
 			if (!inQueue(number)) {
 				queue.entries.push({ title: discussion.title, url: discussion.url, number, accepted: today(), status: 'Open' });
-				await comment(discussion, `Accepted into the [Community Queue](${queueUrl}) at position ${queue.entries.length}.`);
+				added = true;
 			}
-			await moveTo(discussion, 'active');
+			const moved = moveTo(discussion, 'active');
+			if (added || moved) {
+				const position = queue.entries.findIndex(e => e.number === number) + 1;
+				comments.push([discussion, `Accepted into the [Community Queue](${queueUrl}) at position ${position}.`]);
+			}
 		} else if (action === 'unlabeled' && context.payload.label.name === QUEUE_LABEL) {
 			removeFromQueue(number);
 			if (discussion.category.id === categoryId.active)
-				await moveTo(discussion, 'requests');
+				moveTo(discussion, 'requests');
 		} else if (action === 'category_changed' && discussion.category.id === categoryId.stale && inQueue(number)) {
 			// Gone stale: out of the queue. Reactivating means accepting it again, at the back.
 			removeFromQueue(number);
 			if (repoInfo.label)
-				await gql(`mutation($id: ID!, $label: ID!) { removeLabelsFromLabelable(input: {labelableId: $id, labelIds: [$label]}) { clientMutationId } }`,
-					{ id: discussion.id, label: repoInfo.label.id });
+				changes.push(() => gql(`mutation($id: ID!, $label: ID!) { removeLabelsFromLabelable(input: {labelableId: $id, labelIds: [$label]}) { clientMutationId } }`,
+					{ id: discussion.id, label: repoInfo.label.id }));
 		}
 	} else if (event === 'pull_request_target') {
 		const pr = context.payload.pull_request;
@@ -143,17 +156,21 @@ module.exports = async ({ github, context, core }) => {
 
 		if (action === 'closed' && pr.merged) {
 			for (const number of refs) {
-				if (!inQueue(number))
-					continue;
+				const queued = !!inQueue(number);
 				const discussion = await getDiscussion(number);
+				// A request still open in Active Requests but no longer queued is one an
+				// earlier run took out of the queue before failing; finish it.
+				if (!queued && !(discussion && !discussion.closed && discussion.category.id === categoryId.active))
+					continue;
 				removeFromQueue(number);
 				if (!discussion)
 					continue;
-				await moveTo(discussion, 'completed');
-				await comment(discussion, `Implemented by ${prLink(pr)}.`);
+				const moved = moveTo(discussion, 'completed');
 				if (!discussion.closed)
-					await gql(`mutation($id: ID!) { closeDiscussion(input: {discussionId: $id, reason: RESOLVED}) { clientMutationId } }`,
-						{ id: discussion.id });
+					changes.push(() => gql(`mutation($id: ID!) { closeDiscussion(input: {discussionId: $id, reason: RESOLVED}) { clientMutationId } }`,
+						{ id: discussion.id }));
+				if (moved || !discussion.closed)
+					comments.push([discussion, `Implemented by ${prLink(pr)}.`]);
 			}
 			// Items this PR had marked In Progress but no longer references go back to Open.
 			for (const e of queue.entries)
@@ -180,6 +197,11 @@ module.exports = async ({ github, context, core }) => {
 			{ id: repoInfo.discussion.id, body: newBody });
 		core.info('Updated the Community Queue');
 	}
+	for (const change of changes)
+		await change();
+	for (const [discussion, text] of comments)
+		await gql(`mutation($id: ID!, $body: String!) { addDiscussionComment(input: {discussionId: $id, body: $body}) { clientMutationId } }`,
+			{ id: discussion.id, body: text });
 };
 
 module.exports.parseQueue = parseQueue;
