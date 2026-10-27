@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#107](https://github.com/ofp-fs2open/fs2open.github.com/pull/107)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **armor.tbl** defines armor types and how much damage each type of weapon does to them. Armor can be damaged more or less by certain types of weapons: a fire-retardant suit may offer excellent protection against a flamethrower but almost none against bullets. Ships and shields pick an armor type in [ships.tbl](ships.tbl), and weapons pick a damage type in [weapons.tbl](weapons.tbl).
