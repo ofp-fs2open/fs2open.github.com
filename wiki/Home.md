@@ -17,11 +17,12 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
 
 ## Documentation
 
-- [OFP Tables](OFP-Tables): directory of OFP-only tables and OFP additions to existing tables
-  - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points
-  - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (editor only)
-  - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula
-  - [props.tbl](props.tbl): OFP additions to props.tbl (texture replacement)
-  - [species.tbl](species.tbl): OFP additions to species.tbl (intel entry tech models)
+- [OFP Tables](OFP-Tables): every table documented here, in alphabetical order
+  - [ai.tbl](ai.tbl): AI classes
+  - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points (OFP only)
+  - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (OFP only, editor only)
+  - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
+  - [props.tbl](props.tbl): prop classes (OFP additions so far)
+  - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
 - [OFP SEXPs](OFP-SEXPs): new SEXP operators and OFP changes to existing ones
 - [OFP Lua Scripting](OFP-Lua-Scripting): Lua API added by OFP

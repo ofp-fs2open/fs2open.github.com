@@ -2,26 +2,7 @@
 > OFP Revision: [#43](https://github.com/ofp-fs2open/fs2open.github.com/pull/43)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
-<details>
-<summary><b>List of OFP tables and related code files</b></summary>
-
-\* Notes Modular Tables
-
-| Table | Code |
-|---|---|
-| [coordinate_points.tbl](coordinate_points.tbl)\* | /coordinate_points/coordinate_shapes.cpp |
-| [editor.tbl](editor.tbl)\* | /mission/missionparse.cpp |
-| [generated_nebula.tbl](generated_nebula.tbl)\* | /starfield/nebula.cpp |
-
-SCP tables with OFP additions:
-
-| Table | Code |
-|---|---|
-| [props.tbl](props.tbl)\* | /prop/prop.cpp |
-| [species.tbl](species.tbl)\* | /menuui/techmenu.cpp |
-
-See [OFP Tables](OFP-Tables) for the full list.
-</details>
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg) This table exists only in OFP.
 
 The **editor.tbl** configures the mission editors for a mod: editor **settings**, and the **custom data** fields the mod expects its missions, campaigns and ships to use (each field's name, type, default value and description).
 

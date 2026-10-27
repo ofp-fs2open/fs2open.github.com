@@ -14,16 +14,12 @@
 
 **Tables**
 - [OFP Tables](OFP-Tables)
+  - [ai.tbl](ai.tbl)
   - [coordinate_points.tbl](coordinate_points.tbl)
   - [editor.tbl](editor.tbl)
-    - [Settings](editor.tbl#settings)
-    - [Custom data](editor.tbl#custom-data-sections)
   - [generated_nebula.tbl](generated_nebula.tbl)
-  - [Additions to existing tables](OFP-Tables#additions-to-existing-tables)
-    - [props.tbl](props.tbl)
-    - [species.tbl](species.tbl)
-  - [All tables](OFP-Tables#all-tables)
-    - [ai.tbl](ai.tbl)
+  - [props.tbl](props.tbl)
+  - [species.tbl](species.tbl)
 
 **SEXPs**
 - [OFP SEXPs](OFP-SEXPs)

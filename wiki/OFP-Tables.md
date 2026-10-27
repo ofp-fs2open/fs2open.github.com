@@ -2,47 +2,27 @@
 > OFP Revision: [#77](https://github.com/ofp-fs2open/fs2open.github.com/pull/77)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
-This page lists the tables that exist only in OFP, and the existing SCP tables OFP adds fields to. Every standard FreeSpace Open table works in OFP exactly as documented on the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables). Only the differences are listed here.
+This page lists every table documented on this wiki, in alphabetical order. Table documentation is moving here from the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables) one table at a time; tables not listed yet are still documented there. Pages for tables that exist only in OFP say so at the top.
 
 ## Contents
 
-1. [New tables](#new-tables)
-2. [Additions to existing tables](#additions-to-existing-tables)
-3. [All tables](#all-tables)
-4. [Version badges](#version-badges)
+1. [Tables](#tables)
+2. [Version badges](#version-badges)
 
 ---
 
-## New tables
+## Tables
 
-\* Notes Modular Tables
+* Notes Modular Tables
 
 | Table | Modular extension | Code | Purpose |
 |---|---|---|---|
-| [coordinate_points.tbl](coordinate_points.tbl)\* | `xxx-cps.tbm` | /coordinate_points/coordinate_shapes.cpp | Custom 2D shapes for coordinate points |
-| [editor.tbl](editor.tbl)\* | `xxx-edt.tbm` | /mission/missionparse.cpp | Editor settings, and custom data fields for missions, campaigns and ships (editor only) |
-| [generated_nebula.tbl](generated_nebula.tbl)\* | `xxx-gneb.tbm` | /starfield/nebula.cpp | Patterns and colors for the generated (FS1-style) background nebula |
-
----
-
-## Additions to existing tables
-
-\* Notes Modular Tables
-
-| Table | Modular extension | Code | What OFP adds |
-|---|---|---|---|
-| [props.tbl](props.tbl)\* | `xxx-prp.tbm` | /prop/prop.cpp | Texture replacement for every prop of a class |
-| [species.tbl](species.tbl)\* | `xxx-intl.tbm` | /menuui/techmenu.cpp | 3D models for tech room intel entries |
-
----
-
-## All tables
-
-Full documentation of every table, moving here from the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables) one table at a time. Tables not listed yet are still documented there.
-
-| Table | Modular extension | Code |
-|---|---|---|
-| [ai.tbl](ai.tbl) | `xxx-aic.tbm` | /ai/aicode.cpp |
+| [ai.tbl](ai.tbl)* | `xxx-aic.tbm` | /ai/aicode.cpp | AI classes: skill values per difficulty level, and AI profile overrides |
+| [coordinate_points.tbl](coordinate_points.tbl)* | `xxx-cps.tbm` | /coordinate_points/coordinate_shapes.cpp | Custom 2D shapes for coordinate points (OFP only) |
+| [editor.tbl](editor.tbl)* | `xxx-edt.tbm` | /mission/missionparse.cpp | Editor settings, and custom data fields for missions, campaigns and ships (OFP only, editor only) |
+| [generated_nebula.tbl](generated_nebula.tbl)* | `xxx-gneb.tbm` | /starfield/nebula.cpp | Patterns and colors for the generated (FS1-style) background nebula (OFP only) |
+| [props.tbl](props.tbl)* | `xxx-prp.tbm` | /prop/prop.cpp | Prop classes (only OFP's additions documented so far) |
+| [species.tbl](species.tbl)* | `xxx-intl.tbm` | /menuui/techmenu.cpp | Tech room intel entries (only OFP's additions documented so far) |
 
 ---
 
