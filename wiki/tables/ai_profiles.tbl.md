@@ -1,0 +1,1604 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **ai_profiles.tbl** creates and manages patterns of AI behavior, called profiles. A profile is a set of values and flags that control parts of AI behavior. Every option in a profile is optional; an option that isn't set follows the original FreeSpace 2 behavior. Each mission can use a different profile.
+
+The default ai_profiles.tbl is built into the engine and defines the "FS2 RETAIL" profile. Rather than changing that profile, it's usually best to create a new one in a modular table, which then starts from FS2 RETAIL's values.
+
+This table is one of the Modular Tables and can be extended with **xxx-aip.tbm**.
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The table can also be called **mission_profiles.tbl**, and extended with **xxx-msp.tbm**. If both mission_profiles.tbl and ai_profiles.tbl exist, only mission_profiles.tbl is read, and the log says so.
+
+Code: /ai/ai_profiles.cpp. See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Defaults by targeted version](#defaults-by-targeted-version)
+2. [General format](#general-format)
+3. [#AI Profiles](#ai-profiles)
+4. [Difficulty level values](#player-afterburner-recharge-scale)
+5. [Flags and other settings](#big-ships-can-attack-beam-turrets-on-untargeted-ships)
+6. [Deprecated names](#deprecated-names)
+7. [Sample entry](#sample-entry)
+
+---
+
+## Defaults by targeted version
+
+If the version targeted in [game_settings.tbl](game_settings.tbl) is the one listed or later, these flags are on by default in every profile, including FS2 RETAIL. A profile can still turn any of them off.
+
+| Targeted version | Flags turned on |
+|---|---|
+| 3.6.10 | `$reset last_hit_target_time for player hits:` |
+| 3.6.14 (until 23.1) | `$carry shield difficulty scaling bug:` |
+| 3.7.2 | `$fix ramming stationary targets bug:` |
+| 20.0 | `$huge turret weapons ignore bombs:`, `$fix linked primary weapon decision bug:`, `$prevent turrets targeting too distant bombs:`, `$fix heat seekers homing on stealth ships bug:`, `$allow vertical dodge:`, `$fix AI class bug:`, `$ai guards specific ship in wing:`, `$fix AI path order bug:`, `$aspect bomb invulnerability fix:`, `$use actual primary range:`, `$fighters/bombers with no shields can manage ETS:` |
+| 21.4 | `$fixed ship-weapon collisions:` |
+| 22.0 | `$fighterbay arrivals use carrier orientation:`, `$prevent negative turret ammo:`, `$fix keep-safe-distance:` |
+| 23.0 | `$fix good-rearm-time bug:`, `$no continuous turn on attack:`, `$remove-goal properly removes play-dead order:` |
+| 23.2 | `$ships playing dead don't manage ETS:` |
+| 23.4 | `$hud squad messages use tactical disarm/disable:` |
+| 24.2 | `$debris damage respects 'big damage' flag:`, `$force beam turrets to use normal fov:`, `$guards ignore protected attackers:` |
+| 25.0 | `$fix avoid-shockwave bugs:`, `$purge player-issued form-on-wing after subsequent order:`, `$cancel future waves of any wing launched from an exited ship:` |
+| 26.0 | `$fix 'ignore if dead' flag:` |
+| 26.2 | `$no collision avoidance for kamikaze fighters:`, `$fix big ship waypoint completion:`, `$fix shockwave expiring before dealing damage:`, `$fix fighter/bomber AI recovers after engines repaired:`, `$fix standard strafe:`, `$fix AI target recovery:`, `$fix subsystem path randomization on refresh:`, `$fix fighterbay speed ramp:`, `$fix stale AI order state:` |
+
+---
+
+## General format
+
+```
+#AI Profiles
+
+$Default Profile: (a profile name)
+
+$Profile Name: (name)
+(settings)
+
+(more profiles)
+
+#End
+```
+
+- Up to 7 profiles can be added besides the built-in FS2 RETAIL. Another one logs a warning and the rest of the table is skipped.
+- A profile's settings can be in any order. A setting the parser doesn't recognize logs "Unrecognized parameter" and is skipped.
+
+## #AI Profiles
+
+- Indicates to the parser that this is an ai_profiles table file.
+
+### $Default Profile:
+
+- Defines the profile that each mission will use if no profile is specified in FRED.  In addition, this profile will be selected automatically in FRED when you create a new mission.  If this line is not specified, the default profile will be **FS2 Retail**, the FreeSpace 2 retail behavior.
+
+### $Profile Name:
+
+- The name of the profile.
+- A name that already exists logs a warning, and the new profile isn't created.
+
+### +nocreate
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Optional. Goes directly after `$Profile Name:`.
+- Edits the existing profile with this name instead of creating a new one. Use it in modular tables to change a profile defined elsewhere, including FS2 RETAIL.
+
+---
+
+The following entries take a list of five values, one for each difficulty level (very easy, easy, medium, hard, insane).
+
+### $Player Afterburner Recharge Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the speed of afterburner recharge
+- Syntax: **Float list**
+  - Default: 5, 3, 2, 1.5, 1
+
+### $Max Beam Friendly Fire Damage:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the maximum damage inflicted by friendly beam fire. -1 means no limit.
+- Syntax: **Float list**
+  - Default:  0, 5, 10, 20, 30
+
+### $Max Weapon Friendly Fire Damage:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Defines the maximum damage inflicted by friendly weapon fire, including shockwaves. -1 means no limit.
+- Syntax: **Float list**
+  - Default:  -1, -1, -1, -1, -1
+
+### $Max Weapon Self Damage:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Defines the maximum damage inflicted by self-hits, including shockwaves. -1 means no limit.
+- Syntax: **Float list**
+  - Default:  -1, -1, -1, -1, -1
+
+### $Player Countermeasure Life Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the factor applied to player launched countermeasure lifetime
+- Syntax: **Float list**
+  - Default:  3, 2, 1.5, 1.25, 1
+
+### $AI Countermeasure Firing Chance:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the chance a countermeasure will be fired by an AI-controlled ship (this is scaled by ai_class)
+- Syntax: **Float list**
+  - Default: 0.2, 0.3, 0.5, 0.9, 1.1
+
+### $AI In Range Time:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- The delay (in seconds) for the AI to fire its weapons after getting in range.
+- Syntax: **Float list**
+  - Default:  2, 1.4, 0.75, 0, -1
+
+### $AI Always Links Ammo Weapons:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- AI ships will link ballistic primaries if ammo levels are greater than these percents.
+- Syntax: **Float list**
+  - Default: 95, 80, 60, 40, 20
+
+### $AI Maybe Links Ammo Weapons:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the same as **$AI Always Links Ammo Weapons:** but in situations when its hull is below 33 % of maximum hitpoints.
+- Syntax: **Float list**
+  - Default: 90, 60, 40, 20, 10
+
+### $Primary Ammo Burst Multiplier:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Allows the AI to fire primary weapons in bursts. How long the bursts are (and how much time between them) is a function of ammo remaining, distance to target, angle to target, and this multiplier. A value of 0 turns this feature off (AI fires normally, without bursts). A value < 1 will make for shorter bursts with larger gaps, and a value > 1 will give longer bursts with shorter gaps.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $AI Always Links Energy Weapons:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- AI ships will link energy primaries if energy levels are greater than these percents.
+- Syntax: **Float list**
+  - Default: 100, 80, 60, 40, 20
+
+### $AI Maybe Links Energy Weapons:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the same as **$AI Always Links Energy Weapons:** but in situations when its hull is below 33 % of maximum hitpoints.
+- Syntax: **Float list**
+  - Default: 90, 60, 40, 20, 10
+
+### $Max Missiles Locked on Player:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the maximum number of missiles allowed to be homing in on a player at any given time
+- Note: Single-player only, no restriction in multiplayer
+- Note: The alternative spelling "Missles" is also accepted for backwards compatibility reasons.
+- Syntax: **Integer list**
+  - Default: 2, 3, 4, 7, 99
+
+### $Max Player Attackers:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the maximum number of ships allowed to be attacking the player at any given time
+- This number is also checked when a ship checks for a new target, such as using the goal attack-any.
+- Syntax: **Integer list**
+  - Default: 2, 3, 4, 5, 99
+
+### $Max Incoming Asteroids:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the maximum number of active (i.e. "thrown") asteroids that can be heading toward a friendly ship at any given time
+- Syntax: **Integer list**
+  - Default: 3, 4, 5, 7, 10
+
+### $Player Damage Factor: or $AI Damage Reduction to Player Hull:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the factor applied to damage suffered by the player
+- Syntax: **Float list**
+  - Default: 0.25, 0.5, 0.65, 0.85, 1
+
+### $Player Subsys Damage Factor: or $AI Damage Reduction to Player Subsys:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the factor applied to subsystem damage suffered by the player. This is in addition to the **$Player Damage Factor:**
+- Syntax: **Float list**
+  - Default: 0.2, 0.4, 0.6, 0.8, 1
+
+### $Player Damage Inflicted Factor:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Sets the factor applied to damage the player deals, to hulls and subsystems alike.
+- Syntax: **Float list**
+  - Default: 1, 1, 1, 1, 1
+
+### $Predict Position Delay:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the time after which the AI will recalculate the position of its target.
+- It does not apply to the AI's aim, it only applies to things like avoiding collisions and maneuvering at close range. Generally, anything other than a 0 just allows the AI to do monumentally stupid things like try to turn to avoid ramming where it thought you were 2 seconds ago.
+- Syntax: **Float list**, seconds
+  - Default: 2, 1.5, 1.333, 0.5, 0
+
+### $AI Shield Manage Delay:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Also **$AI Shield Manage Delays:**
+- Sets the time in seconds between each instance of an AI ship managing its shields
+- Syntax: **Float list**
+  - Default: 5, 4, 2.5, 1.2, 0.1
+
+### $Friendly AI Fire Delay Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the factor applied to "fire wait" for friendly ships
+- Syntax: **Float list**
+  - Default: 2, 1.4, 1.25, 1.1, 1
+
+### $Hostile AI Fire Delay Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the factor applied to "fire wait" for hostile ships
+- Syntax: **Float list**
+  - Default: 4, 2.5, 1.75, 1.25, 1
+
+### $Friendly AI Secondary Fire Delay Scale:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Sets the factor applied to "fire wait" for friendly ships
+- Syntax: **Float list**
+  - Default: 0.4, 0.6, 0.8, 1.0, 1.2
+
+### $Hostile AI Secondary Fire Delay Scale:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Sets the factor applied to "fire wait" for hostile ships
+- Syntax: **Float list**
+  - Default: 1.4, 1.2, 1.0, 0.8, 0.6
+
+### $AI Turn Time Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the factor applied to time it takes for enemy ships to turn. A value of 1.0 means the ship turns at normal speed, 2.0 means half speed (takes twice as long), etc. Note that this value ONLY affects ships hostile to the player (always 1.0 for friendly ships).
+- Syntax: **Float list**
+  - Default: 3, 2.2, 1.6, 1.3, 1
+
+### $Glide Attack Percent:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- How often the AI will use the "glide attack" move when it has the opportunity. Glide attack means using glide to maintain course while aiming and firing at the current target. Only affects ships capable of glide.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Circle Strafe Percent:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- How often the AI will use the "circle strafe" move when it has the opportunity. Circle strafe means that the ship will attempt "Descent-like" combat, trying to maintain distance while circling around the target using sidethrusters. Ships will only attempt this when sidethrust top speed is at least 2/3 of target's current velocity.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Glide Strafe Percent:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- How often the AI will use the "glide strafe" move when it has the opportunity. Glide strafe means using glide to attack capships by flying past and shooting at them. Only affects ships capable of glide.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Random Sidethrust Percent:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Percentage of the time where AI ships will randomly sidethrust in a dogfight.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Stalemate Time Threshold:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- The minimum amount of time required for the AI to detect a "stalemate" situation. If a ship and its target have been within a certain distance of each other (defined by *$Stalemate Distance Threshold*) for this amount of time without either of them scoring a hit on the other, the AI will do something to break the stalemate. Only applies to small ships. If this value is 0 or less, no stalemate detection is performed.
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Stalemate Distance Threshold:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- The maximum distance that an AI ship must remain from its target for a "stalemate" to occur (see *$Stalemate Time Threshold*).
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Player Shield Recharge Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the factor applied to the speed at which the player's shields recharge
+- Syntax: **Float list**
+  - Default:  4, 2, 1.5, 1.25, 1
+
+### $Player Weapon Recharge Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the factor applied to the speed at which the player's weapons recharge
+- Syntax: **Float list**
+  - Default:  10, 4, 2.5, 2, 1.5
+
+### $Max Turret Target Ownage:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the maximum number of turrets on a particular ship allowed to be attacking the same target at any given time
+- Syntax: **Integer list**
+  - Default: 3, 4, 7, 12, 19
+
+### $Max Turret Player Ownage:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the maximum number of turrets on a particular ship allowed to be attacking the player at any given time
+- Syntax: **Integer list**
+  - Default: 3, 4, 7, 12, 19
+
+### $Percentage Required For Kill Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the minimum percentage of the total assessed damage a player must inflict in order to be awarded a kill (3.6.10 and on)
+- Syntax: **Float list**
+  - Default: 0.30, 0.30, 0.30, 0.30, 0.30
+
+### $Percentage Required For Assist Scale:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Sets the minimum percentage of the total assessed damage a player must inflict in order to be awarded an assist (3.6.10 and on)
+- Syntax: **Float list**
+  - Default: 0.15, 0.15, 0.15, 0.15, 0.15
+
+### $Percentage Awarded For Capship Assist:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- In TvT and Coop missions all teammates will be granted this percentage of the capships score when someone scores a kill (3.6.10 and on)
+- Syntax: **Float list**
+  - Default: 0.5, 0.5, 0.5, 0.5, 0.5
+
+### $Repair Penalty:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- The amount to subtract from the player's score if they are repaired by a support ship
+- Syntax: **Integer list**
+  - Default: 10, 20, 35, 50, 60
+
+### $Delay Before Allowing Bombs to Be Shot Down:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Time after bombs are fired during which the bombs are invulnerable to weapon hits
+- Syntax: **Float list**
+  - Default: 1.5, 1.5, 1.5, 1.5, 1.5
+
+### $Chance AI Has to Fire Missiles at Player:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Chance for an AI to hesitate about firing a secondary or homing turret weapon at the player. Values range from 0-6, at 0 they will frequently hesitate, at 6 they will never hesitate.
+- Syntax: **Integer list**
+  - Default: 0, 1, 2, 3, 4
+- Mechanic details: AIs are only allowed to fire homing secondaries or turrets with homing weapons at the player in a limited window of time. The window starts every ten seconds, and lasts (**value** + 1) 7ths of that ten second cycle. Each ship has it's own cycle, so their windows are not all synchronized.
+- Example: a value of 1 becomes 2/7ths, so ships can fire homing weapons at the player for roughly 2.85 seconds at a time, then are unable to fire them for 7.15 seconds.
+
+### $Max Aim Update Delay:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Maximum amount of delay allowed before the AI will update its aim. Until the next update, the AI will project the target forward based on last checked position and velocity. Applies to small ships vs small ships (dogfights). The actual delay is randomly selected between 0 and the maximum (so setting a value of 2 will result in an average of 1 second delay).
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Turret Max Aim Update Delay:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- As $Max Aim Update Delay, but affecting turrets instead
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Player Autoaim FOV:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Gives the player autoaim within the specified number of degrees from the target (FOV).
+- Unlike the ships.tbl settings for autoaim, this only affects the player (and, of course, only if there is a nonzero value for the difficulty level.)
+- Syntax: **Float list**
+  - Default: 0, 0, 0, 0, 0
+
+### $Detail Distance Multiplier:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Affects how the "model detail level" setting in Options switches between LOD levels.
+- This number acts as a multiplier on the LOD distances specified in ships.tbl.
+- NOTE THAT THIS IS PER DETAIL LEVEL, NOT PER DIFFICULTY LEVEL.
+- Syntax: **Float list**
+  - Default: 0.125, 0.25, 1.0, 4.0, 8.0
+
+---
+
+The following entries are boolean flags.  They can be set to *YES* or *NO*, *TRUE* or *FALSE*, *OUI* or *NON*, *HIja&prime;* or *ghobe&prime;*, etc.  The default is *NO*.
+
+### $big ships can attack beam turrets on untargeted ships:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, big ships can attack a beam turret that's firing on them from a ship that they don't currently have targeted.
+
+### $smart primary weapon selection:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, enables the new primary weapon selection method
+
+### $smart secondary weapon selection:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, enables the new secondary weapon selection method (including proper use of bomber+ missiles)
+
+### $smart shield management:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, shields will devote all their charging energy to the weakest quadrant(s) and not waste energy on fully-charged quadrants (previously was -smart_shields on the command line)
+
+### $smart afterburner management:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, the AI will properly use brief pulses of afterburner power instead of afterburning until fuel is exhausted
+
+### $free afterburner use:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- If set, the AI will use afterburners in more situations.
+
+### $allow rapid secondary dumbfire:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, allows an AI ship to switch to rapid fire for dumbfire missiles
+
+### $huge turret weapons ignore bombs:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, causes huge turret weapons (including anti-capship beams) to not target bombs
+
+### $don't insert random turret fire delay:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, removes the random turret fire delay (from 1.1 to .9 seconds) inserted in addition to AI Fire Delay Scale
+
+### $hack improve non-homing swarm turret fire accuracy:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, triggers a hack to improves the accuracy of non-homing swarm missiles by firing them along the turret's last fire direction rather than the direction it currently faces
+- Also disables swarm weapons ability to fire only on the 'turrets barrel line'.
+
+### $shockwaves damage small ship subsystems:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, shockwaves will cause damage to small ship subsystems (like in FS1)
+
+### $navigation subsystem governs warpout capability:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, ships will not be able to warp out if their navigation subsystem is destroyed or low in strength
+
+### $check communications for non-player ships:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- When set, every ship will have the same communications subsystem restrictions as the player, including minimum strength to send messages and EMP scramble status.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $ignore lower bound for minimum speed of docked ship:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, there will be no lower bound for the speed at which docked ships move (like in FS1).
+- When a ship is towing another ship or ships, the towing ship will be slowed down to a degree depending on the total mass of all docked ships.  In FS1, the ships could slow down to an arbitrarily slow speed, even a fraction of a m/s above zero.  In FS2, there is a lower bound on this behavior so that all ships are guaranteed to move at a minimum docked speed.  When set, this flag removes the lower bound and restores FS1 behavior.
+
+### $disable linked fire penalty:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, there will be no penalty for linking primaries. Normally, the rate of fire is *1 for a single bank, *0.66 for two banks and *0.5 for three banks (the fire delay is increased according to the formula 1+([nb of banks]-1)*0.5 ).
+
+### $disable player secondary doublefire:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- If set, players are not allowed to dual-fire their secondaries.
+
+### $disable AI secondary doublefire:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- If set, AIs are not allowed to dual-fire their secondaries.
+
+### $disable weapon damage scaling:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, weapons will do the same damage to a ship regardless of "big damage", "supercap", etc. ship types.
+
+### $use additive weapon velocity:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, weapons will inherit their firing ship's velocity.  A ship traveling quickly will fire weapons faster than a ship traveling slowly.  This also improves the accuracy of weapons fired while gliding.
+
+### $use newtonian dampening:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Newtonian Dampening changes turning and acceleration behavior. By default, there's quite a bit of slide when you turn, and when combined with high damp values (such as in BtRL), you can actually push your speed up beyond the max. Newtonian Dampening is the more realistic turns, where too much turning will lower your speed. Forward momentum is also affected. Backslash can explain it in more detail. [http://www.hard-light.net/forums/index.php/topic,50870.msg1029741.html#msg1029741]
+
+### $include beams for kills and assists:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, beam damage is counted when calculating kills and assists.
+
+### $score kills based on damage caused:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, kills gain score based on the percentage damage the killer inflicted on the dead ship.
+
+### $score assists based on damage caused:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, kills gain score based on the percentage damage the player gaining the assist inflicted on the dead ship.
+
+### $allow event and goal scoring in multiplayer:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, players (rather than just their team) can gain score from events in multiplayer.
+
+### $fix linked primary weapon decision bug:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, the AI will properly link primaries according to specified percentages of energy levels instead of retail behavior where it mistakenly linked according to absolute energy levels.
+
+### $fix ramming stationary targets bug:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- When set, AI ships will try not to crash into stationary targets.  See [Mantis #3147](http://scp.indiegames.us/mantis/view.php?id&#61;3147).
+- Off by default.
+- Syntax: ***Boolean***
+
+### $prevent turrets targeting too distant bombs:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, prevents turrets from targeting bombs beyond maximum range of the weapons of the turret.
+
+### $smart subsystem targeting for turrets:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, prevents turrets from trying to target subsystems beyond their fov limits, also keeps the turret subsystem targeting preference order intact regardless of the angle to the target.
+
+### $fix heat seekers homing on stealth ships bug:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, heat-seeking missiles will not home in on stealth ships (this mirrors the established behavior where heat-seeking missiles do not home in on ships that are hidden from sensors).
+
+### $multi allow empty primaries:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, allows a player to commit into a multiplayer game without primaries.
+
+### $multi allow empty secondaries:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- If set, allows a player to commit into a multiplayer game without secondaries.
+
+### $allow turrets target weapons freely:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- If set, allows turrets to target any weapons instead of just targeting bombs, to be used in conjunction with target priorities setup.
+
+### $use only single fov for turrets:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- If set, allows turrets to fire outside some hardcoded FOV set for certain missile types limits, and rely only on the user defined FOV.
+
+### $allow vertical dodge:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- If set, allows ships to dodge weapons fire vertically as well as horizontally.
+
+### $force beam turrets to use normal fov:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- If set makes beam turrets use same FOV rules as other weapons do. Prevents beam from a turret from following the target beyond the turret's FOV
+
+### $fix AI class bug:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Fixes a bug where AI class attributes are not set properly on ships if the AI class is set in the mission to something other than the default for the ship type. Set this to YES if you want attributes in [ai.tbl](ai.tbl) to mean anything at all.
+
+### $turrets ignore targets radius in range checks:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- When checking whether a target is in range, turrets measure to the target's center. Normally they subtract the target's radius, so a large target counts as in range sooner.
+
+### $no extra collision avoidance vs player:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Disables the extra collision avoidance that AI normally uses against the player. Makes the AI more aggressive vs the player at close range (same treatment as vs other AI), although ship-ship collisions are slightly more likely.
+
+### $perform fewer checks for death screams:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- If set, ships that are on different teams and ships that are outside the player's squadron will be allowed to send death screams.  Additionally, the game will no longer cap a maximum number of screams per mission.  (This flag originated as a customization of message behavior for the Wing Commander Saga mod.)
+
+### $advanced turret fov edge checks:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Forces all turrets to use ["fov edge checks"](https://wiki.hard-light.net/index.php/Subsystem#.22fov_edge_checks.22).
+
+### $require turrets to have target in fov:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Forces all turrets to use ["target requires fov"](https://wiki.hard-light.net/index.php/Subsystem#.22target_requires_fov.22).
+
+### $all ships manage shields:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Allows AI to manage shields on big ships
+
+### $ai aims from ship center:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- AI aims weapons using the center of the ship instead of the first gunpoint. If a convergence offset is specified for this ship in ships.tbl, AI aims using that as a reference point.
+
+### $allow primary link at mission start:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg)
+
+- Normally, no ships will link primaries for the first 30 seconds of a mission. In addition, ships will randomly not link for the first two minutes of a mission. Set this flag to YES to get rid of this often-problematic retail behavior.
+
+### $allow beams to damage bombs:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Default: NO.
+- When no, when any secondary encounters any beam it is instantly destroyed regardless of if it is marked as interceptable, has a health value, or any other circumstance that would normally apply to interception by other weapons.
+- When true, damage and health values are respected in these circumstances. Secondaries without hitpoints are still destroyed, however.
+
+### $disable weapon damage scaling for player:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- When set, Player weapon damage will no longer be scaled down when firing a non-huge primary against a ship with the "big damage" flag. Use with caution, as this may severely impact mission balance.
+
+### $countermeasures affect aspect seekers:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- By default, an aspect seeker that's been decoyed by a CM just flies straight forward, while a heatseeker in the same position will actively home in on the CM.  This flag makes aspect seekers match heatseeker behavior in this regard.
+
+### $ai guards specific ship in wing:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- If ordered to guard a ship in a wing (of which it is not a member), the AI will guard that specific ship instead of the entire wing (resulting in guarding the wing leader).
+
+### $support don't add primaries:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- When set, the support ship will not equip a new primary weapon into an empty bank.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $max allies rearming threshold:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The maximum allowed number of allies that are allowed to be rearming at the same time. It should be noted that the effect is more noticeable at higher numbers.
+- 2 by default.
+- Syntax: ***Integer***
+
+### $fighterbay arrivals use carrier orientation:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Causes all ships arriving via a ship's fighterbay to attempt to align their right vector with their carrier's right vector as they exit.
+- Syntax: ***Boolean***
+
+### $fighterbay departures use carrier orientation:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Causes all ships departing via a ship's fighterbay to attempt to align their right vector with their carrier's right vector as they enter.
+- Syntax: ***Boolean***
+
+### $debris damage respects 'big damage' flag:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Causes damage inflicted by debris to be limited by the 'big damage' flag in the same way as damage inflicted by weapons.
+- Syntax: ***Boolean***
+
+### $don't limit change in speed due to physics whack:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- With this flag, the speed change due to physics whacks (collision, shockwave, etc.) is unlimited.  Without this flag, the speed change will be capped at 440 m/s if it exceeds 500 m/s.
+- Syntax: ***Boolean***
+
+### $guards ignore protected attackers:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- With this flag, the AI will not guard against ships that have the "protect-ship" flag.
+- Syntax: ***Boolean***
+
+### $ai path mode:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Possible options are "normal" and "alt1". The alt1 mode differs from the normal behavior in the following ways:
+  - 1. No path shortcutting. Normal pathing AI will skip forward along a path to the furthest point it can reach. This is sometimes desirable, but makes it a lot harder to predict how the AI is going to behave at various points along a path. Turning this off also allows us to force the AI to straighten out, by giving it several waypoints in a more-or-less straight line. This is useful for such things as lining up a landing.
+  - 2. No sliding when following paths. Docking still works, but there is some code that causes the AI to lose its mind if it just misses a point: it turns towards the point in big, looping circles. This is apparently caused by passing a slide_vec value into ai_turn_towards_vector, which doesn't even seem to do what you'd expect it to do. Passing a null value instead turns off the stupid. (The behavior is fixed in alt1).
+  - 3. Momentum taken into account when following paths. Path points will trigger sooner, proportional to the ship's speed and momentum. This prevents the AI from massively overshooting a waypoint, especially with high-damp ships.
+  - 4. AI tries to follow the line between waypoints. Instead of just pointing at the next waypoint, the AI will fly a bit towards the line. This helps keep the AI actually on the path it claims to be following. See picture:
+Blue is what happens with regular pathing. Red is the modified pathing: as you can see, it actively moves back towards the line.
+  - 5. AI will respect "cap-waypoint-speed" when following paths (such as when docking or departing via bay).
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- As of 26.0, the "alt2" mode is available. The alt2 mode is like alt1 but allows shortcutting.
+
+### $default weapon select effect:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- This specifies which effect to use for weapon select animations when no .ani can be found, or the -weapon_choice_3d commandline flag is active. This will default to the FS2 effect.
+- Possible options are "FS1" and "off"
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- This flag has been moved to [game_settings.tbl](game_settings.tbl)
+
+### $default ship select effect:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- This specifies which effect to use for ship select animations when no .ani can be found, or the -ship_choice_3d commandline flag is active. This will default to the FS2 effect.
+- Possible options are "FS1" and "off"
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- This flag has been moved to [game_settings.tbl](game_settings.tbl)
+
+### $no warp camera:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- When set, prevents the view from switching to the external camera when the player warps out.
+- Note: this flag is deprecated and may get moved to another table without further notice.
+
+### $fix AI path order bug:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- When set, ship will follow its own waypoint path unless the wingleader has the same waypoint path and order.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $strict turret-tagged-only targeting:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- When set, newer turret-tagged-only behavior will be enabled.  See [Mantis #3114](http://scp.indiegames.us/mantis/view.php?id&#61;3114).
+- Off by default.
+- Syntax: ***Boolean***
+
+### $aspect bomb invulnerability fix:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- When set, the code that makes bombs invulnerable for the first 1.5 seconds of life will use the correct lifetime calculation for aspect bombs.  Without this fix, the invulnerability time will be extended by 20% of the total lifetime of the bomb.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $glide decay requires thrust:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- When set, gliding ships will maintain their current speed without decay as long as they aren't actively thrusting.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $ai can slow down when attacking big ships:
+
+![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg)
+
+- When set, fighters attacking big ships will slow down depending on how long they've been attacking (80% speed after 5 seconds, 60% after 8 seconds, 40% after 10 seconds, and 20% after 15 seconds), how long it's been since they were last shot (full throttle if it was within the past 6 seconds), and how close they are (full throttle if the target is more than 1200 meters away).
+- Off by default.
+- Syntax: ***Boolean***
+
+### $use actual primary range:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- When set, fighters will no longer fire primary weapons at targets outside their range just because weapon travel time would be sufficiently short.
+- Off by default.
+- Syntax: ***Boolean***
+
+### $override radius for subsystem path points:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- When set, this value overrides the default distance for determining if a ship had reached a point in a model subsystem path. Useful to allow ships with high damp values to navigate subsystem paths when attacking a subsystem. Must be greater than or equal to 1. If ***$use POF radius for subsystem path points:*** is set than this override value will only be used if the point in the subsystem path is less than 1 or invalid.
+- 5 by default.
+- Syntax: ***Integer***
+
+### $use POF radius for subsystem path points:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- When set, the distance for determining if a ship had reached a point in a model subsystem path will be the radius of that path point, not the default distance of 5.
+- Off by default. If this is set to YES and ***'$override radius for subsystem path points:*** is set to greater than or equal to 1, then the path point radius will be used. If the path point radius cannot be found or is less than 1 then override radius will be used if it is set to greater than or equal to 1.
+- Syntax: ***Boolean***
+
+### $bay arrive speed multiplier:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- Causes all AI ships arriving from fighterbays (following a fighterbay path) to gradually accelerate, instead of immediately attempting to attain maximum speed. This can be used to prevent fighters from overshooting the fighterbay paths. The initial target speed is the maximum speed multiplied by the given value, with the multiplier gradually approaching 1.0 as the distance to the end of the path decreases.
+  - Syntax: ***Float*** (defaults to 1.0)
+
+> **Note:** Will be overridden by path-specific multipliers, see [Ships.tbl#.2Barrive_speed_multiplier:](https://wiki.hard-light.net/index.php/Ships.tbl#.2Barrive_speed_multiplier:).
+
+### $bay depart speed multiplier:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- Same as above, except for departures into fighterbays. The initial target speed is the maximum speed, with the target speed gradually approaching maximum speed multiplied by the given value as the distance to the fighterbay decreases.
+  - Syntax: ***Float*** (defaults to 1.0)
+
+> **Note:** Will be overridden by path-specific multipliers, see [Ships.tbl#.2Bdepart_speed_multiplier:](https://wiki.hard-light.net/index.php/Ships.tbl#.2Bdepart_speed_multiplier:).
+
+### $lead indicator second-order prediction factor:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- This is a 0 to 1 multiplier of a factor to adjust the lead indicator to take into account a ship's rotational velocity as well as its velocity. This will directly affect autoaim, making it more accurate for turning enemies.
+- This *will* make the lead indicator slightly jitterier in general, and does not properly take into account gliding. It is recommended to adjust the value to fit your situation.
+  - Syntax: ***Float*** (defaults to 0.0)
+
+### $no directional bias for missile and ship turning:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- When enabled, this will cause ships and missiles to take direct turning paths to point at their target. This does not directly affect their turning time, but in many situations will result in more efficient paths and a better time-to-target.
+- Syntax: ***Boolean***
+
+### $respect ship axial turnrate differences:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Normally AI ships will use the average of their pitch and heading turn times for their turn time on all axes. If this is enabled the ship will actually use the tabled values for each axis.
+- ***NOTE***:The AI will ***NOT*** take this into account when turning, it will always turn directly towards its target, even if it could bank and use a faster axis instead. Use this flag carefully, and make sure that their your ships have exactly the turn times you want for each axis.
+- Syntax: ***Boolean***
+
+### $any ship with no shields can manage ETS:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Normally AI ships will not manage ETS if they do not have shields set to be on. When enabled, this flag allows the AI on any ship to manage ETS for weapons and engines even if they do not have shields set to on. Do note that in Vanilla FS2, some capital ships can go much faster with this enabled.
+- Syntax: ***Boolean***
+
+### $fighters/bombers with no shields can manage ETS:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Normally AI ships will not manage ETS if they do not have shields set to be on. When enabled, this flag allows the AI on fighters and bombers to manage ETS for weapons and engines even if they do have shields set to on.
+- Syntax: ***Boolean***
+
+### $ships playing dead don't manage ETS:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Prevents ships from managing their ETS is they are currently playing dead.  Managing ETS could lead to unexpected speed changes in ship-maneuver.
+- Syntax: ***Boolean***
+
+### $better combat collision avoidance for fightercraft:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- If set will cause small ships to be much better at avoiding colliding with large ships while fighting, and will not spend as long recovering from a collision if one does occur.
+- Syntax: ***Boolean***
+
+### +combat collision avoidance aggression for fightercraft:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Requires $better combat collision avoidance for fightercraft: to be set above. Sets the avoidance aggression value for avoiding colliding with large ships while fighting, higher numbers increase collision avoidance.
+- The value is multiplied to a vector proportional the ship's velocity divided by its rotation time, which roughly determines the minimum distance needed to pull away from an obstacle directly ahead, and the time at which the AI will stop what's it's doing to pull away.
+- Syntax: ***Float*** (defaults to 3.5)
+
+### +combat collision avoidance for fightercraft includes target:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Requires $better combat collision avoidance for fightercraft: to be set above. Sets the avoidance to include the target ship it might be attacking. Enabling this can help reduce collisions when attacking if ship speeds in your mod are higher than retail.
+- Syntax: ***Boolean***
+
+### $better guard collision avoidance for fightercraft:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set will cause small ships to be much better at avoiding colliding with large ships while guarding, and will not spend as long recovering from a collision if one does occur.
+- Syntax: ***Boolean***
+
+### +guard collision avoidance aggression for fightercraft:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Requires $better guarding collision avoidance for fightercraft: to be set above. Sets the avoidance aggression value for avoiding colliding with large ships while fighting, higher numbers increase collision avoidance.
+- The value is multiplied to a vector proportional the ship's velocity divided by its rotation time, which roughly determines the minimum distance needed to pull away from an obstacle directly ahead, and the time at which the AI will stop what's it's doing to pull away.
+- Syntax: ***Float*** (defaults to 3.5)
+
+### $firing requires exact los:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- If set will cause turrets and AI weapons to only fire if they have a clear line of sight from their firing point to their target's ship's center.
+- Syntax: ***Boolean***
+
+### $exact los minimum detection radius:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- The minimum radius of objects that are considered for line-of-sight when using the *$firing requires exact los:* flag.  The default is 10.
+- Syntax: ***Float***
+
+### $improved missile avoidance for fightercraft:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- Fighters/bombers will be much more effective at dodging missiles in general. Of note is that AI do not normally care about countermeasure effect range before dropping them (only distance less than 200m), with this flag, they will only drop them if within countermeasure range.
+- Syntax: ***Boolean***
+
+### $unify usage of AI profile countermeasure chance:
+
+Also accepted under its earlier name, `$friendly ships use AI profile countermeasure chance:` ![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg).
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies all AI ships to use their specific AI class profile countermeasure firing chance. By default Friendly ships always use the second value in **$AI Countermeasure Firing Chance:** from default AI profile. The older name of "$friendly ships use AI profile countermeasure chance:" also enables this flag.
+- Syntax: ***Boolean***
+
+### $improved subsystem attack pathing:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- Fightercraft will use a somewhat more efficient and faster subsystem attack pathing method.
+- Notably, this method *does not* use the path system. Using this flag, aside from docking and fighter bay paths, *all other* paths will be ignored and are no longer necessary.
+- Syntax: ***Boolean***
+
+### $fixed ship-weapon collisions:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg)
+
+- Fixes an error in ship-weapon collisions which would occasionally cause them to not trigger when they should.
+- Most obvious when projectiles would erroneously bypass a full shield quadrant and damage the hull.
+- Syntax: ***Boolean***
+
+### $AI secondary range awareness:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg)
+
+- Controls if the AI considers weapon range at all when selecting a secondary weapon to attempt to use. Currently available options are:
+- 'RETAIL': The default. After performing filtering logic based on the target types and weapon flags, the AI will select the first valid secondary bank as its active one, regardless of range.
+- 'AWARE': As retail, except that if a weapon is out of range it the AI will keep looking down the list to see if it has a weapon that is in range, and use that instead if it does. All other weapon selection and restriction logic still applies.
+
+### $no shield damage from ship collisions:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg)
+
+- Normally, the heavier ship in a collision will receive shield damage from the collision if it has one.
+- This disables that, and causes all involved ships to only take hull damage.
+- Syntax: ***Boolean***
+
+### $reset last_hit_target_time for player hits:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg)
+
+- When the player hits a ship, resets the timer the AI uses to remember who last hit it, as it does for other attackers.
+- On by default when targeting 3.6.10 or later, so this flag is mostly useful for turning it off.
+
+### $turret target recheck time:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Defines the amount of time between target recalculation for turrets.
+- Affects turret reaction time in all scenarios, acquiring a target from idle, re-affirming the current target, switching to a new target or even a new subsystem on the same target.
+- Be aware setting this value too low can have an extreme performance impact. It is recommended to not set this below 30 ms.
+- Syntax: ***Float***, milliseconds
+- Default: 2000
+
+### $prevent negative turret ammo:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- By default, turrets with ammo would end up firing one extra shot, resulting in a -1 ammo. This flag corrects that behavior, so the ammo count is properly used.
+- Syntax: ***Boolean***
+
+### $fix keep-safe-distance:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Allows any ship flying the keep-safe-distance behavior to turn toward its goal point. Without this flag, ships will fly into the distance in a straight line.
+- Syntax: ***Boolean***
+
+### $AI ignores aspect lock for leading:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- When off, AI fighters follows retail behavior of aiming directly at a target when using aspect lock missiles. When on AIs ignore this consideration and always lead their targets when attempting to aim at them.
+- Syntax: ***Boolean***
+- Default: on
+
+### $fix good-rearm-time bug:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Causes the "good rearm time" SEXP to correctly expire (revert to being a "bad rearm time") at the end of the specified time.
+- Syntax: ***Boolean***
+
+### $no continuous turn on attack:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Prevents an AI behavior where fighters/bombers will spin around for a second or two when they acquire a target.
+- Syntax: ***Boolean***
+
+### $remove-goal properly removes play-dead order:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Causes remove-goal to take the ship out of the play-dead AI mode when removing the play-dead goal.
+- Syntax: ***Boolean***
+
+### $bay arrivals not time limited:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Causes AI to always complete a bay arrival path, even if it takes longer than 10 seconds.
+- Syntax: ***Boolean***
+
+### $use adjusted AI class autoscale:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Causes autoscaled AI classes to scale only based on the collection of autoscaled AI classes, not all AI classes.  This prevents autoscaled calculations from being skewed by the presence of non-autoscaled classes in the list.
+- Syntax: ***Boolean***
+
+### $carry shield difficulty scaling bug:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Enables an erroneous behavior where player damage difficulty scaling is applied twice to damage from area blasts and shockwaves, greatly changing the effective difficulty scaling. This is a *bug* that should not be enabled, unless the mod was balanced during the time between 3.6.14 and 23.1 (mods [targeting within those versions](game_settings.tbl#24target_version) automatically have this flag enabled).
+- Syntax: ***Boolean***
+
+### $debris affected by physics whacks:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Allows debris to be affected by physics whacks from weapons.
+- Syntax: ***Boolean***
+
+### $asteroids affected by physics whacks:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Allows asteroids to be affected by physics whacks from weapons.
+- Syntax: ***Boolean***
+
+### $dynamic goals afterburn hard:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Will cause all dynamic goals (such as a fighter defending itself, or a fighter chasing an attacker as part of a guard order) to 'afterburn hard' as the optional argument on ai-goals do.
+- Syntax: ***Boolean***
+
+### $player orders afterburn hard:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Will cause all player orders to 'afterburn hard' as the optional argument on ai-goals do.
+- Syntax: ***Boolean***
+
+### $hud squad messages use tactical disarm/disable:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- Will cause disarm or disable orders issued by the hud squadmsg menu (i.e. player orders) to be 'tactical' goals that do not cause the target to be protected from attack.
+- Syntax: ***Boolean***
+
+### $align to target when guarding stationary ship:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Will cause ships to match the target's orientation when following a guard order, rather than facing directly away from the target which is the normal behavior.
+- Syntax: ***Boolean***
+
+### $rotation factor multiplier for player collisions:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Allows modders to have players experience rotational effects from collisions. This value is multiplied by the value of [$Collision Physics: +Rotation Factor:](https://wiki.hard-light.net/index.php/Ships.tbl#.2BRotation_Factor:) in the ships table (which is specified for the ship class).
+  - Syntax: ***Float*** (defaults to 0.0)
+
+### $fix avoid-shockwave bugs:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Fixes a number of bugs affecting the behavior of AI ships trying to avoid ship or weapon shockwaves.  With this flag enabled, the AI will be aware of the correct homing position and impact position of the weapon being evaded, will check the correct ship for shockwave damage, and will properly update stale shockwave-avoidance data.  See PR 6378 for more details.
+- Syntax: ***Boolean***
+
+### $fix standard strafe:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set, this will allow AI to be more effective when attacking big ships in standard strafe mode. With this flag off, there were edge cases where the AI would fly to a point to start a strafe, then think it would collide with the target and then retreat from strafe mode, only to realize it was now far enough to re-engage strafe mode, which commonly resulted in AI just flying around not accomplishing much.
+  - Syntax: ***Boolean***
+
+### $standard strafe used more:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets if the AI tries to always entry strafe mode when attacking large ships even if there are no hostile fighters nearby. By default the AI will only entry strafe mode if the speed is below '$standard strafe triggers under this speed:' and enemy fighters are nearby.
+  - Syntax: ***Boolean***
+
+### $standard strafe triggers under this speed:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets the velocity under which the AI checks if they should enter strafe mode when attacking large ships. Setting this value higher, such as 40 if you ship's max speed is 100, and enabling $standard strafe used more:' will result in the AI strafing by continually moving, instead of parking next to a big ship and blasting it while not moving. In other words, once a ship slows down during attacking, as soon as it drops below the tabled speed (and assuming strafe used more is turned on), it'll start to strafe instead of slowing down even more.
+  - Syntax: ***Float*** (defaults to 3.0 m/s)
+
+### $strafe distance from target bounding box:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets the distance at which the AI flies away from their target's bounding box to attempt a strafing run when attacking large ships. Setting this value higher will result in ships doing fewer longer distance strafing runs.
+  - Syntax: ***Float*** (defaults to 300.0)
+
+### $strafe retreat collide time:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- For strafe attacks against big ships, small ships calculate a point relative to the big ship they are attacking and move towards during it strafe. This value is how long until the attacking ship will reach the strafe attack point, when duration to the point is less than this value begin retreat from strafe (IE turn around and perform a new strafe). Default is 2.0 seconds. Note, a new strafe will also trigger if the check for '$strafe retreat collide distance:' is true.
+  - Syntax: ***Float*** (defaults to 2.0)
+
+### $strafe retreat collide distance:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- For strafe attacks against big ships, small ships calculate a point relative to the big ship they are attacking and move towards during it strafe. This value is the distance until the attacking ship will reach the strafe attack point, when distance to the point is less than this value begin retreat from strafe (IE turn around and perform a new strafe). Note, a new strafe will also trigger if the check for '$strafe retreat collide time:' is true. Default is 200 meters.
+  - Syntax: ***Float*** (defaults to 200.0)
+
+### $strafe stops after time unhit:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets the time duration of a strafing run when attacking a big ship if the attacking ship has not been hit. After this time elapses the AI will stop the current strafing run and loop back to logic of determining of whether or not to do another strafing run. Set higher to allow for longer duration strafing runs.
+  - Syntax: ***Float*** (defaults to 20.0)
+
+### $guard uses big-orbit for target radius above:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets the radius of a guardee ship that will trigger the guarder to use the 'big guard' mode, which is where the guarder will fly around the guarder following a cylindrical shape. This 'big guard' mode differs from normal guard, where the AI will attempt to match the speed of the guardee if it is moving, and if it is stationary, it will fly somewhat randomly in circles around it.
+  - Syntax: ***Float*** (defaults to 500.0)
+
+### $guard with big-orbit uses max speed percent:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Sets maximum percent velocity of a guarder ship when it is using the 'big guard' mode, which is where the guarder will fly around the guarder following a cylindrical shape. By default, this value is 1.0, where the AI will fly around this cylindrical shape at full throttle. Value must be greater than 0 and less than or equal to 1.
+  - Syntax: ***Float*** (defaults to 1.0)
+
+### $attack-any idle circle distance:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Ships with the 'attack-any' order will circle around an invisible point if there are no hostile present. This value sets the radius of how big of a circle to fly around while the AI waits for new hostiles to arrive.
+  - Syntax: ***Float*** (defaults to 100.0)
+
+### $fix AI target recovery:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes several cases where an AI ship stops dead (slows to 0 and doesn't move again until it gets a new order):
+  - a fighter or bomber strafing a large ship that dies or departs;
+  - a ship sitting idle while still holding a standing attack order such as attack-any;
+  - a ship choosing a target to chase that its ship type doesn't actively pursue (per +Actively Pursues: in objecttypes.tbl).
+- With this flag, ships choosing a target to pursue (including guards reacting to an attacker, and ships striking back when hit) only consider targets they actively pursue. A guard attacked by a ship it won't pursue keeps guarding instead of breaking off. A ship ordered to attack a wing goes after members it will pursue first.
+- Targets that a ship only holds, rather than flies after, are unaffected: idle or guarding ships, and capital ships whose turrets prefer the ship's own target, can still target anything.
+- Explicit orders are also unaffected: if a ship is ordered to attack a specific ship, class, type, or wing it doesn't pursue, it still takes that target, so its turrets fire at it, but it won't maneuver toward it.
+- The wing a ship was last ordered to attack is forgotten when a new order takes over, so later target searches no longer prefer that wing. (Also covered by *$fix stale AI order state:*.)
+- Syntax: ***Boolean***
+
+### $unify usage of AI Shield Manage Delay:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies all AI ships to use their specific AI class shield manage delay. By default, Friendly ships always use the second value in **AI Shield Manage Delay:** from default AI profile.
+- Syntax: ***Boolean***
+
+### $fix AI shield management bug:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Fixes an edge-case bug with shield management where the AI will not direct shield energy to a quadrant if it was hit when that quadrant was down. In other words, if a shield quadrant is knocked down to 0 and continues to be shot the AI will not realize it needs to direct energy to that quadrant. Enabling this flag allows the AI to properly recognize which quadrant is in danger and needs additional recharge.
+- Syntax: ***Boolean***
+
+### $AI balances shields instead of directs when attacked:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- By default, FSO AI on ships that manage shields will direct shield energy to a quadrant that was recently hit. If this flag is enabled the AI will always balance shields instead, which can be useful depending on the situation.
+- Syntax: ***Boolean***
+
+### $disable AI transferring energy:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Prevents AI ships from transferring energy between weapons and shields. AI ships are allowed to attempt transferring energy by default, but some mods may disable this feature for the mod and wish to also ensure the AI does not use it.
+- Syntax: ***Boolean***
+
+### $enable freespace 1 style missile behavior:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Enables a set of behaviors observed from missiles in the Freespace 1 release.
+  - Detonate when within 50 meters and not pointing at their target.
+  - Move slower than normal when not pointing at their target.
+  - Aspect seekers follow a -1x lag pursuit scalar for the last second before hitting their target.
+- Note that the last point will make aspect seekers much less likely to hit moving targets.
+- [Can be applied on a per-weapon basis](weapons.tbl#22freespace_1_missile_behavior22)
+- Syntax: ***Boolean***
+
+### $ETS uses ship class power output:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Connects the **$Power Output:** field in a ship class entry to the ETS system.  The ship's power output will serve as a multiplier for ETS energy flowing to guns, shields, and engines, modifying their recharge rates accordingly.
+- Syntax: ***Boolean***
+
+### $ETS energy same regardless of system presence:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Pro-rates available ETS energy according to the number of systems available.  Normally, for ships without a shield system, FreeSpace behaves as if all shield energy is redirected to guns and engines.  Consequently, weapons and afterburner will recharge faster, and a ship's default speed will be higher, than if shields were present.  When this flag is enabled, available ETS energy is scaled so that the rates are the same in both situations.
+- This flag presents certain trade-offs.  On one hand, this flag avoids the possibly surprising behavior of ships performing, in shieldless engagements, better than one might expect from the table entry.  On the other hand, see the next bullet point.
+- Modders should consider both the gameplay and story aspects of this flag.  From an in-universe perspective, enabling this flag means that, on a shieldless ship, the energy that would otherwise go to shields is expended without effect and is wasted.  Or, looking at it another way, it means that upgrading a ship to have a shield system also entails upgrading the reactor to deliver 50% more energy.
+- Syntax: ***Boolean***
+
+### $don't issue form-on-wing goals at mission start:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Normally, at the beginning of a mission, player wings that do not have an initial goal will be given an initial goal to form on the player. Wings in the loadout screen (aka "starting" wings) will also, if they do not have an initial goal, be issued the same goal if they arrive after mission start. This flag disables that behavior.
+- Syntax: ***Boolean***
+
+### $default form-on-wing priority:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The default goal priority to be used when issuing a form-on-wing order via sexp or script.  If not specified, this is 99.  Note that orders issued via the HUD communications system will use the standard communications priorities (100 for ships and 95 for wings) regardless of this setting.
+- Syntax: ***Integer***
+
+### $do not clear goals when running form-on-wing:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Normally, as soon as a form-on-wing goal is executed by a ship, every goal on that ship is cleared.  Thus the ship will follow the form-on-wing behavior while forgetting both the form goal and all previous goals, and if it receives any other goal in any way, it will immediately begin a new behavior.  This flag prevents the goal clearing.
+- Syntax: ***Boolean***
+
+### $do not clear goals when running stay-still:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Normally, as soon as a stay-still goal is executed by a ship, every goal on that ship is cleared.  Thus the ship will follow the stay-still behavior while forgetting both the stay-still goal and all previous goals, and if it receives any other goal in any way, it will immediately begin a new behavior.  This flag prevents the goal clearing.
+- Syntax: ***Boolean***
+
+### $do not set override when assigning form-on-wing:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Normally, any form-on-wing goal, regardless of how it is assigned, is given a <tt>Goal_override</tt> flag.  This causes its goal to be evaluated as the top priority goal, regardless of its actual priority or any other goal's priority.  This flag prevents <tt>Goal_override</tt> from being assigned, causing form-on-wing to follow the normal goal prioritization logic.
+- Syntax: ***Boolean***
+
+### $purge player-issued form-on-wing after subsequent order:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Causes any form-on-wing goal issued by the player (i.e. via the HUD communications system) to be removed from a ship's goal list (even if it is not the current goal) when the ship is given another goal of any priority.  This flag can be useful for mods which configure form-on-wing goals to use the same execution and prioritization logic as normal goals.  Since form-on-wing goals are typically temporary, regardless of their priority, this flag enforces that temporary nature.  By using this flag, mission designers can ensure that mission-directed AI goal logic is followed regardless of form-on-wing status.
+- Syntax: ***Boolean***
+
+### $cancel future waves of any wing launched from an exited ship:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Infamously, in FSO, a wing whose mothership is destroyed will not, itself, be considered destroyed if it has more waves remaining, because wing cleanup and logging typically only happen when the last ship in the last wave exits the mission. Instead, with no mothership to arrive from, waves will simply no longer arrive. Events that check to see if the wing is destroyed or departed will never fire. This flag fixes that behavior, ensuring that the wing is cleaned up and logged properly, by using the same logic as the enhanced cancel-future-waves SEXP operator.
+- Syntax: ***Boolean***
+
+### $fix 'ignore if dead' flag:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- The subsystem flag "ignore if dead" that many mods use is supposed to "prevent homing weapons from attempting to hit the now destroyed submodel and instead tells them to home on the main hull of the target." The code was bugged though and unfortunately what ends up happening is that the weapon dumb fire instead of homes. This bug means if you destroy a subsystem with this flag, then lock onto it with an aspect weapon and fire the weapon, the weapon will just dumb fire. Enabling this flag fixes this, and actually makes "ignore if dead" flag work as intended.
+- Syntax: ***Boolean***
+
+### $no collision avoidance for kamikaze fighters:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Kamikaze fighters will often veer away from their target because they are paradoxically trying not to collide with it.  When this flag is enabled, they will not veer away.
+- Syntax: ***Boolean***
+
+### $fix big ship waypoint completion:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes the "spinning Orion" waypoint completion bug.  When this flag is enabled, a) big ships complete a waypoint within their radius rather than sqrt(radius); and b) completion no longer requires moving 0.1m in a single frame.
+- Syntax: ***Boolean***
+
+### $fix shockwave expiring before dealing damage:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes shockwave damage so that shockwaves that move faster than 1-frame properly still deal damage. Without this fix it is possible the shockwave may have lifetime shorter than one frame (e.g. high speed, small radius), which by default results in shockwave applying no damage.
+- Syntax: ***Boolean***
+
+### $fix fighter/bomber AI recovers after engines repaired:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes edge-case of AI of fighters/bombers remaining stationary if their engines were destroyed and then repaired. This could occur if their engines get temporarily disabled and then repaired and their current target dies/departs, and by default this results in the fighter/bomber not moving even when their engines are repaired. Enabling this fix allows the fighter/bomber to avoid this issue and move properly.
+- Syntax: ***Boolean***
+
+### $fix stale AI order state:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- When a new order takes over, a ship forgets details left behind by its previous order or by a dynamic reaction (striking back at an attacker, dodging a missile):
+  - The wing it was ordered to attack, so later target searches do not favour that wing.  (Also covered by *$fix AI target recovery:*.)
+  - The ship or wing it was guarding, so a ship given new orders is no longer pulled back into guarding when a member of its old guarded wing is destroyed, and no longer reacts to attacks on its old charge.
+  - The mode it would have returned to after a dynamic reaction, so a former guard does not break off a counterattack to "resume" guarding a ship it no longer guards.
+  - The timer that ends a strike-back, so the new order can pick targets immediately rather than waiting up to 20 seconds.
+  - The subsystem it was attacking and any approach path it was following, so these do not carry over into a guard or waypoint order.
+- A ship striking back at an attacker records the mode it is leaving, so a guard that is attacked directly returns to its post when it strays too far, just as it does when its charge is attacked.  A strike-back or strafing run that interrupts another dynamic reaction no longer overwrites this record.
+- A guard returning to its post forgets the subsystem it was attacking and any approach path it was following, so its next engagement starts clean.
+- A ship ordered to guard itself, or to guard a wing it leads, treats that order as unachievable and moves on to its next order (or default behavior) instead of holding it forever.  This includes a ship guarding its own wing that becomes the wing's leader mid-mission.
+- Syntax: ***Boolean***
+
+### $fix subsystem path randomization on refresh:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- A path to a subsystem gives its second-to-last point a random offset when it's created, so attackers don't all fly the same line. Normally that offset is lost the first time the target ship moves and the path is refreshed. With this flag, the offset is kept.
+- Syntax: ***Boolean***
+
+### $fix fighterbay speed ramp:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes the slowdown of a ship flying into a fighterbay when its path first routes around the carrier: the slowdown now starts at the bay path itself, not while the ship is still flying around the hull, and never asks for more than the ship's maximum speed.
+- Syntax: ***Boolean***
+
+### $ships intercept mines:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- Ships whose type has the AI auto attacks flag go after mines: a ship switches to a mine about to go off near it, and a guarding ship with nothing to attack engages mines near the ship it guards.
+- Syntax: ***Boolean***
+
+---
+
+## Deprecated names
+
+These older names still work, but log a message saying which name replaced them.
+
+| Old name | Use instead |
+|---|---|
+| `$perform less checks for death screams:` | `$perform fewer checks for death screams:` |
+| `$allow primary link delay:` | `$allow primary link at mission start:` (the opposite value: `$allow primary link delay: NO` means `$allow primary link at mission start: YES`) |
+| `$ships with no shields can manage ETS:` | `$any ship with no shields can manage ETS:` |
+
+These are also accepted, without a message:
+
+- `$Max Missles Locked on Player:` for `$Max Missiles Locked on Player:`
+- `$AI Damage Reduction to Player Hull:` for `$Player Damage Factor:`
+- `$AI Damage Reduction to Player Subsys:` for `$Player Subsys Damage Factor:`
+- `$friendly ships use AI profile countermeasure chance:` for `$unify usage of AI profile countermeasure chance:`
+
+## Sample entry
+
+- Retail FS2 behavior
+
+```
+#AI Profiles
+
+$Default Profile:                              FS2 RETAIL
+
+$Profile Name:                                 FS2 RETAIL
+
+$Player Afterburner Recharge Scale:            5,    3,    2,    1.5,  1
+$Max Beam Friendly Fire Damage:                0,    5,    10,   20,   30
+$Player Countermeasure Life Scale:             3,    2,    1.5,  1.25, 1
+$AI Countermeasure Firing Chance:              0.2,  0.3,  0.5,  0.9,  1.1
+$AI In Range Time:                             2,    1.4,  0.75, 0,    -1
+$AI Always Links Ammo Weapons:                 95,   80,   60,   40,   20
+$AI Maybe Links Ammo Weapons:                  90,   60,   40,   20,   10
+$Primary Ammo Burst Multiplier:                0,    0,    0,    0,    0
+$AI Always Links Energy Weapons:               100,  80,   60,   40,   20
+$AI Maybe Links Energy Weapons:                90,   60,   40,   20,   10
+$Max Missiles Locked on Player:                2,    3,    4,    7,    99
+$Max Player Attackers:                         2,    3,    4,    5,    99
+$Max Incoming Asteroids:                       3,    4,    5,    7,    10
+$Player Damage Factor:                         0.25, 0.5,  0.65, 0.85, 1
+$Player Subsys Damage Factor:                  0.2,  0.4,  0.6,  0.8,  1
+$Predict Position Delay:                       2,    1.5,  1.333,0.5,  0
+$AI Shield Manage Delay:                       5,    4,    2.5,  1.2,  0.1
+$Friendly AI Fire Delay Scale:                 2,    1.4,  1.25, 1.1,  1
+$Hostile AI Fire Delay Scale:                  4,    2.5,  1.75, 1.25, 1
+$Friendly AI Secondary Fire Delay Scale:       0.4,  0.6,  0.8,  1.0,  1.2
+$Hostile AI Secondary Fire Delay Scale:        1.4,  1.2,  1.0,  0.8,  0.6
+$AI Turn Time Scale:                           3,    2.2,  1.6,  1.3,  1
+$Glide Attack Percent:                         0,    0,    0,    0,    0
+$Circle Strafe Percent:                        0,    0,    0,    0,    0
+$Glide Strafe Percent:                         0,    0,    0,    0,    0
+$Random Sidethrust Percent:                    0,    0,    0,    0,    0
+$Stalemate Time Threshold:                     0,    0,    0,    0,    0
+$Stalemate Distance Threshold:                 0,    0,    0,    0,    0
+$Player Shield Recharge Scale:                 4,    2,    1.5,  1.25, 1
+$Player Weapon Recharge Scale:                 10,   4,    2.5,  2,    1.5
+$Max Turret Target Ownage:                     3,    4,    7,    12,   19
+$Max Turret Player Ownage:                     3,    4,    7,    12,   19
+$Percentage Required For Kill Scale:           0.30, 0.30, 0.30, 0.30, 0.30
+$Percentage Required For Assist Scale:         0.15, 0.15, 0.15, 0.15, 0.15
+$Percentage Awarded For Capship Assist:        0.1,  0.2,  0.35, 0.5,  0.6
+$Repair Penalty:                               10,   20,   35,   50,   60
+$Delay Before Allowing Bombs to Be Shot Down:  1.5,  1.5,  1.5,  1.5,  1.5
+$Chance AI Has to Fire Missiles at Player:     0,    1,    2,    3,    4
+$Max Aim Update Delay:                         0,    0,    0,    0,    0
+$Turret Max Aim Update Delay:                  0,    0,    0,    0,    0
+$Player Autoaim FOV:                           0,    0,    0,    0,    0
+$Detail Distance Multiplier:                   0.125,0.25, 1.0,  4.0,  8.0
+
+$big ships can attack beam turrets on untargeted ships:  NO
+$smart primary weapon selection:                         NO
+$smart secondary weapon selection:                       NO
+$smart shield management:                                NO
+$smart afterburner management:                           NO
+$allow rapid secondary dumbfire:                         NO
+$huge turret weapons ignore bombs:                       NO
+$don't insert random turret fire delay:                  NO
+$hack improve non-homing swarm turret fire accuracy:     NO
+$shockwaves damage small ship subsystems:                NO
+$navigation subsystem governs warpout capability:        NO
+$ignore lower bound for minimum speed of docked ship:    NO
+$disable linked fire penalty:                            NO
+$disable weapon damage scaling:                          NO
+$use additive weapon velocity:                           NO
+$use newtonian dampening:                                NO
+$include beams for kills and assists:                    NO
+$score kills based on damage caused:                     NO
+$score assists based on damage caused:                   NO
+$allow event and goal scoring in multiplayer:            NO
+$fix linked primary weapon decision bug:                 NO
+$prevent turrets targeting too distant bombs:            NO
+$smart subsystem targeting for turrets:                  NO
+$fix heat seekers homing on stealth ships bug:           NO
+$multi allow empty primaries:                            NO
+$multi allow empty secondaries:                          NO
+$allow turrets target weapons freely:                    NO
+$use only single fov for turrets:                        NO
+$allow vertical dodge:                                   NO
+$force beam turrets to use normal fov:                   NO
+$fix AI class bug:                                       NO
+$turrets ignore targets radius in range checks:          NO
+$no extra collision avoidance vs player:                 NO
+$perform fewer checks for death screams:                 NO
+$advanced turret fov edge checks:                        NO
+$require turrets to have target in fov:                  NO
+$all ships manage shields:                               NO
+$ai aims from ship center:                               NO
+$allow primary link at mission start:                    NO
+$allow beams to damage bombs:                            NO
+$disable weapon damage scaling for player:               NO
+$countermeasures affect aspect seekers:                  NO
+$ai path mode:                                           normal
+$no warp camera:                                         NO
+
+#End
+```
+
+## References
+
+1. "[Re: New difficulty? - Feature request!](http://www.hard-light.net/forums/index.php/topic,50870.msg1029741.html#msg1029741)", *Hard Light Productions Forums*, Hard Light Productions, 2007-12-15. Retrieved on [December_27](https://wiki.hard-light.net/index.php/December_27), [2007](https://wiki.hard-light.net/index.php/2007).
