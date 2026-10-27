@@ -1,0 +1,152 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+The **curves.tbl** defines curves: mappings from an X value to a Y value. Other tables use them in many places, and what X and Y mean depends on where the curve is used. When a curve is used, an X value goes in and the Y value comes out.
+
+This table is one of the Modular Tables and can be extended with **xxx-crv.tbm**.
+
+Code: [/math/curve.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/math/curve.cpp). See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [#Curves](#curves)
+2. [Interpolation functions](#interpolation-functions)
+3. [Built-in Curves](#built-in-curves)
+4. [Sample Entry](#sample-entry)
+5. [Inline Curves](#inline-curves)
+
+---
+
+## #Curves
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This section defines the individual curve functions.
+
+### $Name:
+
+The unique name to identify this particular curve.
+
+- Names are case-sensitive and can't contain parentheses (that's an error).
+- A name that already exists, including a built-in curve's, replaces that curve's keyframes.
+
+#### $Keyframes:
+
+- Required once for a curve, to begin listing its keyframes with the following syntax:
+```
+(X, Y): Interpolation function, any parameters...
+```
+- Entries like the above can be repeated as many times as necessary
+- The X values *must* come in ascending order. A keyframe with a smaller X than the one before it logs a warning and is skipped.
+- The last X value must be at least 1. If it isn't, a warning is logged and a (1, 1) keyframe is added. (This check is skipped for the last curve in a table, the one followed by `#End`.)
+Example:
+```
+(0, 1): Polynomial, 2, true
+```
+
+## Interpolation functions
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Interpolation functions define how the curve should change in between keyframes. There are several basic interpolation functions, but note that any previously defined curve can itself be used as an interpolation function. The engine provides quite a few [non-basic curves](#built-in-curves) as well.
+
+Function names are case-sensitive: `Constant`, `Linear`, `Polynomial`, `Circular`. Any other name is looked up as a curve; one that isn't defined yet logs a warning and that keyframe is skipped.
+
+### Constant
+
+The simplest interpolation, the output Y value is equal to the keyframe's Y value for its entire domain.
+- No parameters.
+
+### Linear
+
+A slightly less simple interpolation, the output Y value is a straight line between the keyframe's Y value and the next keyframe's Y value.
+- No parameters.
+
+### Polynomial
+
+A smooth interpolation gentle at one end, harsh on the other. The output Y value is a polynomial curve of the given degree from the keyframe's Y value and the next keyframe's Y value.
+Parameters:
+- *Float*, Degree. A degree 2 polynomial is quadratic, degree 3 is cubic, etc. High degree makes the 'gentle' end even gentler and the 'harsh' end even harsher.
+- *Boolean*, "Ease in". Defaults to true. Whether to "ease in" or "ease out". Easing in means the slow, gentle end is first and then the function harshly goes to the next Y value. Easing out does the opposite, it harshly goes to the next Y value, and spends most of the time gradually arriving.
+
+### Circular
+
+A smooth interpolation function which takes the form of a (possibly stretched) circular segment.
+Parameters:
+- *Boolean*, "Ease in". Defaults to true. Whether to "ease in" or "ease out". Easing in means the slow, gentle end is first and then the function harshly goes to the next Y value. Easing out does the opposite, it harshly goes to the next Y value, and spends most of the time gradually arriving.
+
+### Any other previously defined curve
+
+Provided the curve has already been defined (in this table, an earlier one, or a built-in curve), another curve may be nested into new ones. This keyframe's X and Y values will be used as 0, 0 in the original curve, and the next keyframe's X and Y values will be used as 1, 1 in the original curve.
+- No parameters.
+
+## Built-in Curves
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Many functions from [Easing functions](https://easings.net/) are provided built-in, each going from 0 to 1 as X goes from 0 to 1:
+
+| | Quad | Cubic | Quart | Quint | Circ |
+|---|---|---|---|---|---|
+| Ease in | `EaseInQuad` | `EaseInCubic` | `EaseInQuart` | `EaseInQuint` | `EaseInCirc` |
+| Ease out | `EaseOutQuad` | `EaseOutCubic` | `EaseOutQuart` | `EaseOutQuint` | `EaseOutCirc` |
+| Ease in and out | `EaseInOutQuad` | `EaseInOutCubic` | `EaseInOutQuart` | `EaseInOutQuint` | `EaseInOutCirc` |
+
+Each also has a reversed version, going from 1 to 0, with `Rev` added to the name: `EaseInOutQuadRev`. The names are case-sensitive, so they must be written exactly as shown (easings.net writes them starting in lowercase, which won't work here).
+
+## Sample Entry
+
+```
+#Curves
+
+$Name: test1
+$KeyFrames:
+(0, 1): Polynomial, 2, true
+(1, 0): Constant
+
+$Name: test2
+$KeyFrames:
+(0, 0): Circular
+(0.5, 1): EaseInQuad
+(1, 0): Constant
+
+#End
+```
+
+## Inline Curves
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+In all places where the engine and other tables ask for a curve by name, it is also possible to define a curve inline.
+Defining curves inline is less powerful, but can be less of a hassle. Inline curves always follow the same pattern:
+
+`(keyframe-X,keyframe-Y) operator (keyframe-X,keyframe-Y) ... `
+
+with as many keyframes and operators chained together as required. The curve ends at the first keyframe without an operator after it.
+Possible operators are:
+
+`--` Linear Interpolation
+
+`-|` Constant Interpolation
+
+`-/` Square (Polynomial 2) Interpolation with Ease In
+
+`/-` Square (Polynomial 2) Interpolation with Ease Out
+
+### Example
+
+```
+#Primary Weapons
+
+$Name:                            @Subach HL-7
++nocreate
+$Lifetime Curve:
++Input: Lifetime
++Output: Laser Radius Mult
++Curve Name: (0,0) -- (0.5,1000) -- (1,0)
+$Lifetime Curve:
++Input: Lifetime
++Output: Laser Glow R Mult
++Curve Name: (0,0) -- (0.5,1000) -- (1,0)
+
+#End
+```
