@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#105](https://github.com/ofp-fs2open/fs2open.github.com/pull/105)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **ai_profiles.tbl** creates and manages patterns of AI behavior, called profiles. A profile is a set of values and flags that control parts of AI behavior. Every option in a profile is optional; an option that isn't set follows the original FreeSpace 2 behavior. Each mission can use a different profile.
