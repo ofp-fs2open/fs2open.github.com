@@ -17,6 +17,7 @@
   - [ai.tbl](ai.tbl)
   - [ai_profiles.tbl](ai_profiles.tbl)
   - [animation.tbl](animation.tbl)
+  - [armor.tbl](armor.tbl)
   - [coordinate_points.tbl](coordinate_points.tbl)
   - [editor.tbl](editor.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)

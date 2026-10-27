@@ -20,6 +20,7 @@ This page lists every table documented on this wiki, in alphabetical order. Tabl
 | [ai.tbl](ai.tbl)\* | `xxx-aic.tbm` | /ai/aicode.cpp | AI classes: skill values per difficulty level, and AI profile overrides |
 | [ai_profiles.tbl](ai_profiles.tbl)\* | `xxx-aip.tbm`, `xxx-msp.tbm` | /ai/ai_profiles.cpp | AI profiles: difficulty scaling, AI behavior flags and bug-fix toggles a mission can pick |
 | [animation.tbl](animation.tbl)\*\* | `xxx-anim.tbm` | /model/animation/modelanimation.cpp | Model subobject animations and moveables (modular tables only) |
+| [armor.tbl](armor.tbl)\* | `xxx-amr.tbm` | /ship/ship.cpp | Armor types and how much damage each damage type does to them |
 | [coordinate_points.tbl](coordinate_points.tbl)\* | `xxx-cps.tbm` | /coordinate_points/coordinate_shapes.cpp | Custom 2D shapes for coordinate points (OFP only) |
 | [editor.tbl](editor.tbl)\* | `xxx-edt.tbm` | /mission/missionparse.cpp | Editor settings, and custom data fields for missions, campaigns and ships (OFP only, editor only) |
 | [generated_nebula.tbl](generated_nebula.tbl)\* | `xxx-gneb.tbm` | /starfield/nebula.cpp | Patterns and colors for the generated (FS1-style) background nebula (OFP only) |

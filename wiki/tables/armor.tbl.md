@@ -1,0 +1,241 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **armor.tbl** defines armor types and how much damage each type of weapon does to them. Armor can be damaged more or less by certain types of weapons: a fire-retardant suit may offer excellent protection against a flamethrower but almost none against bullets. Ships and shields pick an armor type in [ships.tbl](ships.tbl), and weapons pick a damage type in [weapons.tbl](weapons.tbl).
+
+The spelling **armour.tbl** is not supported.
+
+This table is one of the Modular Tables and can be extended with **xxx-amr.tbm**.
+
+Code: /ship/ship.cpp. See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [#Armor Type](#armor-type)
+2. [#End](#end)
+3. [List of Calculations](#list-of-calculations)
+4. [Example](#example)
+
+---
+
+## #Armor Type
+
+A **#Armor Type** section holds any number of armor types, each starting with `$Name:`, and ends with **#End**. A table can have several sections.
+
+### $Name:
+
+Defines the name of the armor type. The same name must be used in the [$Armor Type](ships.tbl#armor-type) entry in order for that ship to use the armor type. Note that Shields may also have an armor type as designated by [$Shield Armor Type](ships.tbl#shield-armor-type)
+
+- Names aren't checked for duplicates. If two armor types share a name, the first one parsed is the one ships get, so a modular table can't change an existing armor type.
+
+- Syntax: **String**
+
+### $Damage Type:
+
+Defines the name for the damage type that is used for the armor type/damage type pairs.
+- The same name must be used in the [$Damage Type](weapons.tbl#damage-type) entry (for all weapons that have this damage type) so that the armor can be applied against that particular damage type.
+- Damage type names are shared by all armor types and aren't case-sensitive. A name longer than 31 characters is cut short, with a warning.
+- A damage type can have any number of `+Calculation:` entries, and the settings below. One with none of them is ignored.
+- After the first, each further `$Damage Type:` starts the next damage type of the same armor.
+
+- Syntax:**String**, name of the damage type
+
+#### +Calculation:
+
+Defines the used calculation type.
+- Calculations per damage types are possible
+- Calculations are performed in the order they are defined in the armor.tbl (and -amr.tbm's)
+  - The "current damage value" is the result of the calculation before it
+  - The "current damage value" is initially equal to the [$Damage](weapons.tbl#damage) value of the weapon that is impacting the armor (provided that the weapon has the same [$Damage Type](#damage-type))
+
+- Syntax:**String**, name of the calculation type
+- Valid strings: see [List of Calculations](#list-of-calculations)
+- An unknown calculation type logs a warning and is skipped, along with its value.
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Note that this must be followed by a +Stored Value:, a +Constant:, or a +Value: tag. but only one of the three. This will be the value used by the calculation, so only one source is allowed.
+
+##### +Stored Value:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) The calculation shall use the value stored in the specified memory location (which is stored by a previous calculation)
+- One, and only one, of the +Stored Value, [+Constant](#constant), or [+Value](#value) entries is required per [+Calculation](#calculation).
+
+- Syntax:**Unsigned integer**
+- Valid Values: 0 through 7. Anything else is an error, and the calculation uses 0.
+
+##### +Constant:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) The calculation shall use a constant float value, that's internally defined in FSO.
+- One, and only one, of the [+Stored Value](#stored-value), +Constant, or [+Value](#value) entries is required per [+Calculation](#calculation).
+
+- Syntax:**String**
+- Valid Values:
+  - **base damage**
+    - The calculation shall use the base damage as defined by [$Damage](weapons.tbl#damage)
+    - Note: if [+Difficulty Scale Type](#difficulty-scale-type) is set to "first", this returns the base damage times the difficulty scale factor
+  - **current damage**
+    - The calculation shall use the resulting value of the previous calculation as the input value for this calculation
+  - **difficulty factor**
+    - The calculation shall use the difficulty scale factor
+  - **random**
+    - The calculation shall use a random number that's anywhere between 0 and 1
+  - **pi**
+    - The calculation shall use the constant Pi (3.1415...)
+  - An unknown name is an error, and the calculation uses 0.
+
+##### +Value:
+
+Defines the value used for the defined calculation.
+- One, and only one, of the [+Stored Value](#stored-value), [+Constant](#constant), or +Value entries is required per [+Calculation](#calculation).
+
+- Syntax: **Float**
+
+#### +Shield Piercing Percentage:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg) If a ship's shield is setup for this particular damage type (by using [$Shield Armor Type](ships.tbl#shield-armor-type)), this entry defines the percentage of damage (resulting from the earlier calculations) that will be applied directly to the hull. This has the effect of damaging both the shield and hull for a single impact.
+- Syntax: **Float**
+- Valid values: **0** to **1**, where 1 is 100%. Values outside that range are clamped.
+
+#### +Weapon Piercing Effect Start Limit:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg) Defines the percentage of hull integrity at which weapon piercing effects are started
+
+- Syntax: ***Float***, value from 0 to 100. Values outside that range are clamped.
+- Default: the [game_settings.tbl](game_settings.tbl) `$Threshold below which shield skips damage:` value (10% unless set)
+
+#### +Weapon Piercing Type:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg) Defines the piercing type to use
+
+- Syntax: ***String***
+- Valid Values:
+  - **none**
+  - **default**
+  - **retail**
+- An unknown type uses **retail**.
+
+#### +Difficulty Scale Type:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Dictates how/when the Difficulty damage multiplier is applied to the end result of all calculations
+
+- Syntax: **String**
+- Valid Values:
+  - **first** - Difficulty damage multiplier is applied to the base damage before calculations
+  - **last** - Difficulty damage multiplier is applied to the result of the calculations
+  - **manual** - Difficulty damage multiplier is ignored, and is assumed to be handled elsewhere (such as in a LUA script or a sexp)
+- Default: **first**
+- An unknown type is an error, and **first** is used.
+
+### $Flags:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg) Defines the flags affecting this armor type
+
+- Syntax: ( ***String*** )
+- Valid flags:
+  - **ignore subsystem armor**
+    - If set, FSO will use the hull's armor type against all damage to the subsystem, regardless of any armor type that the subsystem may have
+
+## #End
+
+Each #Armor Type section must end with #End, no exceptions.
+
+---
+
+## List of Calculations
+
+The following is a list of valid strings to be used with [+Calculation](#calculation).
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Note: As of this version +Value may be substituted with +Stored Value or +Constant. Usage of +Value in this section is only for example purposes and is a stand in for whatever source you actually use.
+
+- **additive**
+  - Adds [+Value](#value) to the the current damage value
+- **multiplicative**
+  - Multiplies the the current damage value by [+Value](#value)
+- **exponential**
+  - Raises the current damage value to the power of [+Value](#value)
+- **exponential base**
+  - Raises [+Value](#value) to the power of the current damage value
+- **cutoff**
+  - If the current damage value is ***less*** than [+Value](#value), then the resulting damage value is 0.
+- **reverse cutoff**
+  - If the current damage value is ***greater*** than [+Value](#value), then the resulting damage value is 0.
+- **instant cutoff**
+  - If the current damage value is ***less*** than the specified amount, then the resulting damage value is set to 0 and the engine ignores all following calculations
+- **instant reverse cutoff**
+  - If the current damage value is ***greater*** than the specified amount, then the resulting damage value is set to 0 and the engine ignores all following calculations.
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- **cap**
+  - If the current damage value is ***greater*** than [+Value](#value), then the resulting damage value is [+Value](#value).
+- **instant cap**
+  - If the current damage value is ***greater*** than the specified amount, then the resulting damage value is set to [+Value](#value) and the engine ignores all following calculations.
+- **set**
+  - Sets the damage value to [+Value](#value).
+- **store**
+  - Stores the current damage value to a memory location specified by [+Value](#value) (which is casted as an unsigned integer)
+  - Stored damage values may be used only in the calculations they are assigned, and are discarded after the calculations are finished
+- **load**
+  - Loads the current damage value from a memory location specified by [+Value](#value) (which is casted as an unsigned integer)
+  - Stored damage values may be used only in the calculations they are assigned, and are discarded after the calculations are finished
+- **random**
+  - Randomizes the damage value to anything between the current damage value and the base damage value as defined by [$Damage](weapons.tbl#damage)
+
+## Example
+
+***[armor.tbl](armor.tbl)***
+
+```
+#Armor Type
+$Name: Reflective
+;;This armor is made up of some kind of reflective material,
+;;that deflects 1/4 of the energy from laser weapons back into space.
+;;However, it is somewhat more fragile than typical hull materials,
+;;and takes 1/3 more damage from weapons that use physical projectiles.
+
+$Damage Type: Laser
+   +Calculation: Multiplicative
+   +Value: 0.75
+
+$Damage Type: Kinetic
+   +Calculation: Multiplicative
+   +Value: 1.33
+#End
+```
+
+As you can see above, "Reflective" armor is dealt only 75% of the damage from laser weapons, but 133% of the damage from kinetic weapons. However, in order to activate the armor system, you must assign the armor type to the ships you want it to apply to, and damage types to the weapons you wish to use.
+
+The Thoth fighter seems like a good choice for this armor. Its speed and maneuverability give it the ability to evade missiles, and many direct-fire weapons are energy based. So, to give it this armor, you would add "$Armor Type:" to ships.tbl, under the "Thoth" entry:
+
+***[ships.tbl](ships.tbl)***
+```
+$Hitpoints:             200
+$Armor Type:            Reflective
+$Flags:                 ( "player_ship" "fighter" "in tech database")
+```
+
+At this point, the Thoth will be equipped with Reflective armor. However, it will have no effect *unless* it is hit by a weapon with a "$Damage Type" that is defined in armor.tbl, under the "Reflective" armor entry. Otherwise, Freespace 2 would have no idea how to take into account the defined damage types.
+
+So, in the interests of time, here's how you would assign the "Laser" damage type to the [Subach HL-7](https://wiki.hard-light.net/index.php/GTW_Subach_HL-7), and the "Kinetic" damage type to the [Rockeye](https://wiki.hard-light.net/index.php/GTM_MX-64).
+
+Under the Subach entry, you would add "$Damage Type" like so:
+
+***[weapons.tbl](weapons.tbl)***
+```
+$Damage:          15
+$Damage Type:           Laser
+$Armor Factor:          0.9
+```
+
+Under the Rockeye entry, you would add "$Damage Type" like this:
+
+***[weapons.tbl](weapons.tbl)***
+```
+$Damage:          45
+$Damage Type:           Kinetic
+$Armor Factor:          0.1
+```
+
+Now, if you were to start *FreeSpace 2* with these modifications, you would find that the Thoth would take 3/4 as much damage from the [Subach HL-7](https://wiki.hard-light.net/index.php/GTW_Subach_HL-7), 1/3 more damage from the [Rockeye](https://wiki.hard-light.net/index.php/GTM_MX-64), but normal damage from everything else. All other ships, not being equipped with any kind of armor, would also be dealt normal damage from all weapons, including the Rockeye and the Subach.
