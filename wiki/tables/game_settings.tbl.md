@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#119](https://github.com/ofp-fs2open/fs2open.github.com/pull/119)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **game_settings.tbl**, also known as mod.tbl, sets options that apply to the whole game. All settings are optional.
