@@ -31,7 +31,7 @@ Removing the label takes it back out of the Queue and returns it to Feature Requ
 
 Draw from the Queue **oldest-accepted first**. If you skip ahead, document why in your PR description. Acceptable reasons are narrow: you lack the technical background for the oldest items, or your expertise is specifically needed elsewhere. Maintainers may push back if skips become a pattern.
 
-Reference the request in your PR description with `Fixes #<discussion>` (or Closes, Resolves, or any other keyword GitHub uses to close issues). While the PR is open, the request shows as In Progress in the Queue. When it merges, the request leaves the Queue, moves to **Completed Requests**, and is closed as resolved. If the PR is closed without merging, the request goes back to Open in its original place.
+Reference the request in your PR description with `Fixes #<discussion>` (or Closes, Resolves, or any other keyword GitHub uses to close issues). While the PR is open, the request shows as In Progress in the Queue, and a comment on the request links the PR so its followers know. When it merges, the request leaves the Queue, moves to **Completed Requests**, and is closed as resolved. If the PR is closed without merging, the request goes back to Open in its original place, with a comment saying so.
 
 ### Stale requests
 

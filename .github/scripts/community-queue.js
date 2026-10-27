@@ -153,6 +153,14 @@ module.exports = async ({ github, context, core }) => {
 			return;
 		const refs = referencedNumbers(pr.body);
 		const ownedByPr = e => e.status.includes(`/pull/${pr.number})`);
+		// Changes a queued request's status and tells its followers. Only the run that makes
+		// the change comments, so editing or pushing to the PR doesn't repeat it.
+		const setStatus = async (e, status, text) => {
+			e.status = status;
+			const discussion = await getDiscussion(e.number);
+			if (discussion)
+				comments.push([discussion, text]);
+		};
 
 		if (action === 'closed' && pr.merged) {
 			for (const number of refs) {
@@ -175,18 +183,20 @@ module.exports = async ({ github, context, core }) => {
 			// Items this PR had marked In Progress but no longer references go back to Open.
 			for (const e of queue.entries)
 				if (ownedByPr(e))
-					e.status = 'Open';
+					await setStatus(e, 'Open', `${prLink(pr)} no longer references this request, so it's open again.`);
 		} else if (action === 'closed') {
 			for (const e of queue.entries)
 				if (ownedByPr(e))
-					e.status = 'Open';
+					await setStatus(e, 'Open', `${prLink(pr)} was closed without merging, so this request is open again.`);
 		} else {
 			// opened, reopened, edited
 			for (const e of queue.entries) {
-				if (refs.has(e.number))
-					e.status = `In Progress (${prLink(pr)})`;
-				else if (ownedByPr(e))
-					e.status = 'Open';
+				if (refs.has(e.number)) {
+					if (!ownedByPr(e))
+						await setStatus(e, `In Progress (${prLink(pr)})`, `${prLink(pr)} is implementing this request.`);
+				} else if (ownedByPr(e)) {
+					await setStatus(e, 'Open', `${prLink(pr)} no longer references this request, so it's open again.`);
+				}
 			}
 		}
 	}
