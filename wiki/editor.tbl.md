@@ -1,0 +1,236 @@
+> **Revision information**
+> OFP Revision: [82e03a2](https://github.com/ofp-fs2open/fs2open.github.com/commit/82e03a201)
+> *Please update the revision when the page is updated. If your edit had nothing to do with new code entries, please do not edit the revision.*
+
+<details>
+<summary><b>List of OFP tables and related code files</b></summary>
+
+\* Notes Modular Tables
+
+| Table | Code |
+|---|---|
+| [coordinate_points.tbl](coordinate_points.tbl)\* | /coordinate_points/coordinate_shapes.cpp |
+| [editor.tbl](editor.tbl)\* | /mission/missionparse.cpp |
+| [generated_nebula.tbl](generated_nebula.tbl)\* | /starfield/nebula.cpp |
+
+See [OFP Tables](OFP-Tables) for OFP additions to existing SCP tables.
+</details>
+
+The **editor.tbl** configures the mission editors for a mod: editor **settings**, and the **custom data** fields the mod expects its missions, campaigns and ships to use (each field's name, type, default value and description).
+
+Custom data is a set of named values attached to a mission, a campaign, or an individual ship. It has no built-in effect on gameplay; scripts and SEXPs read it. Ship custom data is the headline use: a ship can carry values like `Bounty = 75`, `Role = escort` or `Veteran = true`, set in qtFRED and changed during the mission by [SEXPs](OFP-SEXPs#ship-custom-data-operators) and [Lua](OFP-Lua-Scripting#ship-custom-data). This table is optional: without it, custom data still works as free-form text.
+
+This table is one of the Modular Tables and can be extended with **xxx-edt.tbm**.
+
+**Editor only.** FRED2 and qtFRED read this table; the game never does. At runtime every custom data value is plain text, and a key exists only if the mission or campaign saved it or a SEXP or script set it.
+
+## Contents
+
+1. [Format](#format)
+2. [#Settings](#settings)
+   1. [$Disable Hard Coded Message Head Ani Files:](#disable-hard-coded-message-head-ani-files)
+   2. [$Add Message Head Ani Files:](#add-message-head-ani-files)
+   3. [$Enable scripting in FRED:](#enable-scripting-in-fred)
+   4. [$Ignore Music Files In Music Player:](#ignore-music-files-in-music-player)
+   5. [$FRED spacemouse nonlinearities:](#fred-spacemouse-nonlinearities)
+3. [Custom data sections](#custom-data-sections)
+4. [Custom data fields](#custom-data-fields)
+   1. [$Key:](#key)
+   2. [+Type:](#type)
+   3. [+Default:](#default)
+   4. [+Description:](#description)
+5. [#End](#end)
+6. [What the editor does with custom data](#what-the-editor-does-with-custom-data)
+7. [Loading rules](#loading-rules)
+8. [Ship custom data in the mission file](#ship-custom-data-in-the-mission-file)
+9. [Sample](#sample)
+
+---
+
+## Format
+
+- Up to four sections, each ending with `#End`: `#Settings`, then the custom data sections `#MissionCustomData`, `#CampaignCustomData` and `#ShipCustomData`.
+- By convention `#Settings` comes first. The editor accepts the sections in any order, and any of them can be left out, so a `*-edt.tbm` can hold just the one section it changes.
+- Each custom data section holds any number of entries, each beginning with `$Key:`.
+
+## #Settings
+
+Editor settings. These are the same entries as the `#FRED SETTINGS` section of `game_settings.tbl`, which the editors still read (first), so mods that also target SCP keep working:
+
+- **Single values** (true/false and numbers): the last file read wins. `editor.tbl` overrides `game_settings.tbl`, and a later `*-edt.tbm` overrides `editor.tbl`.
+- **Name lists** (`+Head:`, `+File:`): every file adds to the list. A name already listed, in any table, is skipped (case and file extension are ignored).
+- The entries must appear in the order below; each one is optional.
+- `$FRED Briefing window resolution:` (FRED2 only) and `$Skybox internal depth consistency:` (a rendering setting) remain in `game_settings.tbl` only.
+
+### $Disable Hard Coded Message Head Ani Files:
+
+**OFP, 26.1:**
+- Removes the built-in head animations from the head ani list in the Events editor's message properties, leaving only the mod's own heads.
+- **Syntax:** *Boolean*
+- Optional. Default: false.
+
+### $Add Message Head Ani Files:
+
+**OFP, 26.1:**
+- Adds head animations to that list, one `+Head:` line each. The file extension is optional.
+- **Syntax:**
+  - `+Head:` *String*, repeated
+- Optional.
+
+### $Enable scripting in FRED:
+
+**OFP, 26.1:**
+- Runs the mod's scripts in the editors, for example so Lua SEXPs appear in the SEXP menus and On Game Init hooks can register custom data with `mn.addDefaultCustomData()`.
+- Off by default because many mods' scripts aren't written to run in the editor.
+- **Syntax:** *Boolean*
+- Optional. Default: false.
+
+### $Ignore Music Files In Music Player:
+
+**OFP, 26.1:**
+- Hides music files from the editor's Music Player, one `+File:` line each. The file extension is optional.
+- **Syntax:**
+  - `+File:` *String*, repeated
+- Optional.
+
+### $FRED spacemouse nonlinearities:
+
+**OFP, 26.1:**
+- Response curve of a 3D mouse (spacemouse) for the viewport camera, per axis: the input is raised to the exponent, then multiplied by the scale.
+- Axes, in this order: `Sideways`, `Forwards`, `Upwards`, `Pitch`, `Bank`, `Heading`. Each axis has an exponent and a scale field; any field can be left out, and only the fields given change.
+- **Syntax:**
+  - `+<Axis> exponent:` *Float*
+  - `+<Axis> scale:` *Float*
+- Optional.
+
+## Custom data sections
+
+| Section | Applies to | Edited in qtFRED from |
+|---|---|---|
+| `#MissionCustomData` | the mission | Mission Specs → Custom Data |
+| `#CampaignCustomData` | the campaign | Campaign Editor → Custom Data |
+| `#ShipCustomData` | each individual ship | Ship Editor → Custom Data |
+
+## Custom data fields
+
+### $Key:
+
+**OFP, 26.1:**
+- The field's name. Scripts and SEXPs refer to the value by it.
+- Keys can't contain spaces or tabs.
+- Keys are unique within a section, like `$Name:` in the object tables. Repeating a key that already exists (typically in a `*-edt.tbm`) modifies that entry: any field left out, including `+Type:`, keeps its current value. Repeating a key within the same file gives a warning.
+- **Syntax:** *String*
+- **Required.**
+
+### +Type:
+
+**OFP, 26.1:**
+- `string`, `int` or `bool`. Controls how the editor lets you enter the value: plain text, whole numbers only, or a true/false dropdown.
+- An unknown type gives a warning and is treated as `string`.
+- **Syntax:** *String*
+- **Required** for a new key; optional when modifying an existing one.
+
+### +Default:
+
+**OFP, 26.1:**
+- The value a new mission, campaign or ship starts with, and the value the dialog's **Reset to Default** button restores.
+- If omitted: empty for `string`, `0` for `int`, `false` for `bool`.
+- A default that doesn't match the type (e.g. `many` for an `int`) gives a warning and falls back to `0` or `false`. `bool` defaults are stored as lowercase `true` / `false`.
+- **Syntax:** *String*
+- Optional.
+
+### +Description:
+
+**OFP, 26.1:**
+- Help text shown in the Custom Data dialog when the key is selected.
+- One line. `XSTR` is supported.
+- **Syntax:** *String*
+- Optional.
+
+## #End
+
+Closes each section, including `#Settings`.
+
+## What the editor does with custom data
+
+- **Defaults:** a new mission gets every `#MissionCustomData` key, a new campaign (and one opened without them) gets the missing `#CampaignCustomData` keys, and a newly placed ship gets every `#ShipCustomData` key, each at its default. Missions and ships loaded from a file keep exactly the keys that were saved.
+- **The Custom Data dialog** uses the table for its value control (text, number-only, or true/false), key completion, the description box and Reset to Default.
+- **Free-form keys:** any key can still be added. A key that isn't in this table shows its type as *free-form*: it has no type, default or description. The mission and campaign files only store a key and its value, never its type, so define a key here if it needs type checking.
+- **SEXP editor:** the key argument of the [ship custom data SEXPs](OFP-SEXPs#ship-custom-data-operators) offers the `#ShipCustomData` keys (plus keys already used on ships in the mission) as a dropdown, while still accepting any typed key.
+- Scripts can also register mission keys with `mn.addDefaultCustomData()` in an On Game Init hook; those are added alongside the table's.
+
+## Loading rules
+
+- The editor loads `editor.tbl` and then every `*-edt.tbm`, once at startup: after `game_settings.tbl`, and before scripts run (which is why `$Enable scripting in FRED:` works here).
+- Entries from modular tables are added to those from `editor.tbl`; a key that already exists is modified instead (see [$Key:](#key)).
+
+## Ship custom data in the mission file
+
+qtFRED writes a ship's custom data as a block on the ship entry (not in retail-format saves):
+
+```
+$begin_custom_data
+	+Val: Bounty 75
+	+Val: Role patrol
+$end_custom_data
+```
+
+Each `+Val:` line is the key, a space, then the value (the rest of the line).
+
+## Sample
+
+```
+#Settings
+
+$Disable Hard Coded Message Head Ani Files: false
+$Add Message Head Ani Files:
+	+Head: Head-Kilo1
+	+Head: Head-Kilo2
+$Enable scripting in FRED: true
+$Ignore Music Files In Music Player:
+	+File: Credits_Theme
+$FRED spacemouse nonlinearities:
+	+Pitch exponent: 2.0
+	+Pitch scale: 0.75
+
+#End
+
+#MissionCustomData
+
+$Key:         Theater
++Type:        string
++Default:     Aquitaine
++Description: Operational theater shown in the briefing.
+
+$Key:         HardMode
++Type:        bool
++Default:     false
+
+#End
+
+#CampaignCustomData
+
+$Key:         Act
++Type:        int
++Default:     1
++Description: Current campaign act.
+
+#End
+
+#ShipCustomData
+
+$Key:         Bounty
++Type:        int
++Default:     50
++Description: Credits paid for the kill.
+
+$Key:         Role
++Type:        string
++Default:     escort
+
+$Key:         Veteran
++Type:        bool
++Default:     false
+
+#End
+```
