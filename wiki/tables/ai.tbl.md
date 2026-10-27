@@ -46,7 +46,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### +nocreate
 
-![FSO 23.2](images/badges/fso-23.2.svg)
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
 
 - Optional. Goes directly after `$Name:`.
 - In a modular table, edits the AI class only if it already exists, instead of creating a new one.
@@ -54,7 +54,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### $Accuracy:
 
-![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This element is now optional.
 
 - How accurately the ship fires its weapons. The value scales the error in the AI's aim. With repeated shots, AI aim improves. The AI is always 100% accurate when aiming for subsystems, as in the original game.
 - Value from 0.0 to 1.0
@@ -62,7 +62,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### $Evasion:
 
-![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This element is now optional.
 
 - How good the ship is at evading. The value sets how often the AI changes course while evading.
 - Value from 0 to 100
@@ -70,7 +70,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### $Courage:
 
-![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This element is now optional.
 
 - How likely the ship is to risk danger to accomplish its goals. The lower the value, the sooner the AI starts evading when attacked, and the less likely it is to target turrets.
 - Value from 0 to 100
@@ -78,11 +78,11 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### $Patience:
 
-![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This element is now optional.
 
 - How willing the ship is to wait for an advantage before pursuing goals. In the original game this was never implemented and did nothing.
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - Sets how quickly the AI tries to break a stalemate it has detected. Only applies if `$Stalemate Time Threshold:` and `$Stalemate Distance Threshold:` are used. The higher the patience, the longer the ship waits in a stalemate before breaking it. At 100, the AI never breaks a stalemate.
 
@@ -99,21 +99,21 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 #### $Afterburner Use Factor:
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - How likely the AI is to use afterburners in "maybe" situations. 1 means always, 2 means half the time, 3 a third of the time, and so on.
 - **Syntax:** *Integer list*, five values, one for each difficulty level
 
 #### $Shockwave Evade Chances Per Second:
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - How likely a ship is to start evading a shockwave. The higher the number, the more chances per second the ship has to evade.
 - **Syntax:** *Float list*, five values, one for each difficulty level
 
 #### $Get Away Chance:
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - How likely the AI is to use a "get away" maneuver instead of simply making evasive turns. A get away usually means flying straight away, often on afterburner, with small jinking motions instead of large evasive turns. Higher values make for more "jousting" fights.
 - Range: 0.0 (never) to 1.0 (always)
@@ -121,7 +121,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 #### $Secondary Range Multiplier:
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - Multiplier for how far away the AI starts firing secondary weapons. Capped by the weapon's actual maximum range. The penalty for firing in a nebula still applies on top of this.
 - Range: 0.0 (point blank, never fires) to 1.0 (fires from maximum range)
@@ -129,7 +129,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 #### $Autoscale by AI Class Index:
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 - If YES (the default), a number of miscellaneous AI chances depend on the AI class's position in the table, for example the chance to fire countermeasures. Classes near the start of the table are generally weaker than classes near the end. NO turns this off, so the AI class's position doesn't affect its behavior.
 - Even when this is NO, the other attributes in this section still follow the AI class's position unless they are set. For complete independence, set all of them.
@@ -139,7 +139,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ### AI Profiles overrides
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 These override the matching [ai_profiles.tbl](ai_profiles.tbl) values for ships of this AI class. All are optional. Values not set here come from the mission's AI profile. The syntax is the same as in ai_profiles.tbl: five values, one for each difficulty level.
 
@@ -171,7 +171,7 @@ The percent overrides (`$Glide Attack Percent:`, `$Circle Strafe Percent:`, `$Gl
 
 ### AI Profiles flag overrides
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
 These override the matching [ai_profiles.tbl](ai_profiles.tbl) flags for ships of this AI class. All are optional. Flags not set here come from the mission's AI profile.
 
@@ -191,24 +191,24 @@ These override the matching [ai_profiles.tbl](ai_profiles.tbl) flags for ships o
 - `$allow vertical dodge:`
 - `$no extra collision avoidance vs player:`
 
-![FSO 3.6.14](images/badges/fso-3.6.14.svg)
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
 
 - `$all ships manage shields:`
 
-![FSO 3.8](images/badges/fso-3.8.svg)
+![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg)
 
 - `$ai can slow down when attacking big ships:`
 
-![FSO 19.0](images/badges/fso-19.0.svg)
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
 
 - `$free afterburner use:` (goes after `$smart afterburner management:`)
 - `$use actual primary range:`
 
-![FSO 23.2](images/badges/fso-23.2.svg)
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
 
 - `$firing requires exact los:`
 
-![FSO 25.0](images/badges/fso-25.0.svg)
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
 
 - `$AI balances shields instead of directs when attacked:`
 
@@ -230,7 +230,7 @@ $patience:     10,      20,      30,      40,      50
 #End
 ```
 
-![FSO 3.6.12](images/badges/fso-3.6.12.svg) An entry using some optional elements:
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg) An entry using some optional elements:
 
 ```
 #AI Classes
