@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#112](https://github.com/ofp-fs2open/fs2open.github.com/pull/112)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **controlconfigdefaults.tbl** changes the default key, mouse and joystick bindings, adds control presets the player can pick, and changes how controls appear in the controls menu.
