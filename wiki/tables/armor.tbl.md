@@ -8,7 +8,7 @@ The spelling **armour.tbl** is not supported.
 
 This table is one of the Modular Tables and can be extended with **xxx-amr.tbm**.
 
-Code: [/ship/ship.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ship/ship.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/ship/ship.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ship/ship.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

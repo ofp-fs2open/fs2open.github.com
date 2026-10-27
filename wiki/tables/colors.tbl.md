@@ -6,7 +6,7 @@ The **colors.tbl** changes the built-in named colors, defines team colors, redef
 
 ![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg) This table is one of the Modular Tables and can be extended with **xxx-clr.tbm**.
 
-Code: [/globalincs/alphacolors.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/globalincs/alphacolors.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/globalincs/alphacolors.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/globalincs/alphacolors.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

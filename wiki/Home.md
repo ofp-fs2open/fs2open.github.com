@@ -17,7 +17,9 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
 
 ## Documentation
 
-- [OFP Tables](OFP-Tables): every table documented here, in alphabetical order
+- [OFP SEXPs](OFP-SEXPs): new SEXP operators and OFP changes to existing ones
+- [OFP Lua Scripting](OFP-Lua-Scripting): Lua API added by OFP
+- [Tables](Tables): every table documented here, in alphabetical order
   - [ai.tbl](ai.tbl): AI classes
   - [ai_profiles.tbl](ai_profiles.tbl): AI profiles
   - [animation.tbl](animation.tbl): model subobject animations
@@ -36,5 +38,3 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
-- [OFP SEXPs](OFP-SEXPs): new SEXP operators and OFP changes to existing ones
-- [OFP Lua Scripting](OFP-Lua-Scripting): Lua API added by OFP

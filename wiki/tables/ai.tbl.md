@@ -6,7 +6,7 @@ The **ai.tbl** defines the AI classes used in the game. Each AI class sets four 
 
 This table is one of the Modular Tables and can be extended with **xxx-aic.tbm**.
 
-Code: [/ai/aicode.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/aicode.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/ai/aicode.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/aicode.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
 

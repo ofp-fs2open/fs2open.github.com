@@ -8,7 +8,7 @@ Animation tables define subobject animations and moveables for models: sequences
 
 There is no animation.tbl itself: animations are only read from modular tables named **xxx-anim.tbm**. Animation and moveable names must be unique across all of them.
 
-Code: [/model/animation/modelanimation.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/animation/modelanimation.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/model/animation/modelanimation.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/animation/modelanimation.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

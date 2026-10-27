@@ -10,7 +10,7 @@ This table is one of the Modular Tables and can be extended with **xxx-aip.tbm**
 
 ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The table can also be called **mission_profiles.tbl**, and extended with **xxx-msp.tbm**. If both mission_profiles.tbl and ai_profiles.tbl exist, only mission_profiles.tbl is read, and the log says so.
 
-Code: [/ai/ai_profiles.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/ai_profiles.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/ai/ai_profiles.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/ai_profiles.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
 

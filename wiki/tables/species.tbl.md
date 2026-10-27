@@ -8,7 +8,7 @@ This table is one of the Modular Tables and can be extended with **xxx-intl.tbm*
 
 The OFP badge marks what OFP adds.
 
-Code: [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp). See [Tables](Tables) for every table.
 
 ## Contents
 

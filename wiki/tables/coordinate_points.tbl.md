@@ -10,7 +10,7 @@ Coordinate points are an OFP object type: named locations in a mission, placed i
 
 This table is one of the Modular Tables and can be extended with **xxx-cps.tbm**.
 
-Code: [/coordinate_points/coordinate_shapes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/coordinate_points/coordinate_shapes.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/coordinate_points/coordinate_shapes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/coordinate_points/coordinate_shapes.cpp). See [Tables](Tables) for every table.
 
 The engine includes a built-in copy of this table that defines the **Cross** shape.
 

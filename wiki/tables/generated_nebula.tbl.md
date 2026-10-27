@@ -8,7 +8,7 @@ The **generated_nebula.tbl** defines the patterns and colors of the generated ne
 
 This table is one of the Modular Tables and can be extended with **xxx-gneb.tbm**.
 
-Code: [/starfield/nebula.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/nebula.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/starfield/nebula.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/nebula.cpp). See [Tables](Tables) for every table.
 
 The engine includes a built-in copy of this table with FS1's three patterns (**Nebula01**, **Nebula02**, **Nebula03**) and nine colors. A mod that ships its own `generated_nebula.tbl` replaces the built-in copy entirely; a `*-gneb.tbm` adds to it or overrides entries by name.
 

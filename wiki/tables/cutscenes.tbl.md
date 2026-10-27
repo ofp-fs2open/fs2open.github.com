@@ -6,7 +6,7 @@ The **cutscenes.tbl** defines the video clips shown in the tech room's cutscenes
 
 ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) This table is one of the Modular Tables and can be extended with **xxx-csn.tbm**.
 
-Code: [/cutscene/cutscenes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/cutscene/cutscenes.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/cutscene/cutscenes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/cutscene/cutscenes.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
 

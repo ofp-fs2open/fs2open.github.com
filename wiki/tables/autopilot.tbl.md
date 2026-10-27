@@ -10,7 +10,7 @@ The engine has a built-in autopilot.tbl, used when the mod has none. It sets `$L
 
 ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This table is one of the Modular Tables and can be extended with **xxx-aplt.tbm**. Each modular table changes only the settings and messages it includes.
 
-Code: [/autopilot/autopilot.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/autopilot/autopilot.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/autopilot/autopilot.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/autopilot/autopilot.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

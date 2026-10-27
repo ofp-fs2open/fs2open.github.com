@@ -10,7 +10,7 @@ There is no decals.tbl itself: decals are only read from modular tables named **
 
 Decals need deferred lighting. On a system without it, the decal system turns itself off and the log says so. Players can also turn decals off in the graphics options.
 
-Code: [/decals/decals.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/decals/decals.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/decals/decals.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/decals/decals.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

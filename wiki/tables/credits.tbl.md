@@ -6,7 +6,7 @@ The **credits.tbl** defines the text shown on the credits screen, and the music 
 
 This table is one of the Modular Tables and can be extended with **xxx-crd.tbm**.
 
-Code: [/menuui/credits.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/credits.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/menuui/credits.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/credits.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
 

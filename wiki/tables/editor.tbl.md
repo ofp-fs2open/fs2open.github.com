@@ -10,7 +10,7 @@ Custom data is a set of named values attached to a mission, a campaign, or an in
 
 This table is one of the Modular Tables and can be extended with **xxx-edt.tbm**.
 
-Code: [/mission/missionparse.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionparse.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/mission/missionparse.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionparse.cpp). See [Tables](Tables) for every table.
 
 **Editor only.** FRED2 and qtFRED read this table; the game never does. At runtime every custom data value is plain text, and a key exists only if the mission or campaign saved it or a SEXP or script set it.
 

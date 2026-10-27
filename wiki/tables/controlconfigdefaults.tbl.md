@@ -6,7 +6,7 @@ The **controlconfigdefaults.tbl** changes the default key, mouse and joystick bi
 
 This table is **not** modular: only controlconfigdefaults.tbl itself is read. When a mod has none, the engine uses its built-in one.
 
-Code: [/controlconfig/controlsconfigcommon.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/controlconfig/controlsconfigcommon.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/controlconfig/controlsconfigcommon.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/controlconfig/controlsconfigcommon.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 

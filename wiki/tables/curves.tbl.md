@@ -8,7 +8,7 @@ The **curves.tbl** defines curves: mappings from an X value to a Y value. Other 
 
 This table is one of the Modular Tables and can be extended with **xxx-crv.tbm**.
 
-Code: [/math/curve.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/math/curve.cpp). See [OFP Tables](OFP-Tables) for every table.
+Code: [/math/curve.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/math/curve.cpp). See [Tables](Tables) for every table.
 
 Badges show the version a field or behavior was added in.
 
