@@ -37,6 +37,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (OFP only, editor only)
   - [fireball.tbl](fireball.tbl): explosions and warp effects
   - [fonts.tbl](fonts.tbl): fonts
+  - [game_settings.tbl](game_settings.tbl): global game options
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

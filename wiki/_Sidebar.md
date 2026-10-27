@@ -44,6 +44,7 @@
   - [editor.tbl](editor.tbl)
   - [fireball.tbl](fireball.tbl)
   - [fonts.tbl](fonts.tbl)
+  - [game_settings.tbl](game_settings.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

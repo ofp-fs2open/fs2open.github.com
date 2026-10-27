@@ -1,0 +1,1666 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **game_settings.tbl**, also known as mod.tbl, sets options that apply to the whole game. All settings are optional.
+
+The engine has a built-in game_settings.tbl, used when the mod has none.
+
+This table is one of the Modular Tables and can be extended with **xxx-mod.tbm**.
+
+Code: [/mod_table/mod_table.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mod_table/mod_table.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [Format](#format)
+2. [#GAME SETTINGS](#game-settings)
+3. [#LOCALIZATION SETTINGS](#localization-settings)
+4. [#CAMPAIGN SETTINGS](#campaign-settings)
+5. [#HUD SETTINGS](#hud-settings)
+6. [#SEXP SETTINGS](#sexp-settings)
+7. [#GRAPHICS SETTINGS](#graphics-settings)
+8. [#NETWORK SETTINGS](#network-settings)
+9. [#SOUND SETTINGS](#sound-settings)
+10. [#FRED SETTINGS](#fred-settings)
+11. [#OTHER SETTINGS](#other-settings)
+12. [#END](#end)
+13. [Sample Entry](#sample-entry)
+
+---
+
+## Format
+
+- Settings can be in any order. The section headers (`#GAME SETTINGS`, `#HUD SETTINGS` and so on) are optional and only group the settings; the table must end with `#END`.
+- A setting the parser doesn't recognize logs "Unrecognized parameter" and is skipped.
+- ![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) Every setting with "Color" in its name is also accepted spelled "Colour".
+
+---
+
+If the version targeted in [$Target Version:](#target-version) is equal to or later than these listed, the following options are on by default (a table can still turn them off):
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- [Fix density moment of inertia](#fix-density-moment-of-inertia)
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- [Fixed Turret Collisions](#fixed-turret-collisions)
+- [Fixed Missile Detonation](#fixed-missile-detonation)
+- [Shockwaves Damage All Object Types Once](#shockwaves-damage-all-object-types-once)
+- [AI use framerate independent turning](#ai-use-framerate-independent-turning)
+- [Use host orientation for set-camera-facing](#use-host-orientation-for-set-camera-facing)
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- [Shockwaves Inherit Parent Weapon Damage Type](#shockwaves-inherit-parent-weapon-damage-type)
+- [Fixed Chaining To Repeating Events](#fixed-chaining-to-repeating-events)
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- [Calculate subsystem hitpoints after parsing](#calculate-subsystem-hitpoints-after-parsing)
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- [Fix scripted velocity](#fix-scripted-velocity)
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- [Use model eyepoint for set-camera-host](#use-model-eyepoint-for-set-camera-host)
+- [Use model eyepoint normals](#use-model-eyepoint-normals)
+- [Fix asteroid/debris field bounding box checks](#fix-asteroiddebris-field-bounding-box-checks)
+- [Disable expensive turret target check](#disable-expensive-turret-target-check)
+- [Skybox internal depth consistency](#skybox-internal-depth-consistency)
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- [Zero-radius explosions skip fireballs](#zero-radius-explosions-skip-fireballs)
+- [Render insignias as decals:](#render-insignias-as-decals)
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- [Fix collision moment of inertia](#fix-collision-moment-of-inertia)
+
+## #GAME SETTINGS
+
+Contains settings that affect how the engine works.
+
+### $Target Version:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Specifies the minimum version of FreeSpace Open that this mod supports. If the version specified here is greater than the version of the current build, an error message is displayed.
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) The $Minimum version option has been renamed to $Target Version. The old name is kept with the same functionality for backwards-compatibility.
+
+The target version specifies what version of the FSO engine this mod was created for. It will be used by the engine to enable or disable backwards-incompatible changes by default. The default value is 2.0 which specifies that the mod targets the retail engine version.
+
+#### +Major:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Required. Sets the major component of the target version.
+- Syntax: ***Integer***
+- Example: ***3*** (for a minimum version of 3.7.3.20151121)
+
+#### +Minor:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Required. Sets the minor component of the target version.
+- Syntax: ***Integer***
+- Example: ***7*** (for a minimum version of 3.7.3.20151121)
+
+#### +Build:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Required. Sets the build component of the target version.
+- Syntax: ***Integer***
+- Example: ***3*** (for a minimum version of 3.7.3.20151121)
+
+#### +Revision:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Sets the revision component of the target version. If no revision is given then all builds of that release are supported (even nightly builds if there are any).
+For nightly builds this is the date in YYYYMMDD format.
+- Syntax: ***Integer***
+- Example: ***20151121*** (for a minimum version of 3.7.3.20151121)
+
+### $Window title:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Specifies the name of the FSO window when this mod is running. If blank or unspecified, the window will have the default title of "FreeSpace 2".
+- Syntax: ***String***
+
+### $Window icon:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Specifies the icon filename of the FSO window when this mod is running. If blank or unspecified, the window will have the default icon.
+
+The icon should be in data/maps or data/interface, and can apparently be any single-frame image format supported by FSO. The default icon is .png.
+
+- Syntax: ***String***
+
+### $Mod title:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Specifies the title of the mod and will be displayed at the mainhall near the FSO version.
+- Syntax: ***String***
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) It is now possible to display the mod title on its own.  Previously, the mod version was also required.
+
+### $Mod version:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Specifies the version of the mod and will be displayed at the mainhall near the FSO version. Can be a string or it can be semantic versioning such as 2.0.0.
+- Syntax: ***String***
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) It is now possible to display the mod version on its own.  Previously, the mod title was also required.
+
+### $Unicode mode:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Enabled the Unicode text mode for this mod. In Unicode mode all text is assumed to be UTF-8 encoded Unicode and certain features are disabled if they do not have full Unicode support. Most notably, if this is enabled then the engine will no longer support the old bitmap fonts that were used by Retail FreeSpace. Only the newer TrueType fonts will be supported.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Splash screens:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Defines a list of splash screens that FSO can display upon game startup. The actual image displayed is chosen at random from the applicable entries. Entries with exact aspect ratio matches will be prioritized first, followed by aspect ratio ranged matches, followed by entries without an aspect ratio specified.
+
+#### +Bitmap:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The name of the bitmap to use as a splash screen. Extension will be removed if included.
+- Syntax: ***+Bitmap: String***
+
+#### +Aspect Ratio:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Only consider this bitmap to be an applicable entry if the user's screen aspect ratio matches the specified number within +/- 0.01.
+- Syntax: ***+Aspect Ratio: Float***
+
+#### +Aspect Ratio Min:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Only consider this bitmap to be an applicable entry if the user's screen aspect ratio is at least the specified number.
+- Syntax: ***+Aspect Ratio Min: Float***
+
+#### +Aspect Ratio Max:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Only consider this bitmap to be an applicable entry if the user's screen aspect ratio is at most the specified number.
+- Syntax: ***+Aspect Ratio Max: Float***
+
+### $Splash fade in time:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Sets the time in milliseconds it takes for a splash screen to fade in.
+- Syntax: ***Integer***
+- Default Value: ***0***
+
+### $Splash fade out time:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Sets the time in milliseconds it takes for a splash screen to fade out.
+- Syntax: ***Integer***
+- Default Value: ***0***
+
+### $Center splash logo:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Sets whether the splash logo will be displayed in the middle of the screen.  If this is false (the default), it will be displayed at the top-left.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Disable FSO Internal Loadout Restoration System:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) When the player configures the ships and weapons of the wings in the loadout screen, FSO will remember these settings and attempt to apply them again if the player quits the mission and comes back to it later.  FSO will only remember the most recent mission's loadout, so it will not attempt to restore the loadout if the player loads a different mission.  It will also not attempt this if the mission's *$Modified:* date has changed.  This flag can be used to prevent FSO from attempting restoration even if it normally would.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Lua API returns nil instead of invalid object:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) A design choice very early in FSO's scripting development established that invalid results return invalid objects.  By using this flag, invalid results will return nil instead.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+## #LOCALIZATION SETTINGS
+
+Contains various settings related to localization and language support.
+
+### $Use tabled strings for the default language:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg) Causes the game to use the text in strings.tbl and tstrings.tbl even when the current language is English.  By default, the game will use the literal text in the source code and the data files (tables and missions) and will not look up the entry when the language is English.  For other languages, the translation is always used, if it exists, regardless of this setting.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Don't initalize built-in languages by default:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Prevent FSO from initializing the three additional built-in languages (German, French, and Polish).  This allows mods which don't support those languages to remove them from the SCPUI language selector.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Don't pre-empt training message voice:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg) Prevents training messages from being interrupted by other training messages.  If a training message has a voice file associated with it, or simulated speech is active, the next message will not be played until the current message has finished.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+## #CAMPAIGN SETTINGS
+
+This group contains various Campaign related settings and overrides.
+
+### $Default Campaign File Name:
+
+Defines which campaign will be selected by default for new pilots. A file extension is not needed and, if present, is removed by the code.
+- Syntax: ***String***
+
+### #Ignored Campaign File Names
+
+Defines which campaigns, if present, will not appear in the Campaign Room. In the original implementation, only single-player campaigns could be ignored and file extensions were required, but see below.
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) As of 3.7.1, file extensions are not required and, if present, are removed by the code.
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) As of 3.8.2, file name comparisons are not case sensitive and multiplayer campaigns can be ignored.
+
+#### $Campaign File Name:
+
+File name of the campaign to ignore. Multiple entries may exist.
+- Syntax: ***String***
+
+### #Ignored Mission File Names
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Defines which standalone missions, if present, will not appear in the Tech Room or Multiplayer Lobby.  Both single-player and multiplayer missions can be ignored, but missions which appear in a campaign cannot.  File extensions are not required and, if present, are removed by the code.  File name comparisons are not case sensitive.
+
+#### $Mission File Name:
+
+File name of the mission to ignore. Multiple entries may exist.
+- Syntax: ***String***
+
+### $Red-alert applies to delayed ships:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Controls whether red-alert saved statistics (hitpoints, weapons, subsystem strengths) will be restored for ships that are not present at mission start.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+## #HUD SETTINGS
+
+This group contains various HUD behavior settings and overrides
+
+### $Directive Wait Time:
+
+- Defines how long the game will wait before displaying a directive.
+- Syntax: ***Integer***
+- Values: ***Greater than or equal to 0 ms***
+
+### $Cutscene camera displays HUD:
+
+Show the HUD when the cutscene camera is enabled.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+In earlier versions of the code, this option was controlled by $Cutscene camera disables HUD: and had a default of YES.
+
+### $Full color head animations:
+
+Enables full-color head ANIs. Normal head ANIs will appear in gray.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+In earlier versions of the code, this option was controlled by $Color head animations with hud colors: and had a default of YES.
+
+### $Don't automatically select a turret when targeting a ship:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Uses FS1 behavior where targeting a new ship did not target any turrets.  In FS2 a turret is automatically targeted.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Auto select subsystem under reticle when targeting same ship:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) This is a streamlining of functionality, that makes it so one doesn't need to hit a second key to select the subsystem under the reticle. Instead once you have the capital ship selected, hit Target Under Reticle and it will target a subsystem under the reticle if the feature is enabled and there isn't a new target under the reticle.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Supernova hits at zero:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) Adjusts the HUD timer so that the timer reaches zero when the supernova hits the player.  The actual timing is not affected -- whether the flag is enabled or not, the supernova will always hit the player when 5 seconds remain in the time specified in the sexp.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Always warn player about unbound keys used in Directives Gauge:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) Ensures that the "Key Unbound" message will pop up for a directive with an unbound key in any single-player mission, not just a training mission. Note, that the default string (index 426) will still say "Warning\nYou have no control bound to the action \"%s\".  You must do so before you can continue with training." Thus, it is advised to change the string at index 426 using the -lcl.tbm to "Warning\nYou have no control bound to the action \"%s\".  You must do so before you can continue with this mission."
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $HUD drop shadows enabled by default:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) If this flag is active, certain elements displayed on the HUD (all text, the main targeting reticle, and the background of the ETS gauges) will have a "drop shadow" effect.  Note that whether or not the flag is active, the player can set this using the "Toggle HUD Drop Shadows" control.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Unify scanning behavior:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Unifies scanning behavior between subsystem, regular, and cargo allowing missions to use all scan types in all situations.
+- Also allows changing the "Cargo:" text line in a mission by adding "$Cargo Title: STRING" after the "$Cargo 1:" or "$Cargo 2:" lines in the mission file. FRED UI support not yet added for $Cargo Title so you have to do it manually.
+- When this flag is enabled, all ships, no matter the ship class, will react the same way to the cargo-related or scanning-related ship flags:
+  - They are not scannable by default
+  - Setting the "scannable" flag makes them scannable, and scanning the subsystem will reveal the cargo
+  - A new flag available with alter-ship-flag, "no-scanned-cargo", changes the behavior to scanned/unscanned instead of revealing the cargo
+  - The "toggle-subsystem-scanning" flag must be set to swap full-ship scanning mode into subsystem scanning mode and works for all ship types
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Don't show callsigns in the escort list:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) By default, callsigns are shown in the escort list using the same format as in the target box.  If this flag is active, callsigns will not be displayed.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Hide main Rearm/Repair items in Comms Gauge:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Prevents 5. Rearm/Repair Subsys and 6. Abort Rearm from being shown in the squad messaging menu.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Always show selected item in Comms Gauge:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) Ensures that the visual indicator for which is the active item in the squad messaging menu is always shown. Useful if you are using the select Comms menu item keys. By default this is not shown until the player presses the up or down key for the select Comms menu item keys.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+## #SEXP SETTINGS
+
+This group contains SEXP settings and overrides.
+
+### $Loop SEXPs Then Arguments:
+
+Flips how when-argument settings loop. See: [SEXP Argument changes via mod.tbl](http://www.hard-light.net/forums/index.php?topic=79602.0)
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use Alternate Chaining Behavior:
+
+When set, this allows all events in a chain to repeat, instead of only the last one.  It makes the event chaining behavior act as people expected it to be in [Mantis #82](http://scp.indiegames.us/mantis/view.php?id=82).
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Fixed Chaining To Repeating Events:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) When set, this makes event chaining to repeated events work as designed - that is, the chained event will only be evaluated after the chain delay.  If the repeating event's interval is shorter than the chain delay, then the delay countdown will continually be restarted until all repetitions have completed.  Without this flag, FSO will emulate retail behavior which, due to a bug, allowed chained events to be evaluated immediately after a repeating event is first evaluated.
+
+NOTE: Although the name does not reflect it, the same issue affects repeating events that are evaluated by `is-event-true-delay` and `is-event-false-delay`.  Without this flag, FSO will emulate retail behavior which causes these SEXP operators to ignore any delay when evaluating repeated events.  With this flag, the delay will be measured from when the final repeat iteration occurs.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use host orientation for set-camera-facing:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) When set, this will take into account the host orientation for cutscene cameras.  This is a bugfix for [GitHub issue #3889](https://github.com/scp-fs2open/fs2open.github.com/issues/3889).
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use model eyepoint for set-camera-host:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) The default behavior for set-camera-host is to position the camera at the origin coordinates (0,0,0) of the host.  This flag will make the camera use the model eyepoint instead.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use model eyepoint normals:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) If set, model eyepoints will respect the normal vector set for the eyepoint in the model file for the eyepoint.  If not set, model eyepoints will use the model's orientation.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Show-subtitle uses pixels:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) When set, SEXPs which display subtitles will read their arguments as pixels, not percentages.  If `$Show-subtitle base resolution:` is set, these pixels will be scaled up or down as needed.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Show-subtitle base resolution:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) When set, subtitles are assumed to display at the appropriate size in the specified resolution, and will be scaled up or down if the current screen resolution is different.  If this is not set, or is set to a resolution less than (640, 480), subtitles will not be scaled.
+- Syntax: ***(Integer, Integer)***
+- Default Value: ***(-1, -1)***
+
+### $HUD-set-coords base resolution:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The hud-set-coords SEXP has always used exact pixels, without regard for the current screen resolution.  This setting enables a similar scaling mechanism as *$Show-subtitle base resolution:*.
+- Syntax: ***(Integer, Integer)***
+- Default Value: ***(-1, -1)***
+
+### $Always Show Directive Value Count:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If this setting is enabled, Directive-as-Value values in Directives will always show the number. By default this is disabled, and only values > 1 are shown.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+## #GRAPHICS SETTINGS
+
+This group contains settings related to graphics.
+
+### $Enable External Shaders:
+
+Enables the use of external shader files. By default, the engine will use the built-in shaders.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Default Detail Level:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Also accepted as `$Default Detail Preset:`.
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Determines which graphics detail level preset (low, medium, high, very high) acts as the default for new pilots.
+- Syntax: ***Integer*** (0-3)
+- Default Value: ***3*** (very high)
+
+### $Briefing Window FOV:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Determines the FOV in the briefing Icon window. Retail default for this is 0.29375; some previous versions of FSO used a value of 0.5.
+- Syntax: ***Float*** (0.0 to 1.0)
+- Default Value: ***0.29375***
+
+### $Generic Pain Flash Factor:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Determines the intensity of the pain red flash when the player is hit.
+- Syntax: ***Float***
+- Default Value: ***1.0***
+
+### $Shield Pain Flash Factor:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Determines the intensity of a pain flash when the player's shields are hit. Color will match the current ships shield color defined in ships.tbl. A value of 0 will give retail behavior (no shield effect). Positive values will cause the effect to start at full intensity at full shields and go to next to no intensity at zero shields. Negative values will cause no effect at full shields and full effect at no shields. Values should be kept between -1.0 and 1.0 for good pilot visibility.
+- Syntax: ***Float***
+- Default Value: ***0.0***
+
+### $EMP Pain Flash Factor:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Determines the intensity of the flash when the player is hit by an EMP blast or weapon.
+- Syntax: ***Float***
+- Default Value: ***1.0***
+
+### $EMP Pain Flash Color:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Determines the RGB color value of the flash when the player is hit by an EMP blast or weapon.
+- Syntax: Color, (red, green, blue) respectively, integer value from 0 to 255
+- Default Value: ***(255, 255, 127)***
+
+### $BMPMAN Slot Limit:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Determines the maximum number of textures that can be loaded simultaneously. This includes every frame of an animation, unless that animation is streaming (e.g. command briefing animations, message talking heads, etc). Also includes dynamically-created textures (used internally for various functions).
+- Syntax: ***Int***
+- Values: ***Greater than or equal to 3500***
+- Default Value: ***4750***
+
+### $EMP Arc Color:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Allows custom RGB color values to be set for the EMP lightning arc effect.
+- **+Primary Color Option 1:**
+  - The RGB color of the first primary color for the EMP lightning arc effect.
+  - The actual lightning arc color shown in-game is randomly selected between the first and second primary color.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (64, 64, 5)
+- **+Primary Color Option 2:**
+  - The RGB color of the second primary color for the EMP lightning arc effect.
+  - The actual lightning arc color shown in-game is randomly selected between the first and second primary color.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (128, 128, 10)
+- **+Secondary Color Option 1:**
+  - The RGB color of the secondary color for the EMP lightning arc effect.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (255, 255, 10)
+
+### $EMP Arc Width:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Allows setting how the width is calculated for the EMP lightning arc effect.
+- **+Width Default:**
+  - The default width of the arc. This value will be multiplied by `+Width Radius Multiplier:` if the radius of the ship is less than or equal to `+Do Not Use Width Multiplier Over Radius:`.
+  - Syntax: ***Float***
+  - Default value: 0.9
+- **+Width Radius Multiplier:**
+  - The value that the width is multiplied by if the radius of the ship is less than or equal to `+Do Not Use Width Multiplier Over Radius:`.
+  - Syntax: ***Float***
+  - Default value: 0.01
+- **+Do Not Use Width Multiplier Over Radius:**
+  - If the object is larger than this radius, the `+Width Default:` value is used.
+  - Syntax: ***Float***
+  - Default value: 500
+- **+Width Radius Minimum:**
+  - Minimum width that the arc can be. Any calculated widths lower than this value will be set to this value.
+  - Syntax: ***Float***
+  - Default value: 0.2
+
+### $Damage Arc Color:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) Allows custom RGB color values to be set for the damage lightning arc effect.
+- **+Primary Color Option 1:**
+  - The RGB color of the first primary color for the damage lightning arc effect.
+  - The actual lightning arc color shown in-game is randomly selected between the first and second primary color.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (64, 64, 255)
+- **+Primary Color Option 2:**
+  - The RGB color of the second primary color for the damage lightning arc effect.
+  - The actual lightning arc color shown in-game is randomly selected between the first and second primary color.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (128, 128, 255)
+- **+Secondary Color Option 1:**
+  - The RGB color of the secondary color for the damage lightning arc effect.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (64, 64, 5)
+
+### $Damage Arc Width:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Allows setting how the width is calculated for the EMP lightning arc effect.
+- **+Width Default:**
+  - The default width of the arc. This value will be multiplied by `+Width Radius Multiplier:` if the radius of the ship is less than or equal to `+Do Not Use Width Multiplier Over Radius:`.
+  - Syntax: ***Float***
+  - Default value: 0.9
+- **+Width Radius Multiplier:**
+  - The value that the width is multiplied by if the radius of the ship is less than or equal to `+Do Not Use Width Multiplier Over Radius:`.
+  - Syntax: ***Float***
+  - Default value: 0.01
+- **+Do Not Use Width Multiplier Over Radius:**
+  - If the object is larger than this radius, the `+Width Default:` value is used.
+  - Syntax: ***Float***
+  - Default value: 500
+- **+Width Radius Minimum:**
+  - Minimum width that the arc can be. Any calculated widths lower than this value will be set to this value.
+  - Syntax: ***Float***
+  - Default value: 0.2
+
+### $Requires Rendering Feature:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg) Needs description
+
+### $Render player muzzle flashes in cockpit:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) Determines whether muzzle flashes will be shown within the cockpit view.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Glowpoint nebula visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which glowpoints are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.2
+
+### $Shield nebula visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which shield effects are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.2
+
+### $Thruster nebula visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which thruster flares are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.5
+
+### $Beams affected by nebula visibility:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) Determines whether beam weapons will be faded by nebula fog.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+#### +Constant visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which beam effects are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 4.0
+
+#### +Scaled visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which the *size* of a beam effect affects its visibility. This is multiplied by the radius of the beam and added to the above for the final value. This results in larger beams being visible from farther away.
+- Syntax: ***Float***
+- Default Value: 0.1
+
+### $Weapons affected by nebula visibility:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) Determines whether lasers, missiles, countermeasures, etc will be faded by nebula fog.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+#### +Weapon visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which laser-type weapons are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.3
+
+#### +Trail visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which trails (weapon and ship contrails) are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.0
+
+#### +Shockwave visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which shockwave effects are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 2.5
+
+### $Particles affected by nebula visibility:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) Determines whether particle effects, including impact effects, will be faded by nebula fog.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+#### +Constant visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which particle effects are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.0
+
+#### +Scaled visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which the *size* of a particle effect affects its visibility. This is multiplied by the radius of the particle and added to the above for the final value. This results in larger particles being visible from farther away.
+- Syntax: ***Float***
+- Default Value: 0.08
+
+### $Fireballs affected by nebula visibility:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) Determines whether fireballs from ship explosions will be faded by nebula fog.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+#### +Constant visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which fireballs are affected by nebula fog. 1.0 is exactly the same as regular ship hull obscurity, higher means they stay visible for longer.
+- Syntax: ***Float***
+- Default Value: 1.2
+
+#### +Scaled visibility factor:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the degree to which the *size* of a fireball affects its visibility. This is multiplied by the radius of the fireball and added to the above for the final value. This results in larger fireballs being visible from farther away.
+- Syntax: ***Float***
+- Default Value: 0.08
+
+### $Shadow Quality Default:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Sets the default level for shadow quality if the 'enable_shadows' command line is used and 'shadow_quality' is not used. By default, the FSO will set the shadow detail level to 2. Valid values are 0 (shadows disabled), 1 (Low, 512x512 shadow map), 2 (Medium, 1024x1024 shadow map), 3 (High, 2048x2048 shadow map), or 4 (Ultra, 4096x4096). Note, the command line 'shadow_quality' will override any value set here.
+- Syntax: ***Integer***
+- Default Value: ***2***
+
+### $Shadow Cascade Distances:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg) Sets the distances that the shadow map for the game scene uses. Float values must all be greater than 0 and successively larger than each consecutive value.
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Can now be an arbitrary non-zero number of floats. If not set to 4, you must table [#$Shadow Smoothness Factor:](https://wiki.hard-light.net/index.php/#$Shadow_Smoothness_Factor:)
+
+- Syntax: ***List of floats***
+- Default Value: ***(200.0, 600.0, 2500.0, 8000.0)***
+
+### $Shadow Cascade Distances Cockpit:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg) Sets the distances that the shadow map for the cockpit pass scene uses. Will only shadow the cockpit model, and does not interact with the external game scene shadow map. Float values must all be greater than 0 and successively larger than each consecutive value.
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Can now be an arbitrary non-zero number of floats. If not set to 4, you must table [#$Shadow Smoothness Factor:](https://wiki.hard-light.net/index.php/#$Shadow_Smoothness_Factor:)
+
+- Syntax: ***List of floats***
+- Default Value: ***(0.25, 0.75, 1.5, 3.0)***
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+### $Shadow Smoothness Factor:
+
+Sets the strength of the smoothing for each shadow cascade. Larger values mean smoother / softer shadows. Shadow smoothness also scales with cascade distance, so the same value for a larger cascade will be perceived to be smoother.
+The number of smoothness factors *must* match the number of Shadow Cockpit Cascades + Shadow Cascades (each 4 by default).
+The list should first contain the smoothness factors for the cockpit cascades in order, and then the smoothness factors for the main cascades in order
+- Syntax: ***List of floats***
+- Default Value: ***(0.00333,  0.004,  0.005,  0.005, 0.00333,  0.004,  0.005,  0.005)***
+
+### $Shadow Disable Techroom:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Disables shadows on ships in the techroom.
+- Syntax: ***Boolean***
+
+### $Shadow Disable Cockpit:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Disables shadows on the player cockpit in mission.
+- Syntax: ***Boolean***
+
+### $Shadow Disable Mission Brief Weapons:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Disables shadows on weapons in the mission briefing.
+- Syntax: ***Boolean***
+
+### $Shadow Disable Mission Brief Ships:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Disables shadows on ships in the mission briefing.
+- Syntax: ***Boolean***
+
+### $Show Ship Casts Shadow:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) When cockpit shadows are enabled, enabling this setting will cause the players ship model shown with "show ship" to cast shadow onto the cockpit.
+- Syntax: ***Boolean***
+
+### $Ship Model And Cockpit Share Coordinate Space:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) When having the "show ship" flag enabled and cockpit models for a ship, this flag should be on if the cockpits can fit into the actual geometry of the ship model. Disable this flag if this is not the case and the cockpit needs to be rendered on top of the ship regardless of actual coordinates. If this can be enabled, the external show ship model can be rendered using deferred rendering.
+- Syntax: ***Boolean***
+
+### $Show Ship enabled only if Cockpits enabled:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Enabling this setting will only use the 'show-ship' flag if cockpits are enabled. Useful if your ship uses both 'show-ship' and cockpits that exist within the 'show-ship' space, and you want to allow players to toggle off cockpits. Note, 'show-ship' always only appears if in first-person view.
+- Syntax: ***Boolean***
+
+### $Minimum Pixel Size Thrusters:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the smallest pixel size that thrusters will be rendered. Setting this > 0 can be expensive in larger missions.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Minimum Pixel Size Beams:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the smallest pixel size that beams will be rendered. Setting this > 0 can be expensive in larger missions.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Minimum Pixel Size Muzzle Flashes:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the smallest pixel size that muzzle flashes will be rendered. Setting this > 0 can be expensive in larger missions.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Minimum Pixel Size Trails:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the smallest pixel size that trails will be rendered. Setting this > 0 can be expensive in larger missions.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Minimum Pixel Size Lasers:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Specifies the smallest pixel size that lasers will be rendered. Setting this > 0 can be expensive in larger missions.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Do Not Render Lasers Below Length:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the smallest length that lasers will be rendered.
+- Syntax: ***Float***
+- Default Value: 0.0001
+
+### $Do Not Render Lasers Below Radius:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the smallest radius that lasers will be rendered.
+- Syntax: ***Float***
+- Default Value: 0.0001
+
+### $Thruster Easing Value:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- Smooths out the behavior of maneuvering thruster flares the higher above 0 it is.
+- This is the exponential time constant for the visual flare length to reach it's true length.
+- Syntax: ***Float***
+- Default Value: 0.0
+
+### $Primary Thruster Glow Depth Factor:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- This value is a multiplier of the Primary Thruster glow's computed size. By default, Primary Thrusters showed through model geometry, but setting this value to less than or equal to 0 will fix the issue.
+- Syntax: ***Float***
+- Default Value: 0.325f
+
+### $Tertiary Thruster Glow Depth Factor:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- This value is a multiplier of the Tertiary Thruster glow's computed size. By default, Tertiary Thrusters does not show through model geometry, but you could make it so by setting this value to greater than 0.
+- Syntax: ***Float***
+- Default Value: -0.5f
+
+### $SCPUI attempts to load hires animations:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Prevents SCPUI from trying to load anims prefixed with "2_"
+- Syntax: ***Boolean***
+- Default Value: true
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+### $Max draw distance:
+
+### $Min draw distance:
+
+- These values do more than just cutoff the visuals at certain distances, and they must be adjusted carefully to ensure unintentional rendering artifacts are not introduced.
+- The rendering engine has limited amount of 'depth resolution', the degree to which it can tell a certain polygon is closer or farther away than another. When two polygons are too close, they will Z-fight, picking arbitrarily which is closer. It is the span between the min and max draw distance that determines how well the engine can determine depth, if they are too far from one another, the Z-fighting will become more common as it has to spread its resolution over a wider range. If they are close, Z-fighting will be lessened at the cost of a smaller range of distance able to be rendered.
+- Syntax: ***Float***, meters
+- Default Values: 10,000,000,000 and 1, respectively
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+### $Randomize particle rotation:
+
+- Particle bitmaps are typically screen-aligned; the upper portion of the bitmap will always be mapped to the upper portion of the particle, from the point of view of the camera. Enabling this option makes *all* particles have a random 'tilt' in an arbitrary direction when created.
+- Syntax: ***Boolean***
+- Default Value: false
+
+### $Disable shield effects:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies if FSO attempts to use the shield mesh impact effects. Enabling this flag will prevent the game from preforming any shield mesh effect code, which can be useful if a mod does not use those shield mesh effects.
+- Syntax: ***Boolean***
+- Default Value: false
+
+### $Disable all non-custom generic debris:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Provides one simple control to turn off all non-custom generic debris (the tiny debris shards that are typically spawned when a ship/subsystem explodes). Note, generic debris that is manually specified in the ships table will still be spawned, this is only for turning off non-custom debris.
+- Syntax: ***Boolean***
+- Default Value: false
+
+### $Render insignias as decals:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- If set, insignias will be rendered using the decal system. This will make insignias render with correct and deferred lighting, and fix issues with apparent fading
+- Models must be set up correctly for this to work! A model can have multiple insignias, with multiple polygon faces each. To enable this option, each visible insignia must have its own insignia entry in the model. If multiple visible insignias are incorrectly consolidated into one insignia entry with disjointed polygons, this will cause graphical artifacts.
+- For reference, check out the retail FS2 models, which are set up correctly.
+- Syntax: ***Boolean***
+- Default Value: false
+
+## #NETWORK SETTINGS
+
+This group contains network-related settings
+
+### $FS2NetD port:
+
+- (description required)
+
+### $Default object update level for multiplayer:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Sets the distances default object update rate  for multiplayer matches. By default, the FSO will set the object update level to 2. Valid values are 0 (Low), 1 (Medium), 2 (High), 3 (LAN). FSO caps the bandwidth it uses based on these settings, but they were designed for connections from 1999. LAN has the least restrictive limits and does not require an actual LAN connection. Also, if a player's connection is within the dial-up speed range then game auto force the use of the lowest level during a match.
+- Syntax: ***Integer***
+- Default Value: ***2***
+
+## #SOUND SETTINGS
+
+This group contains sound-related settings
+
+### $Default Sound Volume:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the default sound fx volume for new pilots.
+- Syntax: ***Float***, between 0.0 and 1.0
+- Default Value: ***1.0***
+
+### $Default Music Volume:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the default music volume for new pilots.
+- Syntax: ***Float***, between 0.0 and 1.0
+- Default Value: ***0.5***
+
+### $Default Voice Volume:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the default voice volume for new pilots.
+- Syntax: ***Float***, between 0.0 and 1.0
+- Default Value: ***0.7***
+
+### $Use weapon class impact sounds for hits to player:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Allows weapons that hit the player to play their specific impact sounds, not the hard-coded default sounds.
+- Syntax: ***Boolean***
+
+### $Play thruster sounds for the player:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) If the player's ship has thruster sounds defined, this will ensure they are played like normal, since they are typically suppressed.
+- Syntax: ***Boolean***
+
+### $Unify minimum engine sound:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Allows $Minimum Engine Volume in ships.tbl to work for all ship classes. By default, that value only triggers for non-huge ships.
+- Syntax: ***Boolean***
+
+### $Disabled or disrupted engines are silent:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) If set, engines will not play their engine noise if the ship is disabled or a disrupted (such as disruptions caused by an active EMP effect or a weapon with the "electronics" flag).
+- Syntax: ***Boolean***
+
+## #FRED SETTINGS
+
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg) In OFP these can also be set in [editor.tbl](editor.tbl#settings), the editor's own table. Settings here still work.
+
+This group contains settings for FRED.
+
+### $Disable Hard Coded Message Head Ani Files:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) If set, FRED will not fill the head ani selection in the Event Editor with the retail head ani filenames.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Add Message Head Ani Files:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) FRED will append each +Head entry listed below to the head ani selection list in the Event Editor.
+
+#### +Head:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) The head ani filename to add. Extensions will be stripped if included.
+NOTE: Pay attention to file names or anis with a,b, c variation not display in-game (unless called directly). Proper name seems to be Head-xxxNa, Head-xxxNb, with N being some number and XXX being whatever you want. Needs further testing and confirmation
+- Syntax: ***+Head: String***
+
+### $Enable scripting in FRED:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) If set, scripting will be enabled in FRED. Use with extreme caution. The effects of scripts on FRED have not been fully tested. You can check if a script is running in FRED by using ba.inMissionEditor().
+- Default Value: ***NO***
+
+### $FRED Briefing window resolution:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) The width and height of the briefing window in FRED. Defaults to 888x371. Note that changing this only affects FRED and can cause a mismatch to the ingame briefing view which defaults to 888x371 (or 555x232 for 640 base res).
+- Syntax: ***integer, integer***
+- Default Value: ***888,371***
+
+### $Ignore Music Files In Music Player:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Music files in this section will not be added to FRED's built-in music player.
+
+#### +File:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Specifies a file
+- Syntax: ***string***
+
+### $FRED spacemouse nonlinearities:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Allows setting custom nonlinearities and scaling for controlling FRED with a spacemouse.
+
+#### +Sideways exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Sideways spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Sideways scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Sideways spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Forwards exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Forwards spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Forwards scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Forwards spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Upwards exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Upwards spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Upwards scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Upwards spacemouse motion.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Pitch exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Pitch spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Pitch scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Pitch spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Bank exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Bank spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Bank scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Bank spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Heading exponent:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The exponent for input for Heading spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+#### +Heading scale:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The multiplier for input for Heading spacemouse rotation.
+- Syntax: ***float***
+- Default Value: ***1***
+
+### $Skybox internal depth consistency:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) If enabled, this will allow skyboxes that use submodels to render the submodels with proper Z-sorting if the 'No Z-Buffer' check box is set to on in FRED. In other words, parts of the skybox closer to the origin point will render in front of sections further away, as might be expected. This flag is enabled by default for FSO version 25.0 onwards
+- Syntax: ***Boolean***
+- Default Value: ***YES***
+
+## #OTHER SETTINGS
+
+This group contains miscellaneous settings.
+
+### $Fixed Turret Collisions:
+
+Makes all hits to a turret's barrels count as hits to the turret subsystem. By default, this does not happen unless the point of impact falls inside the model radius of the turret's base.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Fixed Missile Detonation:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+- When this flag is set, missiles which reach the center of a submodel will not detonate immediately; they will delay detonation until they have traveled another radius of the submodel.  This fixes missile impacts to submodels whose center lies outside the geometry of the submodel.  In other words, without this flag, a missile might detonate in the middle of the "bowl" of a concave submodel; with this flag, the missile will travel to the other side of the submodel before it detonates.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Damage Impacted Subsystem First:
+
+If set, a hit to a physical subsystem will always deal damage to that subsystem first, even if another subsystem is closer to the point of impact. By default, the closest subsystem will always receive damage first.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use 3d ship select:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to use 3D models for ship select instead of animations
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Default ship select effect:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- This specifies which effect to use for ship select animations when no .ani can be found, or the 3d ship select effect is active. This will default to the FS2 effect.
+- Syntax: ***String***
+- Possible options are "FS2", "FS1", and "off"
+
+### $Use 3d ship icons:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to use 3D models for ships in ship/weapon select instead of icons
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Use 3d weapon select:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to use 3D models for weapon select instead of animations
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Default weapon select effect:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- This specifies which effect to use for weapon select animations when no .ani can be found, or the 3d weapon select effect is active. This will default to the FS2 effect.
+- Syntax: ***String***
+- Possible options are "FS2", "FS1", and "off"
+
+### $Use 3d weapon icons:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to use 3D models for weapons in weapon select instead of icons
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $FS2 effect grid color:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the grid color for the FS2 loadout animation effect
+- Syntax: ***Integer, Integer, Integer***
+- Default Value: ***0, 200, 0***
+
+### $FS2 effect scanline color:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the scan-line color for the FS2 loadout animation effect
+- Syntax: ***Integer, Integer, Integer***
+- Default Value: ***0, 255, 0***
+
+### $FS2 effect grid density:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the number of grid lines in the FS2 loadout animation effect
+- Syntax: ***Integer***
+- Default Value: ***7***
+
+### $FS2 effect wireframe color:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies the wireframe color for the FS2 loadout animation effect
+- Syntax: ***Integer, Integer, Integer***
+- Default Value: ***80, 49, 160***
+
+### $Use 3d overhead ship:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to use 3D models for ship overhead view instead of a bitmap in weapon select
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Default overhead ship style:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- This specifies which style of overhead view to use if 3d overhead view is active
+- Syntax: ***String***
+- Possible options are "ROTATE" or "TOPVIEW"
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- **+Overhead Line Color 1:**
+  - The RGB color for ship secondary bank 1.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (64, 192, 192)
+- **+Overhead Line Color 2:**
+  - The RGB color for ship secondary bank 1.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (192, 128, 64)
+- **+Overhead Line Color 3:**
+  - The RGB color for ship secondary bank 1.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (175, 175, 175)
+- **+Overhead Line Color 4:**
+  - The RGB color for ship secondary bank 1.
+  - Syntax: ***Color***, (red, green, blue) respectively, integer value from 0 to 255
+  - Default value: (100, 100, 100)
+
+### $Always refresh selected weapon when viewing loadout:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- When set to true, this always refreshes the weapon shown in view box on the right side of the screen when opening the weapon loadout view. This ensures the viewed weapon is one that can actually be on the selected ship when first clicking on the weapon loadout screen.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Weapons inherit parent collision group:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- When set to true, Weapons fired by a ship will inherit their parents' collision group setting.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Flight controls follow eyepoint orientation:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Specifies that if the player ship's eyepoint happens to rotate into a non-standard orientation, pitch and yaw axes should stay relative to the eyepoint orientation, not the ship. Note that this does not affect the pitch/yaw turning speed, which always remains relative to the ship.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Beams Use Damage Factors:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Specifies that beam weapons will use the tabled damage factors for Armour, Shields and Subsystems. Default is false (i.e. all factors are treated as 1.0)
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Default fiction viewer UI:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- Specifies which fiction viewer layout to use in missions that don't specify one. Possible values are as follows:
+  - "FS2": Standard layout. Requires (2_)fictionviewer and (2_)fictionviewer-m to be present in data\interface.
+  - "WCS": Moves the "Accept" button to the lower-left corner of the screen. Requires (2_)fictionviewerb and (2_)fictionviewer-mb to be present in data\interface.
+  - "auto": Selects "WCS" if the appropriate files are present; otherwise, selects "FS2". This is the default setting.
+
+### $Movie subtitle font:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Specifies which font should be used for displaying subtitles in the cutscene player. This should be the name given to this font in the fonts table. Since movie subtitles can contain Unicode text it is a good idea to enable Unicode mode when movie subtitles are used but this is not enforced by this option.
+- Syntax: ***String***
+
+### $Movie subtitle color:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Specifies which color should be used for displaying subtitles in the cutscene player.
+- Syntax: ***Integer, Integer, Integer, Integer***
+- Default Value: ***255, 255, 255, 255***
+
+### $Disable built-in translations:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Turns off hard-coded translations, e.g. Transport -> Transporter in German.  All strings will either use their XSTR entry or else not be translated.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Weapon shockwave damage respects huge ship flags:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Controls whether weapon shockwaves will respect the huge/supercap ship flags.  In retail they do not.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Enable external default scripts:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Enables the loading of external scripts with the same name as a built-in script. Otherwise, uses the version of the script included in the executable (currently, just cfile_require.lua).
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Player warpout speed:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Defines the speed the player must reach to warp out.
+- Syntax: ***Float***
+- Default Value: ***40.0***
+
+### $Target warpout match percent:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Defines how close to the warpout speed the player needs to be to actually warp out.
+- Syntax: ***Float***, between 0.0 and 1.0
+- Default Value: ***0.05*** (5%)
+
+### $Minimum player warpout time:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- The [default amount of time](ships.tbl#24warpout_engage_time), in seconds, warping out will take before actually starting to check whether the player is the right speed.
+- Syntax: ***Float***
+- Default Value: ***3.0***
+
+### $Enable in-game options:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Mode whereby various settings can be modified by FSO while it's still running, rather than being set by the launcher before execution. By default is now ON, and can be accessed by going to the Options menu and pressing F3.
+- Syntax: ***Boolean***
+- Default Value: ***YES***
+
+### $Dinky Shockwave Default Multiplier:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Amount of damage, as a multiple of normal shockwave damage, assigned to a weapon's [dinky shockwave](weapons.tbl#24dinky-shockwave) by default. To get the same behavior FSO had from 2005-2019, set this to 0.25.
+- Syntax: ***Float***
+- Default Value: ***1.0***
+
+### $Shockwaves Always Damage Bombs:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Enables all bombs being damaged by shockwaves. Previously only those marked with flags could be damaged.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Shockwaves Damage All Object Types Once:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Keeps any object from being damaged more than once by a shockwave.  The default behavior is for asteroids and flagged missiles to be damaged every frame by the shockwave.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Shockwaves Inherit Parent Weapon Damage Type:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- When enabled, the shockwaves of weapons that have a defined damage type automatically inherit that damage type, rather than dealing "typeless" damage. As this behavior is more intuitive than when this flag is disabled, mods targeting 22.4 or newer versions of FSO will have it enabled by default.
+- Syntax: ***Boolean***
+- Default Value: ***True*** for mods targeting 22.4 or newer versions of FSO, otherwise ***False***
+
+### $Inherited Shockwave Damage Type Added Suffix:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- When combined with "$Shockwaves Inherit Parent Weapon Damage Type:", this string is added to the inherited damage type to define the shockwave's damage type. For example, if a weapon has the damage type "heavy" and the provided suffix is "-shock", then that weapon's shockwave's damage type would default to "heavy-shock".
+- Note: When defined, this also implicitly sets the equivalent value for dinky shockwaves, below.
+- Syntax: ***String***
+
+### $Inherited Dinky Shockwave Damage Type Added Suffix:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- The same as "$Inherited Shockwave Damage Type Added Suffix:", except specifically for "dinky" shockwaves.
+- Syntax: ***String***
+
+### $Default Shockwave Damage Type:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- If a weapon's shockwave doesn't have a damage type set, it will have this damage type instead (when "$Shockwaves Inherit Parent Weapon Damage Type:" is enabled, this will only be used if the weapon itself also doesn't have a damage type set).
+- Note: When defined, this also implicitly sets the equivalent value for dinky shockwaves, below.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Default Dinky Shockwave Damage Type:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- The same as "$Default Shockwave Damage Type:", except specifically for "dinky" shockwaves.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Use Engine Wash Intensity:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Allows the game to use the [Intensity](ships.tbl#24intensity) value when calculating Engine Wash effects.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Apply HUD shudder to chase view:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Applies hud shudder (afterburner and engine wash) also to chase view. Does not override the command line toggle.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Swarmers Lead Targets:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Causes swarm missiles to lead their targets by default, and will make use of [Target Lead Scaler](weapons.tbl#2btarget_lead_scaler) if specified, like normal aspect seekers.
+- Syntax: ***Boolean***
+- Default Value: ***NO***
+
+### $Damage Threshold for Weapons Subsystems to Trigger Turret Inaccuracy:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Specifies the damage threshold for when turrets become less accurate due to weapon subsystem damage. In other words, how damaged do a ship's aggregated weapons systems have to be before the turrets become inaccurate? Value must be between 0.0-1.0 (includes 0.0 and 1.0).
+- Syntax: ***Float***
+- Default Value: ***0.7***
+
+### $AI use framerate independent turning:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Without this flag, missiles turn rate is directly dependent on the current framerate. When enabled their turn rate will be consistent, with the "true" turning taken to be observed turning at 60fps. This flag also affects ships, but the instability is only apparent at extremely low framerates, and so the change will not be apparent.
+- Syntax: ***Boolean***
+- Default Value: ***True***
+
+#### +AI respect tabled turn time and rotdamp:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Due to complicated physics issues caused by retail not using the above method, tabled turn times on ships and missiles are not representative of actual observed turn times. The above flag makes it consistent, but this flag will make it accurate to what is actually listed in the table.
+- Additionally, rotdamp is now used properly by the AI in a similar manner to players. More rotdamp will result in slower rotational acceleration, and less results in faster acceleration.
+- NOTE: BEWARE OF ADDING THIS FLAG TO AN EXISTING MODPACK. NEARLY EVERY SINGLE TURN TIME WILL NEED TO BE CHANGED.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Player starts in third person/chase view by default:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- When this flag is set, a player will start the mission in the chase view, not in the cockpit view.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Custom briefing icons always override standard icons:
+
+![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg)
+
+- Custom ship briefing icons will always be shown when the briefing icon is a ship, but not when it is a non-ship icon such as a planet.  Set this flag to use custom briefing icons in all cases.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Lead indicator behavior:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Changes how Lead Indicators behave when multiple weapon banks are linked and in range.
+When set to default, if you have linked weapons, only the indicator for the one with the farthest range will be drawn.
+When set to multiple, a lead indicator is drawn for all primary weapons in range when you have them linked.
+When set to average, a single lead indicator is drawn in the average of the position where each of them would usually be drawn.
+- Syntax: ***String***
+  - Valid options are ***default***, ***multiple*** and ***average***
+- Default Value: ***default***
+
+### $Use distant firepoint for all turrets:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Causes the game to use firepoint-based target leading calculations for all turrets. This is useful if all or most turrets in a given mod has firepoints that are distant from their center-point.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Enable Discord rich presence:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Enables or disables the built-in Discord game-status reporting.
+- Syntax: ***Boolean***
+- Default Value: ***True***
+
+### $Always hide hidden ships in hotkey list:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Whether or not to always hide ships with HIDDEN hotkey (set in FRED), even in the in-mission hotkey menu.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Allow automatically assigning personas:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Whether or not the game will automatically assign personas to ships that have no persona set.
+- Syntax: ***Boolean***
+- Default Value: ***True***
+
+### $Countermeasures use capacity:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Whether or not Countermeasures use tabled capacity.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Calculate subsystem hitpoints after parsing:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- Causes subsystem hitpoints to be calculated after all ships.tbl and -shp.tbm files have been parsed.  This allows subsystem percentages to correctly reflect the final hull value rather than the first hull value encountered.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Contrails use absolute speed:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- Causes contrails to be created based on speed in any direction, rather than just forward speed.  This allows contrails to appear when a ship is moving in a direction other than forwards.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Fix scripted velocity:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- If this setting is enabled, object velocity set via script will wholly determine the change in position for that frame, ignoring *all* other in-engine concerns. Otherwise, the game engine will likely overwrite/ignore any changes, depending on when the changes were made in the frame.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Preload briefing icon models:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set, this forces preloading of models used for briefing icons. This only loads models used for icons that haven't already been loaded for the mission. This is useful for SCPUI's where hovering over an icon shows the model without having to click on it and the stutter when it loads models not used in mission.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Behavior for pressing Escape key in options menu:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set to 'save', the escape key for the HUD and Options screen saves options when leaving those screens (ie it does the same thing as pressing Ctrl-Enter/Accept). By default (or if set to 'default') the Escape key will not save any changed values when exiting those screens.
+- Syntax: ***String***
+- Default Value: ***default***
+
+### $Use closest distance method for 'Target Hostile Bomb or Bomber' control:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set to true, the 'Target Hostile Bomb or Bomber' control will target the closest hostile bomb or bomber, similar to how the 'Target Closest Hostile' key works. By default, the 'Target Hostile Bomb or Bomber' control will not sort by distance and simply only target in order of oldest to youngest objects (ie which object spawned first in the mission).
+- Syntax: ***Boolean***
+- Default Value: ***false***
+
+### $Objects targeted with 'Target Hostile Bomb or Bomber' control:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Determines what can be targeted when using the 'Target Hostile Bomb or Bomber' control. By default this control targets both bombs and bombers, which is the behavior if this field is set to 'default' or 'bombs and bombers'. If set to 'only bombs', the key will only target bombs and not target bombers. If set to 'only bombers', the key will only target bombers and not target bombs.
+- Syntax: ***String***
+- Default Value: ***default***
+
+### $Fix asteroid/debris field bounding box checks:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Fixes a bug where asteroid and debris fields did not properly check for whether large ships were within bounds.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Disable intro cutscene:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set, this disables loading of any cutscenes as the game starts that might play before the player reaches the pilot select screen.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Show locked status for scramble missions:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set, scramble mission will show a text line right below the words 'Weapons Loadout' that states "Ships/Weapons Locked" (XSTR 749), thus the player can easily see their loadouts are locked and they do not have to check the loaoout buttons on every mission.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Disable expensive turret target check:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- If set, this value speeds up turret target checking. By default, turret target acquisition was spending a lot of time doing a raycast, the result of which was barely used at all. If we don't need the target normal, all it does is get a target point slightly more accurate, but in practice it really isn't noticeable at all whether the target point of the turret is actually on the surface of the ship, or maybe on the other side of the ship.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Threshold below which shield skips damage:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- By default, FSO logic dictates that shields collisions and any related sound or visuals related to shields are skipped if the shields are under 10%. This value allows modders to customize the value, though the value must be between 0.0 and 1.0.
+- Syntax: ***Float***
+- Default Value: ***0.1***
+
+### $Minimum ship radius for persistent debris:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Ships with a radius larger than this value will have infinite debris lifetimes.
+- Syntax: ***Float***
+- Default Value: ***50***
+
+### $Zero-radius explosions skip fireballs:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- If set, explosions with a visual radius of 0 will not have fireballs created, and will not have the fireball lifetime added to the explosion lifetime.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Link special-point subsystems to -destroyed submodels:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- If set, a special-point subsystem will be linked to its corresponding -destroyed submodel (if one exists).  The -destroyed submodel will be shown when the subsystem is destroyed, and hidden again if the subsystem is repaired.  By default, only submodel subsystems are linked to their corresponding -destroyed submodels.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Fix collision moment of inertia:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes a bug in collision physics where an object's moment of inertia was applied as though the object were facing the inverse of its actual orientation (that is, an orientation that would rotate it back to the identity orientation).  Without this flag, a ship that is not aligned with the coordinate axes may rotate around the wrong axis, or by the wrong amount, when something collides with it.  This applies to collisions among ships, asteroids, and debris.  It does not apply to weapon impacts, which were never affected by the bug.
+- Syntax: ***Boolean***
+- Default Value: ***False***
+
+### $Fix density moment of inertia:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Fixes a retail bug in how `$Density:` changes a ship's moment of inertia: retail scaled it the wrong way, so a denser ship was easier to rotate instead of harder. (This was fixed without a setting in 21.0; the setting was added later so it can be turned off.)
+- Syntax: ***Boolean***
+- Default Value: ***False***, or ***True*** when targeting 21.0 or later
+
+## #END
+
+Required. The last line of the table must be #END
+
+## Sample Entry
+
+    #CAMPAIGN SETTINGS
+    $Default Campaign File Name: NewCampaignFile
+
+    #Ignored Campaign File Names
+    $Campaign File Name: FreeSpace2.fc2
+
+    #HUD SETTINGS
+    $Directive Wait Time: 5000
+
+    #SEXP SETTINGS
+    $Loop SEXPs Then Arguments: True
+
+    #OTHER SETTINGS
+    $Fix Turret Collisions: True
+
+    #END
