@@ -40,5 +40,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [game_settings.tbl](game_settings.tbl): global game options
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [glowpoints.tbl](glowpoints.tbl): glowpoint presets
+  - [help.tbl](help.tbl): help overlays
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

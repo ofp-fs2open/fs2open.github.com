@@ -47,5 +47,6 @@
   - [game_settings.tbl](game_settings.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [glowpoints.tbl](glowpoints.tbl)
+  - [help.tbl](help.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
