@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#124](https://github.com/ofp-fs2open/fs2open.github.com/pull/124)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **iff_defs.tbl** (Identification Friend or Foe) defines the teams ships belong to: who attacks whom, the colors each team is shown in, and related HUD colors. The engine has a built-in version (shown as the sample below), so the table is only needed to add or change IFFs.
