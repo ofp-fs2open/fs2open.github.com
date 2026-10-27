@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#115](https://github.com/ofp-fs2open/fs2open.github.com/pull/115)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **cutscenes.tbl** defines the video clips shown in the tech room's cutscenes section, with their names and descriptions.
