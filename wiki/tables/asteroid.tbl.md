@@ -1,0 +1,333 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **asteroid.tbl** defines the asteroids and debris pieces used in asteroid and debris fields.
+
+This table is one of the Modular Tables and can be extended with **xxx-ast.tbm**.
+
+Code: /asteroid/asteroid.cpp. See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [General format](#general-format)
+2. [Asteroid and debris data](#asteroid-and-debris-data)
+3. [Settings after #End](#settings-after-end)
+4. [Sample](#sample)
+
+---
+
+## General format
+
+```
+#Asteroid Types
+
+$Name: ...
+(asteroid and debris entries)
+
+#End
+
+(settings after #End)
+```
+
+- No asteroids in any table means asteroid fields won't work, and the log says so.
+
+---
+
+## Asteroid and Debris Data
+
+- Used to define asteroid types and their physical characteristics
+- Every entry is either one of the three asteroid sizes (small, medium, large) or a debris piece. After all tables are read:
+  - The first entry with `$Type:` 0, 1 and 2 becomes the small, medium and large asteroid.
+  - A size nobody set takes the first entry left over, in table order, so a table without `$Type:` works as retail's did: its first three entries are small, medium and large.
+  - Every other entry is debris. An extra small, medium or large entry is turned into debris, with a warning.
+- Each entry needs at least one model. One without is an error.
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) The following is no longer required. As many or as few 'special' asteroids can be defined as desired.
+
+- Then, each species requires 3 asteroids (retail used these for debris-type asteroids)
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) The following is only true if [$Type](#type) is not defined.
+
+- The first 3 correspond to the 1st species in the [species_defs.tbl](species_defs.tbl), the second to the next 3, etc.
+
+### $Name:
+
+- Defines the name of asteroid or debris object. Does NOT need to be unique.
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Name should be unique
+
+- This will be used as the name in the targeting box when targeted, unless the name is "[Any species] Debris #", where it will be displayed as "[Species] debris".
+- A name used twice in asteroid.tbl is an error. In a modular table, a name that already exists edits that entry.
+
+### +nocreate
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Optional. Goes directly after `$Name:`.
+- In a modular table, edits the entry only if it already exists, instead of creating a new one.
+- Using it in asteroid.tbl itself logs a warning.
+
+### $Display Name:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Defines the text that will be used in the targetbox for this asteroid. Only used for debris type asteroids.
+- Syntax: **String**
+
+### $Type:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Defines the type of asteroid this is.
+- Syntax: **Integer**: 0 for small asteroid, 1 for medium asteroid, 2 for large asteroid, -1 for debris
+- Default: -1 (debris). Any other value is an error, and the entry is treated as debris.
+
+### $POF file1:
+
+- Defines the name of the model file (.pof) used for asteroid or debris model
+- `$POF file1:`, `$POF file2:` and `$POF file3:` define the asteroid subtypes named **Brown**, **Blue** and **Orange**, the subtypes a mission's asteroid field picks from. In a modular table, setting one again replaces that subtype's model.
+- Syntax: **String.pof**, filename
+
+### $POF file2:
+
+- ***Note: This does not work for debris chunks. The game will always only use POF file1.***
+- Defines the name of the alternate asteroid or debris model of the set size
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Required for asteroid types, ignored otherwise
+
+- Syntax: **String.pof** or **none**, filename
+
+### $POF file3:
+
+- ***Note: This does not work for debris chunks. The game will always only use POF file1.***
+- Defines the name of the alternate asteroid model
+- If the object in question is has **$POF file2:** set as *none* then this entry is not needed
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Required for asteroid types, ignored otherwise
+
+- Syntax: **String.pof** or **none**, filename
+
+### $Subtype:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Adds another subtype, beyond Brown, Blue and Orange, that a mission's asteroid field can pick. Any number can be added. Asteroid types only; debris uses only its first model.
+- Syntax: **String**, the subtype name. A name the asteroid already has is an error.
+
+#### +POF file:
+
+- The model file for this subtype.
+- Syntax: **String.pof**, filename
+
+### $Detail distance:
+
+- Defines the distance where the change between different Levels-Of-Details (LODs) occurs
+- Syntax: ( **Integer list** ), comma separated **integers**, one for each LOD
+  - Example: (0, 30, 80, 150)
+  - Up to 5 values.
+
+### $Max Speed:
+
+- Defines the maximum velocity of the asteroid
+- Syntax: **Float**, meters per second
+
+### $Rotational Velocity Multiplier:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- Defines the value that randomized rotational velocity is multiplied by. For each spawned asteroid/debris object FSO first calculates a random normalized vector. Then it calculates a rotational value with the formula 'value of $Rotational Velocity Multiplier: * (frand()/4.0f + 0.1f)'.
+- Syntax: **Float**, multiplier value
+
+### $Damage Type:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the damage type of the asteroid explosion. **REQUIRES ADDITIONAL TABLE FILE**.
+- Syntax: **String**, name of the damage type as referenced in [armor.tbl](armor.tbl)
+
+### $Explosion Effect:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The [particle effect](https://wiki.hard-light.net/index.php/Particle_Effects) played when the asteroid is destroyed. If this is set, `$Explosion Animations:` and `$Explosion Radius Mult:` are not read.
+- Requires `$Breakup Delay:`; without it, an error is logged.
+- Syntax: **String**, the particle effect name
+
+### $Explosion Animations:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- Defines the explosion animations used for the asteroid.
+- Syntax: ***Integer list***, indices to fireballs defined in fireball.tbl
+
+### $Explosion Radius Mult:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- Defines the radius multiplier for the explosion fireballs, with a value of 1.0 causing the radius of the fireball to be equal to the radius of the asteroid. Defaults to 1.5 for large asteroids and 1.0 for others.
+- Syntax: ***Float***
+
+### $Breakup Delay:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- How long after being destroyed the asteroid breaks apart, so an `$Explosion Effect:` can play first.
+- Syntax: **Float**, seconds
+
+### $Expl inner rad:
+
+- Radius at which the full explosion damage is done
+- Syntax: **Float**, meters
+
+### $Expl outer rad:
+
+- Maximum radius at which any damage is done
+- Syntax: **Float**, meters
+
+### $Expl damage:
+
+- Amount of damage done inside the inner radius
+- Syntax: **Float**, damage
+
+### $Expl blast:
+
+- The intensity of the blast effect (impulse, aka change in momentum) when you're within the outer radius
+- Syntax: **Float**, blast effect
+
+### $Hitpoints:
+
+- Defines the hitpoints of the asteroid or debris piece. Hitpoints are modified downward by skill level.
+- Syntax: **Float**, hitpoints
+
+### $Split:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+- Defines what kind of asteroids this type of asteroid should split into when destroyed. You may define any number of $Split rules.
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Semi-deprecated; still works but prefer [$Split Name](#split-name) instead, especially if using modular tables.
+
+- Syntax: **Integer**, an asteroid index. The first asteroid defined by the table has index 0, the second one has index 1, and so on. An index that doesn't exist yet when the line is read logs a warning and is skipped.
+- **+Min:**
+  - The minimum number of spawned asteroids. Default 0.
+  - Syntax: **Integer**
+- **+Max:**
+  - The maximum number of spawned asteroids. Default 0.
+  - Syntax: **Integer**
+
+### $Split Name:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Defines what kind of asteroids this type of asteroid should split into when destroyed. You may define any number of $Split rules.
+- Syntax: **String**, an asteroid name. Names are checked after every table is read, so an asteroid defined later can be named. An unknown name logs a warning and is removed.
+- **+Min:**
+  - The minimum number of spawned asteroids. Default 0.
+  - Syntax: **Integer**
+- **+Max:**
+  - The maximum number of spawned asteroids. Default 0.
+  - Syntax: **Integer**
+
+### $Spawn Weight:
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- Defines the relative frequency among other asteroids in the field to be spawned. The total number of asteroids is unchanged, but an asteroid with twice the Spawn weight of another will appear twice as frequently as it.
+- Only used by 'debris' asteroids
+- The default is based on its position in the list:
+  - 4, 7, 10 etc have a weight of 1.
+  - 5, 8, 11, etc have a weight of 4.
+  - 6, 9, 12, etc have a weight of 8.
+- Syntax: **Float**, positive. A value of 0 or less logs a warning and 1 is used. Setting it on a small, medium or large asteroid logs a warning and is ignored.
+
+### $Gravity Const:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- How strongly the mission's gravity affects this asteroid. 0 (the default) means not at all, 1 means fully.
+- Syntax: **Float**, multiplier
+
+---
+
+## Settings after #End
+
+These go after `#End`, in any of the tables. Each applies to every asteroid.
+
+### $Impact Explosion Effect:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The [particle effect](https://wiki.hard-light.net/index.php/Particle_Effects) played where a weapon hits an asteroid. If this is set, `$Impact Explosion:` and `$Impact Explosion Radius:` are not read.
+- Syntax: **String**, the particle effect name
+
+### $Impact Explosion:
+
+- The animation played where a weapon hits an asteroid.
+- Syntax: **Filename**
+
+### $Impact Explosion Radius:
+
+- The radius of that animation.
+- Syntax: **Float**, meters
+
+An impact explosion is required: without one from `$Impact Explosion Effect:` or `$Impact Explosion:`, the game stops with an error.
+
+### $Briefing Icon Closeup Model:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg)
+
+- The model shown in the briefing closeup for an asteroid field icon.
+- Default: the large asteroid's first model
+- Syntax: **String.pof**, filename
+
+### $Briefing Icon Closeup Position:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg)
+
+- The camera position for that closeup.
+- Default: 0, 0, -334
+- Syntax: **Vector**, three floats
+
+### $Briefing Icon Closeup Zoom:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg)
+
+- The camera zoom for that closeup.
+- Default: 0.5
+- Syntax: **Float**
+
+---
+
+## Sample
+
+- Single asteroid entry for retail FS2 table
+
+```
+#Asteroid Types
+
+$Name:               Small Asteroid
+$POF file1:          ast03.pof
+$POF file2:          asta03.pof
+$POF file3:          astb03.pof
+$Detail distance:    (0, 30, 80, 150)
+$Max Speed:          60.0
+$Expl inner rad:     0.0
+$Expl outer rad:     0.0
+$Expl damage:        0.0
+$Expl blast:         0.0
+$Hitpoints:          23
+
+#End
+
+$Impact Explosion:            ExpMissilehit1
+$Impact Explosion Radius:     20.0
+```
