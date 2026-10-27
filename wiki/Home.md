@@ -23,6 +23,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [animation.tbl](animation.tbl): model subobject animations
   - [armor.tbl](armor.tbl): armor and damage types
   - [asteroid.tbl](asteroid.tbl): asteroids and debris
+  - [autopilot.tbl](autopilot.tbl): autopilot settings and messages
   - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points (OFP only)
   - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (OFP only, editor only)
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
