@@ -23,6 +23,7 @@ This page lists every table documented on this wiki, in alphabetical order. Tabl
 | [armor.tbl](armor.tbl)\* | `xxx-amr.tbm` | /ship/ship.cpp | Armor types and how much damage each damage type does to them |
 | [asteroid.tbl](asteroid.tbl)\* | `xxx-ast.tbm` | /asteroid/asteroid.cpp | Asteroids and debris pieces for asteroid and debris fields |
 | [autopilot.tbl](autopilot.tbl)\* | `xxx-aplt.tbm` | /autopilot/autopilot.cpp | Autopilot link distance, interruptions and messages |
+| [cheats.tbl](cheats.tbl)\* | `xxx-cht.tbm` | /cheats_table/cheats_table.cpp | Custom cheat codes that show a message, run a script hook or summon a ship |
 | [coordinate_points.tbl](coordinate_points.tbl)\* | `xxx-cps.tbm` | /coordinate_points/coordinate_shapes.cpp | Custom 2D shapes for coordinate points (OFP only) |
 | [editor.tbl](editor.tbl)\* | `xxx-edt.tbm` | /mission/missionparse.cpp | Editor settings, and custom data fields for missions, campaigns and ships (OFP only, editor only) |
 | [generated_nebula.tbl](generated_nebula.tbl)\* | `xxx-gneb.tbm` | /starfield/nebula.cpp | Patterns and colors for the generated (FS1-style) background nebula (OFP only) |
