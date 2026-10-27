@@ -13,7 +13,14 @@
 | [editor.tbl](editor.tbl)\* | /mission/missionparse.cpp |
 | [generated_nebula.tbl](generated_nebula.tbl)\* | /starfield/nebula.cpp |
 
-See [OFP Tables](OFP-Tables) for OFP additions to existing SCP tables.
+SCP tables with OFP additions:
+
+| Table | Code |
+|---|---|
+| [props.tbl](props.tbl)\* | /prop/prop.cpp |
+| [species.tbl](species.tbl)\* | /menuui/techmenu.cpp |
+
+See [OFP Tables](OFP-Tables) for the full list.
 </details>
 
 The **generated_nebula.tbl** defines the patterns and colors of the generated nebula: a soft cloud backdrop drawn on a sphere behind the stars, the modern version of FreeSpace 1's background nebula. A mission picks one pattern and one color (see [Using it in a mission](#using-it-in-a-mission)).

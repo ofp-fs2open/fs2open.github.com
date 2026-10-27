@@ -13,7 +13,14 @@
 | [editor.tbl](editor.tbl)\* | /mission/missionparse.cpp |
 | [generated_nebula.tbl](generated_nebula.tbl)\* | /starfield/nebula.cpp |
 
-See [OFP Tables](OFP-Tables) for OFP additions to existing SCP tables.
+SCP tables with OFP additions:
+
+| Table | Code |
+|---|---|
+| [props.tbl](props.tbl)\* | /prop/prop.cpp |
+| [species.tbl](species.tbl)\* | /menuui/techmenu.cpp |
+
+See [OFP Tables](OFP-Tables) for the full list.
 </details>
 
 The **editor.tbl** configures the mission editors for a mod: editor **settings**, and the **custom data** fields the mod expects its missions, campaigns and ships to use (each field's name, type, default value and description).

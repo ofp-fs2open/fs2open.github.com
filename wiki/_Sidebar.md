@@ -20,6 +20,8 @@
     - [Custom data](editor.tbl#custom-data-sections)
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [Additions to existing tables](OFP-Tables#additions-to-existing-tables)
+    - [props.tbl](props.tbl)
+    - [species.tbl](species.tbl)
 
 **SEXPs**
 - [OFP SEXPs](OFP-SEXPs)

@@ -21,5 +21,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points
   - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (editor only)
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula
+  - [props.tbl](props.tbl): OFP additions to props.tbl (texture replacement)
+  - [species.tbl](species.tbl): OFP additions to species.tbl (intel entry tech models)
 - [OFP SEXPs](OFP-SEXPs): new SEXP operators and OFP changes to existing ones
 - [OFP Lua Scripting](OFP-Lua-Scripting): Lua API added by OFP
