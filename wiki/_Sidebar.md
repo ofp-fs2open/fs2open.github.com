@@ -21,6 +21,7 @@
   - [asteroid.tbl](asteroid.tbl)
   - [autopilot.tbl](autopilot.tbl)
   - [cheats.tbl](cheats.tbl)
+  - [colors.tbl](colors.tbl)
   - [coordinate_points.tbl](coordinate_points.tbl)
   - [editor.tbl](editor.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)

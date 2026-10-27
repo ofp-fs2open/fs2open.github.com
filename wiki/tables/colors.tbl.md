@@ -1,0 +1,602 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **colors.tbl** changes the built-in named colors, defines team colors, redefines interface colors, and changes or adds [color tags](https://wiki.hard-light.net/index.php/Briefing_Text) for text.
+
+![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg) This table is one of the Modular Tables and can be extended with **xxx-clr.tbm**.
+
+Code: /globalincs/alphacolors.cpp. See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [Format](#format)
+2. [#Start Colors](#start-colors)
+3. [#Team Colors](#team-colors)
+4. [#Interface Colors](#interface-colors)
+5. [#Color Tags](#color-tags)
+6. [#Default Text Colors](#default-text-colors)
+7. [Example Table](#example-table)
+
+---
+
+## Format
+
+Every section is optional, and each ends with `#End`. The sections that are used must be in this order:
+
+1. `#Start Colors`
+2. `#Team Colors`
+3. `#Interface Colors`
+4. `#Color Tags`
+5. `#Default Text Colors`
+
+---
+
+## #Start Colors
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+Overrides the built-in named colors. Every section is optional.
+
+- Colors must be in the order listed here; one out of order is not read.
+- Values below 0 or above 255 log a warning and are capped.
+- These are read from every table before any other section, so names used in the sections below always get the final values.
+
+### $Blue:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 93 93 128 255 )
+
+### $Bright Blue:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 185 185 255 255 )
+
+### $Green:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 0 120 0 255 )
+
+### $Bright Green:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 50 190 50 255 )
+
+### $Black:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 0 0 0 255 )
+
+### $Grey:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 65 65 65 255 )
+
+### $Silver:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 160 160 160 255 )
+
+### $White:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 105 105 105 255 )
+
+### $Bright White:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 255 255 255 255 )
+
+### $Violet Gray:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 160 144 160 255 )
+
+### $Violet:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 192 104 192 255 )
+
+### $Dim Red:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 80 6 6 255 )
+
+### $Red:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 126 6 6 255 )
+
+### $Bright Red:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 200 0 0 255 )
+
+### $Pink:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 185 150 150 255 )
+
+### $Light Pink:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 230 190 190 255 )
+
+### $Yellow:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 255 255 122 255 )
+
+### $Bright Yellow:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 255 255 0 255 )
+
+### $Orange:
+
+![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg)
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 255 127 0 255 )
+
+### $UI Light Green:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 161 184 161 255 )
+
+### $UI Green:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 190 228 190 255 )
+
+### $UI Light Pink:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 184 161 161 255 )
+
+### $UI Pink:
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: 0 - 255
+
+- Default Value: ( 228 190 190 255 )
+
+Ends with `#End`.
+
+## #Team Colors
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
+
+Defines team colors, which ship models with team color support use.
+
+- Defining a team name again, in this or a later table, replaces its colors.
+- A team named "None" logs a warning and can't be used, since the engine uses "None" for no team color.
+
+### $Team Name:
+
+Defines a team name to use for a new color scheme.
+
+- Syntax: **String**
+
+#### $Team Stripe Color:
+
+Required. Defines the RGB color for the team "stripe." This is applied to sections that go over the base color.
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Also accepted as `$Team Stripe Colour:`.
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue )
+- Valid Values: ( 0 - 255, 0 - 255, 0 - 255 ); values outside are clamped
+
+#### $Team Base Color:
+
+Required. Defines the RGB color for the base color of the crafts for a given team.
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Also accepted as `$Team Base Colour:`.
+
+- Syntax: ( **Integer** Red **Integer** Green **Integer** Blue )
+- Valid Values: ( 0 - 255, 0 - 255, 0 - 255 ); values outside are clamped
+
+Ends with `#End`.
+
+## #Interface Colors
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Redefines colors used throughout FSO's interface. Each can be the name of a color from [#Start Colors](#start-colors), or an RGBA list.
+
+- Colors must be in the order listed here; one out of order is not read.
+- Color names must match exactly, capitalization included. An unknown name logs a warning, and the default is kept.
+- RGBA values below 0 or above 255 log a warning and are capped.
+
+### $Text Normal:
+
+Used all over the interface.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: White
+
+### $Text Subselected:
+
+Used for text that is going to be selected, but isn't yet (mouse is held down, but not released).
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Blue
+
+### $Text Selected:
+
+Used for text that is currently selected (active control in controls menu, pilot in barracks, et al).
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright Blue
+
+### $Text Error:
+
+Used for control conflicts in the controls menu.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Red
+
+### $Text Error Highlighted:
+
+The above, but for text that's selected.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright Red
+
+### $Text Active:
+
+Used for text the mouse is currently over, sometimes; sometimes used to indicate the currently active item; sometimes used to indicate the currently selected item instead of Text Selected.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright White
+
+### $Text Active Highlighted:
+
+Used in multiplayer in a few places.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright White
+
+### $Text Heading:
+
+Used for headings in a few places.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Violet Gray
+
+### $More Indicator:
+
+Used for the "More" indicator when there's extra text to scroll down for.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Red
+
+### $Bright More Indicator:
+
+Used for the "More" indicator with popup messages and in multiplayer.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright Red
+
+### $Bright:
+
+Used in a few places, including (but not limited to) the debug console and the help screen.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Bright Blue
+
+### $Normal:
+
+Used in a few more places; quite a few buttons seem to use it for their labels, and it's used for some debugging text. Basically, any generic piece of text that doesn't use color tags or Text Normal probably uses this color.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: White
+
+### $Briefing Grid:
+
+The color the lines of the briefing grid are drawn with. Anything excessively bright may make it difficult to see/read the briefing's icons/labels.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+- Default Value: Grey
+
+Ends with `#End`.
+
+## #Color Tags
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Allows for redefining, or defining new, [color tags](https://wiki.hard-light.net/index.php/Briefing_Text). Any number of $Tag: entries can be contained in this section, in any order, and repeated values overwrite each other.
+
+- A color name must match exactly, capitalization included. An unknown name is an error.
+
+### $Tag:
+
+The character to identify this color tag, with optional "$" prefix.
+- Syntax: **Character** Tag
+- Valid Values: Any character FSO recognizes should work, in theory.
+- Only one character: anything after it logs a warning. An empty tag, or a lone `$`, is an error.
+Must be followed by one (and only one) of the following definitions:
+
+#### +Color:
+
+The name of a color, or an RGBA integer list, defining what color this tag means.
+- Syntax: **String** Color *or* ( **Integer** Red **Integer** Green **Integer** Blue **Integer** Alpha )
+- Valid Values: Name of a color, *or* 0 - 255
+
+#### +Friendly
+
+The default friendly color, as defined by the briefing code.
+
+#### +Hostile
+
+The default hostile color, as defined by the briefing code.
+
+#### +Neutral
+
+The default neutral color, as defined by the briefing code.
+
+Ends with `#End`.
+
+## #Default Text Colors
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Define the base color tag for various kinds of text.
+
+- These must be in the order listed here; one out of order is not read.
+- A tag that isn't defined only gets a note in the log, since a later modular table may still define it.
+
+### $Fiction Viewer:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+### $Command Briefing:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+### $Briefing:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+### $Redalert Briefing:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+### $Debriefing:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+### $Recommendation:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $r
+
+### $Loop Briefing:
+
+- Syntax: **Character** Tag
+- Valid Values: Any defined color tag ("$" prefix optional).
+
+- Default: $w
+
+Ends with `#End`.
+
+## Example Table
+
+The values in this table are the code's default values.
+```
+#Start Colors
+
+$Blue:			(93 93 128 255)
+$Bright Blue:		(185 185 255 255)
+$Green:			(0 120 0 255)
+$Bright Green:		(50 190 50 255)
+$Black:			(0 0 0 255)
+$Grey:			(65 65 65 255)
+$Silver:		(160 160 160 255)
+$White:			(105 105 105 255)
+$Bright White:		(255 255 255 255)
+$Violet Gray:		(160 144 160 255)
+$Violet:		(192 104 192 255)
+$Dim Red:		(80 6 6 255)
+$Red:			(126 6 6 255)
+$Bright Red:		(200 0 0 255)
+$Pink:			(185 150 150 255)
+$Light Pink:		(230 190 190 255)
+$Yellow:		(255 255 122 255)
+$Bright Yellow:		(255 255 0 255)
+$Orange:		(255 127 0 255)
+$UI Light Green:	(161 184 161 255)
+$UI Green:		(190 228 190 255)
+$UI Light Pink:		(184 161 161 255)
+$UI Pink:		(228 190 190 255)
+
+#End
+
+#Interface Colors
+
+$Text Normal:			White
+$Text Subselected:		Blue
+$Text Selected:			Bright Blue
+$Text Error:			Red
+$Text Error Highlighted:	Bright Red
+$Text Active:			Bright White
+$Text Active Highlighted:	Bright White
+$Text Heading:			Violet Gray
+$More Indicator:		Red
+$Bright More Indicator:		Bright Red
+$Bright:			Bright Blue
+$Normal:			White
+$Briefing Grid:			Grey
+
+#End
+
+#Color Tags
+
+$Tag:	$w
++Color:	White
+
+$Tag:	$W
++Color:	Bright White
+
+$Tag:	$r
++Color:	Red
+
+$Tag:	$o
++Color:	Orange
+
+$Tag:	$g
++Color:	Green
+
+$Tag:	$y
++Color:	Yellow
+
+$Tag:	$b
++Color:	Blue
+
+$Tag:	$f
++Friendly
+
+$Tag:	$h
++Hostile
+
+$Tag:	$n
++Neutral
+
+$Tag:	$B
++Color:	Bright Blue
+
+$Tag:	$G
++Color:	Bright Green
+
+$Tag:	$R
++Color:	Bright Red
+
+$Tag:	$Y
++Color:	Bright Yellow
+
+$Tag:	$k
++Color:	Black
+
+$Tag:	$e
++Color:	Grey
+
+$Tag:	$E
++Color:	Silver
+
+$Tag:	$v
++Color:	Violet Gray
+
+$Tag:	$V
++Color:	Violet
+
+$Tag:	$p
++Color:	Pink
+
+$Tag:	$P
++Color:	Light Pink
+
+#End
+
+#Default Text Colors
+
+$Fiction Viewer:	$w
+$Command Briefing:	$w
+$Briefing:		$w
+$Redalert Briefing:	$w
+$Debriefing:		$w
+$Recommendation:	$r
+$Loop Briefing:		$w
+
+#End
+```
+
+## Example Table that has Team Colors
+
+This example table was provided by TAP.
+```
+#Team Colors
+
+$Team Name: Vaygr
+   $Team Stripe Color:	( 26 26 26 )
+   $Team Base Color:	( 230 230 230 )
+
+$Team Name: Hiigaran
+    $Team Stripe Color: ( 204 204 204 )
+    $Team Base Color:   ( 93 141 170 ) 
+
+$Team Name: Elite Vaygr
+   $Team Stripe Color:	( 143 1 11 )
+   $Team Base Color:	( 12 12 12 )
+
+#End
+```
