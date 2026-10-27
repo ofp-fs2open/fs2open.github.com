@@ -1,0 +1,281 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **fireball.tbl** defines the animations used for explosions and warp effects.
+
+This table is one of the Modular Tables and can be extended with **xxx-fbl.tbm**.
+
+Code: [/fireball/fireballs.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/fireball/fireballs.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [General Format](#general-format)
+2. [Table Fields](#table-fields)
+3. [Sample Entries](#sample-entries)
+
+---
+
+## General Format
+
+- Fireball.tbl table file is used for specifying which filenames are to be used for which explosions
+- Table begins with **#Start**
+- Table uses rigid system in the order of the entries:
+- ***Fireball.tbl*** has 6 entries with a specific function and every one ***is required*** and must be listed in the following order.
+- Order of the entries in fireball.tbl:
+  - **Medium sized explosion**
+  - **Normal warp effect**
+  - **Knossos warp effect**
+  - **Asteroid explosion**
+  - **Large explosion 1**
+  - **Large explosion 2**
+- Any entries defined after the first 6 is considered a custom fireball and will not be used in the game unless specified as an explosion for a ship type or ship class in ships.tbl or objecttypes.tbl, or a custom warp effect in the warp-effect sexp.
+- Table ends with **#End**
+- The modular version of the fireball table can only replace existing entries in fireball.tbl. No entries can be created in a modular table for fireball.tbl
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- As of 3.8.2, the internal code to handle modular fireball.tbl entries has been rewritten, and it is now possible to add entries in a modular table.
+
+- All entries defined in a modular table for fireball.tbl require a **$Name:** token before specifying the bitmap filename. A fireball identifier must also be defined in order to specify which individual entry in fireball.tbl that will be replaced, see [fireball identifier](#fireball-identifier).
+- The modular table entries can be in arbitrary order and can be placed in separate modular tables.
+- Within an entry, the fields must be in the order listed on this page; one out of order is not read.
+
+## Table Fields
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+### $Unique ID:
+
+- Optional. Goes before `$Name:`.
+
+- Defines a string that can be used as a reference for this fireball entry.  In most tables, $Name performs this role, but fireball.tbl allows multiple fireball entries which use the same animation.  The unique ID can be used to override fireball entries in a modular table, or to reference a fireball in the `warp-effect` and `explosion-effect` SEXPs, or as the warp effect of an [SSM strike](ssm.tbl#warpeffect).
+
+- If this field is not present, the game will generate a unique ID for the entry automatically.
+  - Syntax: **String**
+
+### $Name:
+
+- Defines the name of the animation used for the particular fireball effect
+  - Syntax: **String**, filename
+
+### Fireball identifier
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Identifies the assigned animation with one of the fireball types. Only read in **xxx-fbl.tbm**; goes directly after `$Name:`.
+- If both an identifier and a `$Unique ID:` that already exists are given, the unique ID wins.
+  - Syntax: **String**, name of the identifier
+  - Allowed identifiers:
+    - **+Explosion_Medium**
+    - **+Warp_Effect**
+    - **+Knossos_Effect**
+    - **+Asteroid**
+    - **+Explosion_Large1**
+    - **+Explosion_Large2**
+    - **+Custom_Fireball** *number*, for the custom fireball at that position (6 is the first one after the six above)
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- In 3.8.2, this is not required; $Unique ID can be used as an alternative.  If neither the identifier nor $Unique ID is present, the entry is assumed to be a new custom fireball.
+
+### $LOD:
+
+- Optional **$LOD:** entry exists to specify a lod count, at least 1 is assumed if not specified.
+- Up to 4; a higher count is lowered to 4.
+- The extra LODs are named after `$Name:` with `_1`, `_2` and `_3` added (`exp05_1`, ...). A base name too long to add that to logs a warning, and only the first LOD is used.
+  - Syntax: **Integer**
+
+### $Light Color:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the color that is given off when that fireball effect is created.
+  - Syntax: **Color**, three **integers**, 0 to 255, red, green, blue respectively. Values outside are clamped.
+
+#### Default colors
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- *Large explosion 1*, *large explosion 1*, *medium sized explosion*, and *asteroid explosion*
+  - 255, 127, 31
+- *Normal warp effect*
+  - 191, 191, 255
+- *Knossos warp effect*
+  - 191, 255, 191
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+### $Warp glow:
+
+- Defines the warp glow bitmap used if this fireball is a warp effect.  By default, `warpglow01` is internally assigned to *both* the **Warp Effect** and **Knossos Effect** entries, but both the tbl and tbm can override this.  Retail `sparky_fs2.vp` supplies a `warpglow02` bitmap for the Knossos effect, but the game never actually uses it.
+  - Syntax: **String**
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+### $Warp ball:
+
+- Defines the "warp ball" bitmap used if this fireball is a warp effect.  By default, `warpball01` is internally assigned to *both* the **Warp Effect** and **Knossos Effect** entries, but both the tbl and tbm can override this.  The "warp ball" bitmap is used when the warp flash is on (see `$Force warp flash:`); setting `$Warp ball:` turns the flash on for this fireball.
+  - Syntax: **String**
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+### $Force warp flash:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Whether this warp effect shows the warp ball flash. Replaces the old "flash on warp" command-line option.
+- Default: NO, or YES if `$Warp ball:` is set.
+  - Syntax: **Boolean**
+
+### $Warp model:
+
+- Defines the warp model file used if this fireball is a warp effect.  By default, `warp.pof` is internally assigned to *both* the **Warp Effect** and **Knossos Effect** entries, but both the tbl and tbm can override this.  The warp model is used when the 3D warp is on (see `$Force 3D Warp:`), or for the `warp-effect` SEXP when a 3D warp is specified; setting `$Warp model:` turns the 3D warp on for this fireball.
+  - Syntax: **String**
+
+### $Force 3D Warp:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Whether this warp effect uses the 3D warp model. Replaces the old "3D warp" command-line option.
+- Default: NO, or YES if `$Warp model:` is set.
+  - Syntax: **Boolean**
+
+### $Warp size ratio:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The size of the warp effect relative to the ship.
+- Default: 1, or 0.04 (1/25) for a 3D warp.
+  - Syntax: **Float**
+
+### $Flare size ratio:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The size of the warp flare relative to the warp effect.
+- Default: 1
+  - Syntax: **Float**
+
+### $Flicker magnitude:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- How much the warp glow flickers.
+- Default: 0.1
+  - Syntax: **Float**
+
+### $Warp flare style:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- How the warp flare is animated: **classic** (the original look), **enhanced** or **cinematic**. Anything else is an error.
+- Default: classic
+  - Syntax: **String**
+
+#### +Flare size ratio:
+
+- Optional. Sets `$Flare size ratio:` for this style. Without it, classic uses 1 and cinematic 5.3.
+  - Syntax: **Float**
+
+### $Warp model style:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- How the 3D warp model is animated: **classic** or **cinematic**. Anything else is an error.
+- Default: classic
+- These options are only read for **cinematic**:
+  - Syntax: **String**
+
+#### +Warp size ratio:
+
+- Sets `$Warp size ratio:` for the cinematic style.
+- Default: 1.6
+  - Syntax: **Float**
+
+#### +Rotation anim:
+
+- How the cinematic warp model spins: three values. The first two are rotation speeds in multiples of pi per second (clamped to 0 to 2); the third is 0 or more.
+- Default: 0.365, 0.083, 2
+  - Syntax: **Float list**, three values
+
+#### +Frame anim:
+
+- How fast the cinematic warp model's animation plays over the warp: three values, clamped to 0 to 4, 1 to 4, and 0 or more.
+- Default: 1, 1, 3
+  - Syntax: **Float list**, three values
+
+## Sample Entries
+
+- **fireball.tbl**
+```
+#Start
+$Name:   exp04
+   $LOD:    1
+$Name:   WarpMap01
+   $LOD:    4
+$Name:   WarpMap02
+   $LOD:    4
+$Name:   exp05
+   $LOD:    4
+$Name:   exp05
+   $LOD:    4
+$Name:   exp06
+   $LOD:    4
+#End
+```
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg) **fireball.tbl**
+```
+; This is an example of a table that defines the the default 6 fireball 
+; bitmaps (Fireballs 0 through 5) while adding extra custom fireballs as well.
+#Start
+$Name:	exp04				;0 Used for the 4 little explosions before a ship explodes
+$LOD:		1
+$Name:	WarpMap01			;1 Used for the warp in / warp out effect
+$LOD:		4
+$Name:	WarpMap02			;2 Used for the KNOSSOS warp in / warp out effect
+$LOD:		4
+$Name:	exp05				;3 Used when an asteroid explodes
+$LOD:		4
+$Name:	exp05				;4 ship explosion 1
+$LOD:		4
+$Name:	exp06				;5 ship explosion 2
+$LOD:		4
+$Name:	capship_boom			;6 First custom fireball. Identified as +Custom_Fireball 6 
+$LOD:		1
+$Name:	debris_dust_cloud		;7 Second custom fireball. Identified as +Custom_Fireball 7
+$LOD:		1
+$Name:	corvette_exp			;8 Third custom fireball. Identified as +Custom_Fireball 8
+$LOD:		1
+$Name:	fenris_exp			;9 Fourth custom fireball. Identified as +Custom_Fireball 9
+$LOD: 	1
+#End
+```
+
+**xxx-fbl.tbm**
+```
+; This modular table replaces the entries in the sample fireball.tbl printed above
+#Start
+$Name:   exp06
+   +Asteroid
+$LOD:    4
+$Name:   fighter_explosion
+   +Custom_Fireball 7
+$LOD:    4
+$Name:   capship_explosion
+   +Custom_Fireball 6
+$LOD:    1
+$Name:   big_exp
+   +Explosion_Large1          
+$LOD:    1
+$Name:   capship_explosion1
+   +Custom_Fireball 8
+$LOD:    1
+$Name:   capship_explosion2
+   +Custom_Fireball 9
+$LOD:    1
+#End
+```
