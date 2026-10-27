@@ -1,6 +1,6 @@
 ## What this changes
 
-<!-- What the PR does and why. For a Community Queue item, link its Discussion. If you skipped an older Queue item, say why. -->
+<!-- What the PR does and why. For a Community Queue item, add "Fixes #<discussion>". If you skipped an older Queue item, say why. -->
 
 ## Testing
 

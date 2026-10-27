@@ -14,22 +14,28 @@ Welcome. OFP is a community-governed fork of FreeSpace Open. This document cover
 
 ## The Community Queue
 
-Feature requests live in [GitHub Discussions](../../discussions). The Community Queue is the ordered list of accepted, active feature requests that contributors draw from when choosing what to implement.
+Feature requests live in [GitHub Discussions](../../discussions). The [Community Queue](../../discussions/1) is the ordered list of accepted, active feature requests that contributors draw from when choosing what to implement.
+
+The Queue is kept up to date automatically. Maintainers only add or remove the **Queue Accepted** label; don't edit the Active Queue list in the Community Queue post by hand.
 
 ### How a request enters the Queue
 
 1. Open a Discussion using the Feature Request template (problem statement, proposed solution, mod/player impact).
 2. The community engages - upvotes, comments, refinements.
-3. A Reviewer or Maintainer marks it **Queue-Accepted** when it meets the bar: clearly defined, technically feasible, and demonstrably wanted by currently active community members.
-4. It enters the Queue ordered by the date it was accepted.
+3. A Reviewer or Maintainer adds the **Queue Accepted** label when it meets the bar: clearly defined, technically feasible, and demonstrably wanted by currently active community members.
+4. It enters the back of the Queue, dated the day it was accepted, and moves to the **Active Requests** category.
+
+Removing the label takes it back out of the Queue and returns it to Feature Requests.
 
 ### Working the Queue
 
 Draw from the Queue **oldest-accepted first**. If you skip ahead, document why in your PR description. Acceptable reasons are narrow: you lack the technical background for the oldest items, or your expertise is specifically needed elsewhere. Maintainers may push back if skips become a pattern.
 
+Reference the request in your PR description with `Fixes #<discussion>` (or Closes, Resolves, or any other keyword GitHub uses to close issues). While the PR is open, the request shows as In Progress in the Queue. When it merges, the request leaves the Queue, moves to **Completed Requests**, and is closed as resolved. If the PR is closed without merging, the request goes back to Open in its original place.
+
 ### Stale requests
 
-A request can be marked **Stale** if the original author and supporters have been inactive for over a year with no meaningful recent engagement. Stale requests move to a Stale Discussions category and can be reactivated by any active community member. Reactivated requests re-enter the Queue at the back.
+A request can be marked **Stale** if the original author and supporters have been inactive for over a year with no meaningful recent engagement. Moving a request to the **Stale Requests** category takes it out of the Queue and removes its label. Any active community member can ask for it to be reactivated; a maintainer then adds the label again, and it re-enters the Queue at the back.
 
 ---
 

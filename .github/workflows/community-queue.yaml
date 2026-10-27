@@ -1,0 +1,39 @@
+name: Community Queue
+
+# Keeps the Community Queue (discussion #1) and the Feature Queue categories in step
+# with the Queue Accepted label and with PRs that reference queued requests
+# (Fixes #N and the other issue-closing keywords). See .github/scripts/community-queue.js.
+on:
+  discussion:
+    types: [labeled, unlabeled, category_changed]
+  # pull_request_target so PRs from forks can update discussions too. Only the
+  # base branch is checked out, and the PR's code is never run.
+  pull_request_target:
+    types: [opened, edited, reopened, closed]
+
+permissions:
+  contents: read
+  discussions: write
+  pull-requests: read
+
+# Every run rewrites discussion #1, so runs go one at a time.
+concurrency:
+  group: community-queue
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        name: Checkout
+        with:
+          sparse-checkout: .github/scripts
+
+      - uses: actions/github-script@v8
+        name: Update the queue
+        with:
+          script: |
+            const update = require('./.github/scripts/community-queue.js');
+            await update({ github, context, core });
