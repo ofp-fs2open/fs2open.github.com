@@ -28,6 +28,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [colors.tbl](colors.tbl): colors, team colors and color tags
   - [controlconfigdefaults.tbl](controlconfigdefaults.tbl): default controls and presets
   - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points (OFP only)
+  - [credits.tbl](credits.tbl): credits screen
   - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (OFP only, editor only)
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [props.tbl](props.tbl): prop classes (OFP additions so far)

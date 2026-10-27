@@ -24,6 +24,7 @@
   - [colors.tbl](colors.tbl)
   - [controlconfigdefaults.tbl](controlconfigdefaults.tbl)
   - [coordinate_points.tbl](coordinate_points.tbl)
+  - [credits.tbl](credits.tbl)
   - [editor.tbl](editor.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [props.tbl](props.tbl)
