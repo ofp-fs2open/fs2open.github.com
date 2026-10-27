@@ -1,0 +1,173 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg)
+
+The **glowpoints.tbl** defines glowpoint presets: how a model's glowpoints blink, pulse and light their surroundings. A ship uses a preset with `$Glowpoint overrides:` in [ships.tbl](ships.tbl).
+
+This table is one of the Modular Tables and can be extended with **xxx-gpo.tbm**.
+
+Code: [/model/modelread.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/modelread.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [General Format](#general-format)
+2. [Glowpoint Override Entry](#glowpoint-override-entry)
+
+---
+
+## General Format
+
+- glowpoints.tbl currently has only one section: **#Glowpoint overrides**.
+  - Optional entries, if omitted, leave it as it was defined in the model (if applicable) or use the specified default value.
+  - The end of the section is indicated with **#End**.
+- Without a `#Glowpoint overrides` section the file is ignored.
+- Each entry's fields must be in the order listed here; one out of order is not read.
+
+## Glowpoint Override Entry
+
+### $Name:
+
+- Specifies the name of the glowpoint override (to be referenced in the **[$Glowpoint overrides:](ships.tbl#24glowpoint_overrides)** entry of a ship).
+- Syntax: ***String***
+
+### +nocreate
+
+- (optional) In a modular table, **+nocreate** after the name replaces an existing entry with this one. If no entry has that name yet, the entry is ignored. In glowpoints.tbl itself it's ignored, with a note in the log.
+- Unlike most tables, an entry without `+nocreate` can't change an existing one: a name already in use logs a warning and the new entry is thrown away.
+  - **Important note:** At present, if an existing preset is overwritten, everything will be reset to default values and must be specified again.
+
+### $On:
+
+- (optional) Ignored if standard blinking is used.
+- Syntax: ***Boolean***
+
+### $Default Off:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- (optional) Defaults the glowpoint as being OFF on mission start or model load.
+- Syntax: ***Boolean***
+
+### $Displacement time:
+
+- (optional) Displacement time for blinking (e.g. for Orion runway lights).
+- Syntax: ***Integer***
+
+### $On time:
+
+- (optional) Amount of time the glowpoint stays on.
+- Syntax: ***Integer***
+
+### $Off time:
+
+- (optional) Amount of time the glowpoint stays off.
+- Syntax: ***Integer***
+
+### $Texture:
+
+- (optional) Specifies the name of the texture to use, or "none" for glowpoints that should only be light sources.
+- In nebula missions, a texture with `-neb` added to its name is used instead if it exists (`glow-neb` for `glow`).
+- A texture that fails to load logs a warning.
+- Syntax: ***String***
+
+### $Type:
+
+- (optional) Defines what type of glowpoint this is (generally always 0).
+- Syntax: ***Integer***
+
+### $Pulse type:
+
+- (optional) Specifies an interpolation of the glowpoint brightness with the given interpolation function. Not case-sensitive; an unknown type is ignored.
+- Syntax: one of ***Sine***, ***Cosine***, ***Triangle***, or ***ShiftedTriangle***
+
+### $Pulse period:
+
+- (optional) The period of the selected interpolation function. The lower the value the faster the pulsing.
+- Syntax: ***Integer***, milliseconds
+- Default Value: Two times the “On time” from the model or table.
+
+### $Pulse amplitude:
+
+- (optional) Amplitude of the pulse function (unused with ***ShiftedTriangle***).
+- Syntax: ***Float***
+- Default Value: 0.5
+
+### $Pulse bias:
+
+- (optional) This is added to the function so one can control the minimum and maximum value (unused with ***ShiftedTriangle***).
+- Syntax: ***Float***
+- Default Value: 0.5
+
+### $Pulse exponent:
+
+- (optional) This raises the function to the given power to modify the look of the function (unused with ***ShiftedTriangle***).
+- Syntax: ***Float***
+- Default Value: 1.0
+
+### +light
+
+- (optional) Makes this glowpoint emit light. Further defined via additional sub-entries
+- If +light is used, ***$Light color:*** is required
+
+#### $Light intensity:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- (optional) The intensity of the light (brightness).
+- Syntax: ***Float***
+- Default Value: 1.0
+
+#### $Light radius multiplier:
+
+- (optional) Multiplied by the radius of the glowpoint to get the radius of the light.
+- Syntax: ***Float***
+- Default Value: 15.0
+
+#### $Light color:
+
+- Specifies the RGB values for the light.
+- Syntax: ***Int***, ***Int***, ***Int*** (0 - 255)
+
+#### $Light mix color:
+
+- (optional) Requires **$Pulse type:**. Instead of dimming the light by the glowpoint intensity, linearly interpolates between **$Light color:** and **$Light mix color:** (cross-fade).
+- Syntax: ***Int***, ***Int***, ***Int*** (0 - 255)
+- Default Value: 0, 0, 0
+
+#### +lightcone
+
+- (optional) Makes this light a cone. Further defined via additional sub-entries
+- If +lightcone is used, ***$Cone direction:*** is required
+
+##### $Cone angle:
+
+- (optional) Defines how wide this lightcone is. The light fades out over the outer 20 degrees of the cone (or the outer half, for cones narrower than 20 degrees).
+- Syntax: ***Float*** (0 - 180), degrees
+- Default Value: 90.0
+
+##### $Cone direction:
+
+- The direction the cone points in, in submodel space. A zero vector logs a warning, and the whole entry is discarded.
+- Syntax: (***Float***, ***Float***, ***Float***)
+
+##### +dualcone
+
+- (optional) Allows the light cone to shine in both the direction specified *and* in the opposite direction.
+
+##### +rotating
+
+- (optional) Makes this light cone rotate. Further defined via additional sub-entries, both required.
+
+###### $Rotation axis:
+
+- The axis of rotation, in submodel space. A zero vector logs a warning, and the whole entry is discarded.
+- Syntax: (***Float***, ***Float***, ***Float***)
+
+###### $Rotation speed:
+
+- Speed of rotation, specified as the number of rotations per minute.
+- Syntax: ***Float***
