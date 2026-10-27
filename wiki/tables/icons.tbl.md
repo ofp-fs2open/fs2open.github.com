@@ -1,0 +1,1119 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **icons.tbl** defines the icons used in mission briefings, for each species and icon type.
+
+This table is one of the Modular Tables and can be extended with **xxx-ico.tbm**.
+
+Code: [/mission/missionbriefcommon.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionbriefcommon.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Borrowing another species' icons](#borrowing-another-species-icons)
+2. [icons.tbl Format](#iconstbl-format)
+3. [xxx-ico.tbm Format](#xxx-icotbm-format)
+4. [Allowed Icon types](#allowed-icon-types)
+
+---
+
+## Borrowing another species' icons
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg) While this is not part of the icons table, it is an important aspect of briefing icon assignment. This field in [species_defs.tbl](species_defs.tbl) can be used to simply and easily define a whole species' briefing icons as simply a copy of another species'. Doing this does not require any other icons.tbl/.tbm modifications. Note that briefing icons assigned in this way *cannot* be modified by modular tables.
+
+## icons.tbl Format
+
+- Table begins with **#Start**
+- Table ends with **#End**
+- Briefing icons are grouped first per icon type. There is a separate 'entry' for each of the species for every icon type (listed below), in order.
+  - The order matches the order of the species listed.
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Any species added or replaced will have to correspond to the order you have your species listed in [species_defs.tbl](species_defs.tbl).
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- If any species uses [$Borrows Briefing Icons from:](species_defs.tbl) they *must* be omitted and skipped over.
+
+- Each icons.tbl entry consists of three separate animations, **regular**, **fade**, and **highlight** animations.
+- The number of `$Name:` lines must be three times the number of icon types times the number of species. A count that doesn't divide evenly logs a warning, and extra icons beyond the species there are log a warning and are ignored.
+- Only icons.tbl can use this format; modular tables must use the format below.
+
+### $Name:
+
+- Defines the name of the animation used for the particular effect
+  - Syntax: **filename**
+
+## xxx-ico.tbm Format
+
+![FSO 21.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.2.svg)
+
+- This format may also be used with icons.tbl.
+- A sample of the retail icons.tbl done in this format is below.
+- Table begins with **#Start**
+- Table ends with **#End**
+
+### $Species:
+
+- Specifies the Species whose icons is being modified.
+- Syntax: **String**, Species
+- Each `$Species:` can be followed by any number of `$Icon Type:` entries.
+
+#### $Icon Type:
+
+- Specifies the particular Icon type that is being modified
+- Syntax: **String**, Icon type (must match exactly, capitalization included, with one of those listed below)
+- Setting an icon type that already has icons replaces them.
+- **Known issue:** an unknown species or icon type logs a warning, but the engine then goes on to use it anyway, which can crash the game. Check the names carefully.
+
+##### $Name:
+
+- Defines the names of the animations used for the particular effect
+  - Like above, *must* be listed three times for the **regular**, **fade**, and **highlight** animations. They cannot be modified individually.
+  - Syntax: **filename**
+
+## Allowed Icon types:
+
+After all tables are read, any species still missing icons gets a warning naming it, and the missing entries are listed in the log.
+
+
+- Fighter
+- Fighter Wing
+- Cargo
+- Cargo Wing
+- Largeship
+- Largeship Wing
+- Capital
+- Planet
+- Asteroid Field
+- Waypoint
+- Support Ship
+- Freighter(no cargo)
+- Freighter(has cargo)
+- Freighter Wing(no cargo)
+- Freighter Wing(has cargo)
+- Installation
+- Bomber
+- Bomber Wing
+- Cruiser
+- Cruiser Wing
+- Unknown
+- Unknown Wing
+- Player Fighter
+- Player Fighter Wing
+- Player Bomber
+- Player Bomber Wing
+- Knossos Device
+- Transport Wing
+- Corvette
+- Gas Miner
+- Awacs
+- Supercap
+- Sentry Gun
+- Jump Node
+- Transport
+
+## .tbl Format Sample
+
+```
+#Start
+
+; ICON_FIGHTER
+$Name:	iconT-fighter							; regular
+$Name:	FadeiconT-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconV-fighter							; regular
+$Name:	FadeiconV-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconS-fighter							; regular
+$Name:	FadeiconV-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_FIGHTER_WING
+$Name:	icont-fightW						; regular
+$Name:	FadeiconT-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	iconv-fightW						; regular
+$Name:	Fadeiconv-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	icons-fighterW						; regular
+$Name:	Fadeicons-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+; ICON_CARGO
+$Name:	icont-cargo							; regular
+$Name:	FadeiconT-Cargo									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconv-cargo							; regular
+$Name:	Fadeiconv-Cargo									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	icons-cargo							; regular
+$Name:	Fadeicons-Cargo									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_CARGO_WING
+$Name:	icont-cargoW							; regular
+$Name:	FadeiconT-CargoW							; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	iconv-cargoW							; regular
+$Name:	Fadeiconv-CargoW							; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	icons-cargoW							; regular
+$Name:	Fadeicons-CargoW							; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+; ICON_LARGESHIP
+$Name:	icont-cruiser							; regular
+$Name:	FadeiconT-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	iconv-cruiser							; regular
+$Name:	Fadeiconv-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	icons-cruiser							; regular
+$Name:	Fadeicons-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+; ICON_LARGESHIP_WING
+$Name:	icont-cruiserW						; regular
+$Name:	FadeiconT-cruiser						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-cruiserW						; regular
+$Name:	Fadeiconv-cruiserW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-cruiserW						; regular
+$Name:	Fadeicons-cruiserW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_CAPITAL
+$Name:	icont-cap							; regular
+$Name:	Fadeicont-Cap							; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+$Name:	iconv-cap							; regular
+$Name:	Fadeiconv-Cap							; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+$Name:	icons-cap							; regular
+$Name:	Fadeicons-Cap							; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+; ICON_PLANET
+$Name:	iconplanet							; regular
+$Name:	FadeiconPlanet							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconplanet							; regular
+$Name:	FadeiconPlanet							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconplanet							; regular
+$Name:	FadeiconPlanet							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_ASTEROID_FIELD
+$Name:	iconasteroid						; regular
+$Name:	FadeiconAsteroid						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconasteroid						; regular
+$Name:	FadeiconAsteroid						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconasteroid						; regular
+$Name:	FadeiconAsteroid						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_WAYPOINT
+$Name:	iconnavbuoy						; regular
+$Name:	Fadeiconnavbuoy						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconnavbuoy						; regular
+$Name:	Fadeiconnavbuoy						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconnavbuoy						; regular
+$Name:	Fadeiconnavbuoy						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_SUPPORT_SHIP
+$Name:	iconT-support							; regular
+$Name:	FadeT-Support							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconV-support							; regular
+$Name:	FadeV-Support							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconT-support							; regular
+$Name:	FadeT-Support							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_FREIGHTER_NO_CARGO
+$Name:	icont-freight						; regular
+$Name:	Fadeicont-Freighter						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+$Name:	iconv-freight						; regular
+$Name:	Fadeiconv-Freighter						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+$Name:	icons-freight						; regular
+$Name:	Fadeicons-Freighter						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+; ICON_FREIGHTER_WITH_CARGO
+$Name:	icont-freightc						; regular
+$Name:	Fadeicont-FreighterC						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+$Name:	iconv-freightc						; regular
+$Name:	Fadeiconv-FreighterC						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+$Name:	icons-freightc						; regular
+$Name:	Fadeicons-FreighterC						; fade anim
+$Name:	iconhighlight01					; highlight anim
+
+; ICON_FREIGHTER_WING_NO_CARGO
+$Name:	icont-freighterw					; regular
+$Name:	Fadeicont-FreighterW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-freighterw					; regular
+$Name:	Fadeiconv-FreighterW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-freighterw					; regular
+$Name:	Fadeicons-FreighterW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_FREIGHTER_WING_WITH_CARGO
+$Name:	icont-freightercw				; regular
+$Name:	Fadeicont-FreighterCW					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-freightercw				; regular
+$Name:	Fadeiconv-FreighterCW					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-freighterwc				; regular
+$Name:	Fadeicons-FreighterCW					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_INSTALLATION
+$Name:	iconInstall						; regular
+$Name:	FadeiconInstall					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconInstall						; regular
+$Name:	FadeiconInstall					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconInstall						; regular
+$Name:	FadeiconInstall					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_BOMBER
+$Name:	icont-bomber							; regular
+$Name:	Fadeicont-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	iconv-bomber							; regular
+$Name:	Fadeiconv-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	icons-bomber							; regular
+$Name:	Fadeicons-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+; ICON_BOMBER_WING
+$Name:	icont-bomberW							; regular
+$Name:	Fadeicont-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-bomberW							; regular
+$Name:	Fadeiconv-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-bomberW							; regular
+$Name:	Fadeicons-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_CRUISER
+$Name:	icont-cruiser							; regular
+$Name:	FadeiconT-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	iconv-cruiser							; regular
+$Name:	Fadeiconv-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	icons-cruiser							; regular
+$Name:	Fadeicons-cruiser							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+; ICON_CRUISER_WING
+$Name:	icont-cruiserW						; regular
+$Name:	FadeiconT-cruiser						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-cruiserW						; regular
+$Name:	Fadeiconv-cruiserW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-cruiserW						; regular
+$Name:	Fadeicons-cruiserW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_UNKNOWN
+$Name:	iconunknown							; regular
+$Name:	FadeUnknown							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconunknown							; regular
+$Name:	FadeUnknown							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconunknown							; regular
+$Name:	FadeUnknown							; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_UNKNOWN_WING
+$Name:	iconunknown						; regular
+$Name:	FadeUnknown						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconunknown						; regular
+$Name:	FadeUnknown						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconunknown						; regular
+$Name:	FadeUnknown						; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_FIGHTER_PLAYER
+$Name:	iconT-fighter							; regular
+$Name:	FadeiconT-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconV-fighter							; regular
+$Name:	FadeiconV-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconS-fighter							; regular
+$Name:	FadeiconV-fighter									; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_FIGHTERW_PLAYER
+$Name:	icont-fightW						; regular
+$Name:	FadeiconT-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	iconv-fightW						; regular
+$Name:	Fadeiconv-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+$Name:	icons-fighterW						; regular
+$Name:	Fadeicons-FighterW						; fade anim
+$Name:	iconhighlight02					; highlight anim
+
+; ICON_BOMBER_PLAYER
+$Name:	icont-bomber							; regular
+$Name:	Fadeicont-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	iconv-bomber							; regular
+$Name:	Fadeiconv-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+$Name:	icons-bomber							; regular
+$Name:	Fadeicons-Bomber							; fade anim
+$Name:	iconhighlight07					; highlight anim
+
+; ICON_BOMBERW_PLAYER
+$Name:	icont-bomberW							; regular
+$Name:	Fadeicont-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconv-bomberW							; regular
+$Name:	Fadeiconv-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	icons-bomberW							; regular
+$Name:	Fadeicons-BomberW							; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_KNOSSOS_DEVICE
+$Name:	icont-node						; regular
+$Name:	Fadeicont-node						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	icont-node						; regular
+$Name:	Fadeicont-node						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	icont-node						; regular
+$Name:	Fadeicont-node						; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_TRANSPORT_WING
+$Name:	iconT-transportW						; regular
+$Name:	fadeicont-transportW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconT-transportW						; regular
+$Name:	fadeiconT-transportW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconS-transportW						; regular
+$Name:	fadeiconS-transportW						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_CORVETTE
+$Name:	iconT-vette						; regular
+$Name:	fadeiconT-vette						; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+$Name:	iconV-vette						; regular
+$Name:	fadeiconV-vette						; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+$Name:	iconS-vette						; regular
+$Name:	fadeiconS-vette						; fade anim
+$Name:	iconhighlight06					; highlight anim
+
+; ICON_GAS_MINER
+$Name:	iconT-gas						; regular
+$Name:	fadeiconT-gas						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconV-gas						; regular
+$Name:	fadeiconV-gas						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconS-gas						; regular
+$Name:	fadeiconS-gas						; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_AWACS
+$Name:	iconT-AWAC						; regular
+$Name:	fadeiconT-AWAC					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconV-AWAC						; regular
+$Name:	fadeiconV-AWAC					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+$Name:	iconT-AWAC						; regular
+$Name:	fadeiconT-AWAC					; fade anim
+$Name:	iconhighlight05					; highlight anim
+
+; ICON_SUPERCAP
+$Name:	iconT-super						; regular
+$Name:	fadeiconT-super					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconT-super						; regular
+$Name:	fadeiconT-super					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+$Name:	iconS-super						; regular
+$Name:	fadeiconS-super					; fade anim
+$Name:	iconhighlight03					; highlight anim
+
+; ICON_SENTRYGUN
+$Name:	iconT-gun						; regular
+$Name:	fadeiconT-gun					; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconV-gun						; regular
+$Name:	fadeiconV-gun					; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconS-gun						; regular
+$Name:	fadeiconS-gun					; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_JUMP_NODE
+$Name:	iconnode							; regular
+$Name:	Fadeiconnode							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconnode							; regular
+$Name:	Fadeiconnode							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+$Name:	iconnode							; regular
+$Name:	Fadeiconnode							; fade anim
+$Name:	iconhighlight04					; highlight anim
+
+; ICON_TRANSPORT
+$Name:	iconT-transport				; regular
+$Name:	fadeIconT-transport			; fade anim	
+$Name:	iconhighlight07				; highlight anim
+
+$Name:	iconT-transport				; regular
+$Name:	fadeIconT-transport			; fade anim	
+$Name:	iconhighlight07				; highlight anim
+
+$Name:	iconS-transport				; regular
+$Name:	fadeIconS-transport			; fade anim	
+$Name:	iconhighlight07				; highlight anim
+
+#End
+```
+
+## .tbm Format Sample
+
+```
+#Start
+
+$Species: Terran
+
+$Icon Type: Fighter
+$Name:	iconT-fighter							
+$Name:	FadeiconT-fighter	
+$Name:	iconhighlight04					
+
+$Icon Type: Fighter Wing
+$Name:	icont-fightW						
+$Name:	FadeiconT-FighterW					
+$Name:	iconhighlight02				
+
+$Icon Type: Cargo
+$Name:	icont-cargo							
+$Name:	FadeiconT-Cargo									
+$Name:	iconhighlight04					
+
+$Icon Type: Cargo Wing
+$Name:	icont-cargoW							
+$Name:	FadeiconT-CargoW							
+$Name:	iconhighlight02					
+
+$Icon Type: Largeship
+$Name:	icont-cruiser							
+$Name:	FadeiconT-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Largeship Wing
+$Name:	icont-cruiserW						
+$Name:	FadeiconT-cruiser						
+$Name:	iconhighlight05					
+
+$Icon Type: Capital
+$Name:	icont-cap							
+$Name:	Fadeicont-Cap							
+$Name:	iconhighlight06					
+
+$Icon Type: Planet
+$Name:	iconplanet							
+$Name:	FadeiconPlanet							
+$Name:	iconhighlight03					
+
+$Icon Type: Asteroid Field
+$Name:	iconasteroid						
+$Name:	FadeiconAsteroid						
+$Name:	iconhighlight03					
+
+$Icon Type: Waypoint
+$Name:	iconnavbuoy						
+$Name:	Fadeiconnavbuoy						
+$Name:	iconhighlight04					
+
+$Icon Type: Support Ship
+$Name:	iconT-support							
+$Name:	FadeT-Support							
+$Name:	iconhighlight04					
+
+$Icon Type: Freighter(no cargo)
+$Name:	icont-freight						
+$Name:	Fadeicont-Freighter						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter(has cargo)
+$Name:	icont-freightc						
+$Name:	Fadeicont-FreighterC						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter Wing(no cargo)
+$Name:	icont-freighterw					
+$Name:	Fadeicont-FreighterW						
+$Name:	iconhighlight05					
+
+$Icon Type: Freighter Wing(has cargo)
+$Name:	icont-freightercw				
+$Name:	Fadeicont-FreighterCW					
+$Name:	iconhighlight05					
+
+$Icon Type: Installation
+$Name:	iconInstall						
+$Name:	FadeiconInstall					
+$Name:	iconhighlight03					
+
+$Icon Type: Bomber
+$Name:	icont-bomber							
+$Name:	Fadeicont-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Bomber Wing
+$Name:	icont-bomberW							
+$Name:	Fadeicont-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Cruiser
+$Name:	icont-cruiser							
+$Name:	FadeiconT-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Cruiser Wing
+$Name:	icont-cruiserW						
+$Name:	FadeiconT-cruiser						
+$Name:	iconhighlight05					
+
+$Icon Type: Unknown
+$Name:	iconunknown							
+$Name:	FadeUnknown							
+$Name:	iconhighlight03					
+
+$Icon Type: Unknown Wing
+$Name:	iconunknown						
+$Name:	FadeUnknown						
+$Name:	iconhighlight03					
+
+$Icon Type: Player Fighter
+$Name:	iconT-fighter							
+$Name:	FadeiconT-fighter									
+$Name:	iconhighlight04					
+
+$Icon Type: Player Fighter Wing
+$Name:	icont-fightW						
+$Name:	FadeiconT-FighterW						
+$Name:	iconhighlight02					
+
+$Icon Type: Player Bomber
+$Name:	icont-bomber							
+$Name:	Fadeicont-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Player Bomber Wing
+$Name:	icont-bomberW							
+$Name:	Fadeicont-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Knossos Device
+$Name:	icont-node						
+$Name:	Fadeicont-node						
+$Name:	iconhighlight04					
+
+$Icon Type: Transport Wing
+$Name:	iconT-transportW						
+$Name:	fadeicont-transportW						
+$Name:	iconhighlight05					
+
+$Icon Type: Corvette
+$Name:	iconT-vette						
+$Name:	fadeiconT-vette						
+$Name:	iconhighlight06					
+
+$Icon Type: Gas Miner
+$Name:	iconT-gas						
+$Name:	fadeiconT-gas						
+$Name:	iconhighlight05					
+
+$Icon Type: Awacs
+$Name:	iconT-AWAC						
+$Name:	fadeiconT-AWAC					
+$Name:	iconhighlight05					
+
+$Icon Type: Supercap
+$Name:	iconT-super						
+$Name:	fadeiconT-super					
+$Name:	iconhighlight03					
+
+$Icon Type: Sentry Gun
+$Name:	iconT-gun						
+$Name:	fadeiconT-gun					
+$Name:	iconhighlight04					
+
+$Icon Type: Jump Node
+$Name:	iconnode							
+$Name:	Fadeiconnode							
+$Name:	iconhighlight04					
+
+$Icon Type: Transport
+$Name:	iconT-transport				
+$Name:	fadeIconT-transport			
+$Name:	iconhighlight07				
+
+$Species: Vasudan
+
+$Icon Type: Fighter
+$Name:	iconV-fighter							
+$Name:	FadeiconV-fighter									
+$Name:	iconhighlight04					
+
+$Icon Type: Fighter Wing
+$Name:	iconv-fightW						
+$Name:	Fadeiconv-FighterW						
+$Name:	iconhighlight02					
+
+$Icon Type: Cargo
+$Name:	iconv-cargo							
+$Name:	Fadeiconv-Cargo									
+$Name:	iconhighlight04					
+
+$Icon Type: Cargo Wing
+$Name:	iconv-cargoW							
+$Name:	Fadeiconv-CargoW							
+$Name:	iconhighlight02					
+
+$Icon Type: Largeship
+$Name:	iconv-cruiser							
+$Name:	Fadeiconv-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Largeship Wing
+$Name:	iconv-cruiserW						
+$Name:	Fadeiconv-cruiserW						
+$Name:	iconhighlight05					
+
+$Icon Type: Capital
+$Name:	iconv-cap							
+$Name:	Fadeiconv-Cap							
+$Name:	iconhighlight06					
+
+$Icon Type: Planet
+$Name:	iconplanet							
+$Name:	FadeiconPlanet							
+$Name:	iconhighlight03					
+
+$Icon Type: Asteroid Field
+$Name:	iconasteroid						
+$Name:	FadeiconAsteroid						
+$Name:	iconhighlight03					
+
+$Icon Type: Waypoint
+$Name:	iconnavbuoy						
+$Name:	Fadeiconnavbuoy						
+$Name:	iconhighlight04					
+
+$Icon Type: Support Ship
+$Name:	iconV-support							
+$Name:	FadeV-Support							
+$Name:	iconhighlight04					
+
+$Icon Type: Freighter(no cargo)
+$Name:	iconv-freight						
+$Name:	Fadeiconv-Freighter						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter(has cargo)
+$Name:	iconv-freightc						
+$Name:	Fadeiconv-FreighterC						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter Wing(no cargo)
+$Name:	iconv-freighterw					
+$Name:	Fadeiconv-FreighterW						
+$Name:	iconhighlight05					
+
+$Icon Type: Freighter Wing(has cargo)
+$Name:	iconv-freightercw				
+$Name:	Fadeiconv-FreighterCW					
+$Name:	iconhighlight05					
+
+$Icon Type: Installation
+$Name:	iconInstall						
+$Name:	FadeiconInstall					
+$Name:	iconhighlight03					
+
+$Icon Type: Bomber
+$Name:	iconv-bomber							
+$Name:	Fadeiconv-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Bomber Wing
+$Name:	iconv-bomberW							
+$Name:	Fadeiconv-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Cruiser
+$Name:	iconv-cruiser							
+$Name:	Fadeiconv-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Cruiser Wing
+$Name:	iconv-cruiserW						
+$Name:	Fadeiconv-cruiserW						
+$Name:	iconhighlight05					
+
+$Icon Type: Unknown
+$Name:	iconunknown							
+$Name:	FadeUnknown							
+$Name:	iconhighlight03					
+
+$Icon Type: Unknown Wing
+$Name:	iconunknown						
+$Name:	FadeUnknown						
+$Name:	iconhighlight03					
+
+$Icon Type: Player Fighter
+$Name:	iconV-fighter							
+$Name:	FadeiconV-fighter									
+$Name:	iconhighlight04					
+
+$Icon Type: Player Fighter Wing
+$Name:	iconv-fightW						
+$Name:	Fadeiconv-FighterW						
+$Name:	iconhighlight02					
+
+$Icon Type: Player Bomber
+$Name:	iconv-bomber							
+$Name:	Fadeiconv-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Player Bomber Wing
+$Name:	iconv-bomberW							
+$Name:	Fadeiconv-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Knossos Device
+$Name:	icont-node						
+$Name:	Fadeicont-node						
+$Name:	iconhighlight04					
+
+$Icon Type: Transport Wing
+$Name:	iconT-transportW						
+$Name:	fadeiconT-transportW						
+$Name:	iconhighlight05					
+
+$Icon Type: Corvette
+$Name:	iconV-vette						
+$Name:	fadeiconV-vette						
+$Name:	iconhighlight06					
+
+$Icon Type: Gas Miner
+$Name:	iconV-gas						
+$Name:	fadeiconV-gas						
+$Name:	iconhighlight05					
+
+$Icon Type: Awacs
+$Name:	iconV-AWAC						
+$Name:	fadeiconV-AWAC					
+$Name:	iconhighlight05					
+
+$Icon Type: Supercap
+$Name:	iconT-super						
+$Name:	fadeiconT-super					
+$Name:	iconhighlight03					
+
+$Icon Type: Sentry Gun
+$Name:	iconV-gun						
+$Name:	fadeiconV-gun					
+$Name:	iconhighlight04					
+
+$Icon Type: Jump Node
+$Name:	iconnode							
+$Name:	Fadeiconnode							
+$Name:	iconhighlight04					
+
+$Icon Type: Transport
+$Name:	iconT-transport				
+$Name:	fadeIconT-transport			
+$Name:	iconhighlight07				
+
+$Species: Shivan
+
+$Icon Type: Fighter
+$Name:	iconS-fighter							
+$Name:	FadeiconV-fighter									
+$Name:	iconhighlight04					
+
+$Icon Type: Fighter Wing
+$Name:	icons-fighterW						
+$Name:	Fadeicons-FighterW						
+$Name:	iconhighlight02					
+
+$Icon Type: Cargo
+$Name:	icons-cargo							
+$Name:	Fadeicons-Cargo									
+$Name:	iconhighlight04					
+
+$Icon Type: Cargo Wing
+$Name:	icons-cargoW							
+$Name:	Fadeicons-CargoW							
+$Name:	iconhighlight02					
+
+$Icon Type: Largeship
+$Name:	icons-cruiser							
+$Name:	Fadeicons-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Largeship Wing
+$Name:	icons-cruiserW						
+$Name:	Fadeicons-cruiserW						
+$Name:	iconhighlight05					
+
+$Icon Type: Capital
+$Name:	icons-cap							
+$Name:	Fadeicons-Cap							
+$Name:	iconhighlight06					
+
+$Icon Type: Planet
+$Name:	iconplanet							
+$Name:	FadeiconPlanet							
+$Name:	iconhighlight03					
+
+$Icon Type: Asteroid Field
+$Name:	iconasteroid						
+$Name:	FadeiconAsteroid						
+$Name:	iconhighlight03					
+
+$Icon Type: Waypoint
+$Name:	iconnavbuoy						
+$Name:	Fadeiconnavbuoy						
+$Name:	iconhighlight04					
+
+$Icon Type: Support Ship
+$Name:	iconT-support							
+$Name:	FadeT-Support							
+$Name:	iconhighlight04					
+
+$Icon Type: Freighter(no cargo)
+$Name:	icons-freight						
+$Name:	Fadeicons-Freighter						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter(has cargo)
+$Name:	icons-freightc						
+$Name:	Fadeicons-FreighterC						
+$Name:	iconhighlight01					
+
+$Icon Type: Freighter Wing(no cargo)
+$Name:	icons-freighterw					
+$Name:	Fadeicons-FreighterW						
+$Name:	iconhighlight05					
+
+$Icon Type: Freighter Wing(has cargo)
+$Name:	icons-freighterwc				
+$Name:	Fadeicons-FreighterCW					
+$Name:	iconhighlight05					
+
+$Icon Type: Installation
+$Name:	iconInstall						
+$Name:	FadeiconInstall					
+$Name:	iconhighlight03					
+
+$Icon Type: Bomber
+$Name:	icons-bomber							
+$Name:	Fadeicons-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Bomber Wing
+$Name:	icons-bomberW							
+$Name:	Fadeicons-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Cruiser
+$Name:	icons-cruiser							
+$Name:	Fadeicons-cruiser							
+$Name:	iconhighlight07					
+
+$Icon Type: Cruiser Wing
+$Name:	icons-cruiserW						
+$Name:	Fadeicons-cruiserW						
+$Name:	iconhighlight05					
+
+$Icon Type: Unknown
+$Name:	iconunknown							
+$Name:	FadeUnknown							
+$Name:	iconhighlight03					
+
+$Icon Type: Unknown Wing
+$Name:	iconunknown						
+$Name:	FadeUnknown						
+$Name:	iconhighlight03					
+
+$Icon Type: Player Fighter
+$Name:	iconS-fighter							
+$Name:	FadeiconV-fighter									
+$Name:	iconhighlight04					
+
+$Icon Type: Player Fighter Wing
+$Name:	icons-fighterW						
+$Name:	Fadeicons-FighterW						
+$Name:	iconhighlight02					
+
+$Icon Type: Player Bomber
+$Name:	icons-bomber							
+$Name:	Fadeicons-Bomber							
+$Name:	iconhighlight07					
+
+$Icon Type: Player Bomber Wing
+$Name:	icons-bomberW							
+$Name:	Fadeicons-BomberW							
+$Name:	iconhighlight05					
+
+$Icon Type: Knossos Device
+$Name:	icont-node						
+$Name:	Fadeicont-node						
+$Name:	iconhighlight04					
+
+$Icon Type: Transport Wing
+$Name:	iconS-transportW						
+$Name:	fadeiconS-transportW						
+$Name:	iconhighlight05					
+
+$Icon Type: Corvette
+$Name:	iconS-vette						
+$Name:	fadeiconS-vette						
+$Name:	iconhighlight06					
+
+$Icon Type: Gas Miner
+$Name:	iconS-gas						
+$Name:	fadeiconS-gas						
+$Name:	iconhighlight05					
+
+$Icon Type: Awacs
+$Name:	iconT-AWAC						
+$Name:	fadeiconT-AWAC					
+$Name:	iconhighlight05					
+
+$Icon Type: Supercap
+$Name:	iconS-super						
+$Name:	fadeiconS-super					
+$Name:	iconhighlight03					
+
+$Icon Type: Sentry Gun
+$Name:	iconS-gun						
+$Name:	fadeiconS-gun					
+$Name:	iconhighlight04					
+
+$Icon Type: Jump Node
+$Name:	iconnode							
+$Name:	Fadeiconnode							
+$Name:	iconhighlight04					
+
+$Icon Type: Transport
+$Name:	iconS-transport				
+$Name:	fadeIconS-transport			
+$Name:	iconhighlight07				
+
+#End
+```

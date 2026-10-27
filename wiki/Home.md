@@ -42,5 +42,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [glowpoints.tbl](glowpoints.tbl): glowpoint presets
   - [help.tbl](help.tbl): help overlays
   - [hud_gauges.tbl](hud_gauges.tbl): HUD gauges
+  - [icons.tbl](icons.tbl): briefing icons
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

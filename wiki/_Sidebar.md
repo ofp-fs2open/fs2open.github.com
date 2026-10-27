@@ -49,5 +49,6 @@
   - [glowpoints.tbl](glowpoints.tbl)
   - [help.tbl](help.tbl)
   - [hud_gauges.tbl](hud_gauges.tbl)
+  - [icons.tbl](icons.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
