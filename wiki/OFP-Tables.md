@@ -9,6 +9,7 @@ This page lists the tables that exist only in OFP, and the existing SCP tables O
 1. [New tables](#new-tables)
 2. [Additions to existing tables](#additions-to-existing-tables)
 3. [All tables](#all-tables)
+4. [Version badges](#version-badges)
 
 ---
 
@@ -42,3 +43,17 @@ Full documentation of every table, moving here from the [FreeSpace Wiki](https:/
 | Table | Modular extension | Code |
 |---|---|---|
 | [ai.tbl](ai.tbl) | `xxx-aic.tbm` | /ai/aicode.cpp |
+
+---
+
+## Version badges
+
+Table pages mark when a field or behavior was added with a version badge. Fields without a badge are from the original game.
+
+**FreeSpace Open:**
+
+![FSO 3.6.x](images/badges/fso-3.6.x.svg) ![FSO 3.6.10](images/badges/fso-3.6.10.svg) ![FSO 3.6.12](images/badges/fso-3.6.12.svg) ![FSO 3.6.14](images/badges/fso-3.6.14.svg) ![FSO 3.6.16](images/badges/fso-3.6.16.svg) ![FSO 3.7](images/badges/fso-3.7.svg) ![FSO 3.7.2](images/badges/fso-3.7.2.svg) ![FSO 3.7.4](images/badges/fso-3.7.4.svg) ![FSO 3.8](images/badges/fso-3.8.svg) ![FSO 19.0](images/badges/fso-19.0.svg) ![FSO 20.4](images/badges/fso-20.4.svg) ![FSO 21.0](images/badges/fso-21.0.svg) ![FSO 21.2](images/badges/fso-21.2.svg) ![FSO 21.4](images/badges/fso-21.4.svg) ![FSO 22.0](images/badges/fso-22.0.svg) ![FSO 22.2](images/badges/fso-22.2.svg) ![FSO 23.0](images/badges/fso-23.0.svg) ![FSO 23.2](images/badges/fso-23.2.svg) ![FSO 24.0](images/badges/fso-24.0.svg) ![FSO 24.2](images/badges/fso-24.2.svg) ![FSO 25.0](images/badges/fso-25.0.svg) ![FSO 26.0](images/badges/fso-26.0.svg) ![FSO 26.2](images/badges/fso-26.2.svg)
+
+**OFP:**
+
+![OFP 26.1](images/badges/ofp-26.1.svg)
