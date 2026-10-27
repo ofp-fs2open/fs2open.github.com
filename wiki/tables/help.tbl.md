@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#121](https://github.com/ofp-fs2open/fs2open.github.com/pull/121)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **help.tbl** defines the help overlays shown on interface screens, such as the main hall, when the player presses F1: text with lines and brackets pointing at parts of the screen.
