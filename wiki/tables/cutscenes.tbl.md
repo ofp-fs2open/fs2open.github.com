@@ -1,0 +1,230 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **cutscenes.tbl** defines the video clips shown in the tech room's cutscenes section, with their names and descriptions.
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) This table is one of the Modular Tables and can be extended with **xxx-csn.tbm**.
+
+Code: [/cutscene/cutscenes.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/cutscene/cutscenes.cpp). See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [#Cutscenes](#cutscenes)
+2. [Sample and usage of cutscenes in campaigns](#sample-and-usage-of-cutscenes-in-campaigns)
+
+---
+
+## #Cutscenes
+
+- Indicates the beginning of the main cutscenes section. Anything before it in the file is ignored.
+- Each cutscene starts with `$Filename:`, and its fields must be in the order listed here; one out of order is not read.
+
+### $Filename:
+
+- Used to define the actual name of the video shown in the particular slot.
+  - Syntax: **String.mp4**, **String.ogg**, or **String.mve**, filename.extension
+  - Example: intro.mve
+- The file name identifies the cutscene. A name used twice in cutscenes.tbl is an error. In a modular table, a name that already exists edits that cutscene.
+
+### +nocreate
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Optional. Goes directly after `$Filename:`.
+- In a modular table, edits the cutscene only if it already exists, instead of creating a new one.
+- Using it in cutscenes.tbl itself logs a warning.
+- **Known issue:** once one entry in a file uses `+nocreate`, every later entry in that file is treated as if it had it too, so a new cutscene after it in the same file is skipped. Put new cutscenes before any `+nocreate` entry, or in a separate file.
+
+### $Name:
+
+- Defines the name of the cutscene
+  - Syntax: **String**, name
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- This field is now optional, defaults to $Filename
+
+### $Description:
+
+- Used to define the description of the particular table entry
+- Value is used for defining the translations via the [tstrings.tbl](tstrings.tbl)
+- Is always followed immediately with **$end_multi_text**
+  - Syntax: XSTR("**String**", **Integer**), descriptive text, integer refers to translations
+  - Example: XSTR("Admiral Petrarch addresses the crew of the Aquitaine, relating news of the GTVA's success.", 2611)
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- This field is now optional
+
+### $cd:
+
+- Defined the CD the cutscene was on. Still read for compatibility, but ignored.
+  - Syntax: **Integer**
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- This field is now optional
+
+### $Always Viewable:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg)
+
+- Sets the cutscene to always be available in the cutscene room without needing to be viewed during the campaign.
+- Only YES has an effect: a modular table can't turn it back off with NO.
+  - Syntax: **Boolean**
+
+### $Never Viewable:
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+- Sets the cutscene to never be available in the cutscene room, even if it is viewed during the campaign.
+- Only YES has an effect: a modular table can't turn it back off with NO.
+  - Syntax: **Boolean**
+
+### $Custom data:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Defines a set of custom data that for this cutscene, which can then be accessed through Lua scripts. There can be any amount of +Val: entries. It requires a $end_custom_data entry at the end.
+Check the scripting documentation of Cutscenes to find the CustomData Lua Table.
+
+#### +Val:
+
+Specifies a custom data value and its name, in the format
+
++Val: Name Value
+
+These values will always be strings of text. If you use them in Lua as other types of value, you might need to convert them in the script.
+
+#### $end_custom_data
+
+Mandatory entry to indicate that the Custom Data list has ended.
+
+## Sample and usage of cutscenes in campaigns
+
+- [Here](https://wiki.hard-light.net/index.php/Cutscene_flags) are instructions how to configure the mission to make the pre-rendered cutscene play at the correct point in the campaign.
+- Full retail table:
+```
+; Cutscene.tbl 
+; Will contain data for :
+; 1.) cutscene names
+; 2.) cutscene descriptions
+; 3.) cutscene location on CD
+;
+; Do not change the ordering of the sections in this table. Also do not add items to the list
+
+#Cutscenes
+
+;;
+;; INTRO
+;;
+$Filename: intro.mve
+$Name: Introduction
+$Description:
+XSTR(
+"Thirty-two years have passed since the Great War, and a new generation has come of age.", 2603)
+$end_multi_text
+$cd: 2
+
+;;
+;; COLOSSUS
+;;
+$Filename: Colossus.mve
+$Name: GTVA Colossus
+$Description:
+XSTR(
+"Introducing the GTVA Colossus, the largest space-faring warship ever constructed.", 2604)
+$end_multi_text
+$cd: 2
+
+;;
+;; MONOLOGUE 1
+;;
+$Filename: mono1.mve
+$Name: Bosch Monologue 1
+$Description:
+XSTR(
+"Admiral Bosch, the NTF Supreme Commander, reflects upon the legacy of the Ancients.", 2605)
+$end_multi_text
+$cd: 2
+
+;;
+;; MONOLOGUE 2
+;;
+$Filename: mono2.mve
+$Name: Bosch Monologue 2
+$Description:
+XSTR(
+"Following NTF defeats in Epsilon Pegasi and Sirius, Bosch reconsiders his strategy.", 2606)
+$end_multi_text
+$cd: 3
+
+;;
+;; MONOLOGUE 3
+;;
+$Filename: mono3.mve
+$Name: Bosch Monologue 3
+$Description:
+XSTR(
+"Lost in the nebula beyond the Knossos portal, Bosch questions the wisdom of his actions.", 2607)
+$end_multi_text
+$cd: 3
+
+;;
+;; MONOLOGUE 4
+;;
+$Filename: mono4.mve
+$Name: Bosch Monologue 4
+$Description:
+XSTR(
+"His crusade vindicated, Bosch prepares for his second rendezvous with the Shivans.", 2608)
+$end_multi_text
+$cd: 3
+
+;;
+;; BASTION
+;;
+$Filename: bastion.mve
+$Name: Bastion dies
+$Description:
+XSTR(
+"Packed with meson warheads, the GTD Bastion self-destructs and seals off the Epsilon Pegasi jump node.", 2609)
+$end_multi_text
+$cd: 3
+
+;;
+;; END GAME
+;;
+$Filename: endpart1.mve
+$Name: End Game
+$Description:
+XSTR(
+"Generating a powerful subspace disturbance, the Shivan juggernauts trigger a supernova.", 2610)
+$end_multi_text
+$cd: 3
+
+;;
+;; END GAME A
+;;
+$Filename: endprt2a.mve
+$Name: End Game Part 2A
+$Description:
+XSTR(
+"Admiral Petrarch addresses the crew of the Aquitaine, relating news of the GTVA's success.", 2611)
+$end_multi_text
+$cd: 3
+
+;;
+;; END GAME B
+;;
+$Filename: endprt2b.mve
+$Name: End Game Part 2B
+$Description:
+XSTR(
+"Admiral Petrarch addresses the 70th Blue Lions, relating news of Alpha 1's demise.", 2612)
+$end_multi_text
+$cd: 3
+
+#End
+```

@@ -26,6 +26,7 @@
   - [coordinate_points.tbl](coordinate_points.tbl)
   - [credits.tbl](credits.tbl)
   - [curves.tbl](curves.tbl)
+  - [cutscenes.tbl](cutscenes.tbl)
   - [editor.tbl](editor.tbl)
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [props.tbl](props.tbl)

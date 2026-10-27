@@ -30,6 +30,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [coordinate_points.tbl](coordinate_points.tbl): custom shapes for coordinate points (OFP only)
   - [credits.tbl](credits.tbl): credits screen
   - [curves.tbl](curves.tbl): curves used by other tables
+  - [cutscenes.tbl](cutscenes.tbl): tech room cutscenes
   - [editor.tbl](editor.tbl): editor settings and typed custom data fields for missions, campaigns and ships (OFP only, editor only)
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
