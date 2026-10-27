@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#109](https://github.com/ofp-fs2open/fs2open.github.com/pull/109)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 ![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
