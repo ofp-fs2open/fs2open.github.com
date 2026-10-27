@@ -86,6 +86,19 @@ A recused Maintainer may still comment technically but does not vote or merge. I
 4. If skipping a Queue item, explain why in your PR description.
 5. Ensure CI passes on Linux, Windows, and macOS before requesting review.
 6. Request review from a Reviewer or Maintainer.
+7. Once the PR is approved, document it in `wiki/` (see below) and push that to the same PR. A PR can't merge until it's documented.
+
+### Documenting your change
+
+The [OFP wiki](https://github.com/ofp-fs2open/fs2open.github.com/wiki) is published from the `wiki/` folder: each `.md` file there is one wiki page, and every merge that changes `wiki/` updates the wiki. Edit `wiki/`, not the wiki itself; edits made on the wiki are overwritten.
+
+- **New engine or QtFRED feature:** add a row to `wiki/OFP-Engine-Features.md` or `wiki/OFP-QtFRED-Features.md`.
+- **Fix to code OFP shares with SCP:** add a row to the top of `wiki/OFP-Bug-Fixes.md`. Fixes to OFP's own features don't need a row.
+- **New or changed tables, SEXPs or Lua:** update the matching page, and set its "OFP Revision" line to your PR. A new page also needs an entry in `wiki/_Sidebar.md` and `wiki/Home.md`.
+
+Link your PR (`[#123](https://github.com/ofp-fs2open/fs2open.github.com/pull/123)`) wherever a row or revision line asks for one.
+
+The **Documentation** check fails until the PR changes something under `wiki/`. If there is nothing to document (CI, build or internal changes), a maintainer adds the `no-docs` label instead.
 
 ---
 
