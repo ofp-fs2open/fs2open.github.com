@@ -41,5 +41,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [generated_nebula.tbl](generated_nebula.tbl): patterns and colors for the generated (FS1-style) background nebula (OFP only)
   - [glowpoints.tbl](glowpoints.tbl): glowpoint presets
   - [help.tbl](help.tbl): help overlays
+  - [hud_gauges.tbl](hud_gauges.tbl): HUD gauges
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

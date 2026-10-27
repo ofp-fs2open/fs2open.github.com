@@ -48,5 +48,6 @@
   - [generated_nebula.tbl](generated_nebula.tbl)
   - [glowpoints.tbl](glowpoints.tbl)
   - [help.tbl](help.tbl)
+  - [hud_gauges.tbl](hud_gauges.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
