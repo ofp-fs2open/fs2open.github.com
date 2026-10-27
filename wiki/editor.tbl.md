@@ -1,6 +1,6 @@
 > **Revision information**
-> OFP Revision: [82e03a2](https://github.com/ofp-fs2open/fs2open.github.com/commit/82e03a201)
-> *Please update the revision when the page is updated. If your edit had nothing to do with new code entries, please do not edit the revision.*
+> OFP Revision: [#43](https://github.com/ofp-fs2open/fs2open.github.com/pull/43)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 <details>
 <summary><b>List of OFP tables and related code files</b></summary>

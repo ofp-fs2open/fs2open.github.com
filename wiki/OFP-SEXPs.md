@@ -1,6 +1,6 @@
 > **Revision information**
-> OFP Revision: [aac4194](https://github.com/ofp-fs2open/fs2open.github.com/commit/aac4194d3)
-> *Please update the revision when the page is updated. If your edit had nothing to do with new code entries, please do not edit the revision.*
+> OFP Revision: [#36](https://github.com/ofp-fs2open/fs2open.github.com/pull/36)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 This page lists the SEXP operators that exist only in OFP, and the OFP changes to existing SCP operators. Every other operator works in OFP exactly as documented on the [FreeSpace Wiki SEXP page](https://wiki.hard-light.net/index.php/SEXP). Only the differences are listed here.
 

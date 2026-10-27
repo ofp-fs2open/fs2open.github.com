@@ -1,6 +1,6 @@
 > **Revision information**
-> OFP Revision: [7c30471](https://github.com/ofp-fs2open/fs2open.github.com/commit/7c3047154)
-> *Please update the revision when the page is updated. If your edit had nothing to do with new code entries, please do not edit the revision.*
+> OFP Revision: [#77](https://github.com/ofp-fs2open/fs2open.github.com/pull/77)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 This page lists the tables that exist only in OFP, and the fields OFP adds to existing SCP tables. Every standard FreeSpace Open table works in OFP exactly as documented on the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables). Only the differences are listed here.
 

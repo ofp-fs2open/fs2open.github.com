@@ -1,6 +1,6 @@
 > **Revision information**
-> OFP Revision: [aac4194](https://github.com/ofp-fs2open/fs2open.github.com/commit/aac4194d3)
-> *Please update the revision when the page is updated. If your edit had nothing to do with new code entries, please do not edit the revision.*
+> OFP Revision: [#36](https://github.com/ofp-fs2open/fs2open.github.com/pull/36)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 This page covers the Lua scripting API that OFP adds on top of stock FreeSpace Open. The full, always-current reference is the scripting documentation the engine writes itself (run with `-output_scripting`). This page adds context and examples for the OFP-specific parts. Everything else works as described on the [FreeSpace Wiki scripting pages](https://wiki.hard-light.net/index.php/Scripting.tbl).
 
