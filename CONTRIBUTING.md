@@ -25,7 +25,7 @@ The Queue is kept up to date automatically. Maintainers only add or remove the *
 3. A Reviewer or Maintainer adds the **Queue Accepted** label when it meets the bar: clearly defined, technically feasible, and demonstrably wanted by currently active community members.
 4. It enters the back of the Queue, dated the day it was accepted, and moves to the **Active Requests** category.
 
-Removing the label takes it back out of the Queue and returns it to Feature Requests.
+Removing the label takes it back out of the Queue and returns it to Feature Requests. Closed requests and those in Completed Requests are left alone: to queue one again, a maintainer moves it out of Completed Requests and reopens it first.
 
 ### Working the Queue
 

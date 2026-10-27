@@ -110,6 +110,12 @@ module.exports = async ({ github, context, core }) => {
 		if (number === QUEUE_DISCUSSION)
 			return;
 		const discussion = await getDiscussion(number);
+		// Closed and completed requests are done. To work on one again, a maintainer moves
+		// and reopens it by hand.
+		if (!discussion || discussion.closed || discussion.category.id === categoryId.completed) {
+			core.info(`#${number} is closed or completed; leaving it alone`);
+			return;
+		}
 
 		if (action === 'labeled' && context.payload.label.name === QUEUE_LABEL) {
 			if (!inQueue(number)) {
