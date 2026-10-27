@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#103](https://github.com/ofp-fs2open/fs2open.github.com/pull/103)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **ai.tbl** defines the AI classes used in the game. Each AI class sets four abilities for each of the five difficulty levels, and can override many [ai_profiles.tbl](ai_profiles.tbl) values for ships of that class.
