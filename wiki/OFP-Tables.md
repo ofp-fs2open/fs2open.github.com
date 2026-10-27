@@ -8,6 +8,7 @@ This page lists the tables that exist only in OFP, and the existing SCP tables O
 
 1. [New tables](#new-tables)
 2. [Additions to existing tables](#additions-to-existing-tables)
+3. [All tables](#all-tables)
 
 ---
 
@@ -31,3 +32,13 @@ This page lists the tables that exist only in OFP, and the existing SCP tables O
 |---|---|---|---|
 | [props.tbl](props.tbl)\* | `xxx-prp.tbm` | /prop/prop.cpp | Texture replacement for every prop of a class |
 | [species.tbl](species.tbl)\* | `xxx-intl.tbm` | /menuui/techmenu.cpp | 3D models for tech room intel entries |
+
+---
+
+## All tables
+
+Full documentation of every table, moving here from the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables) one table at a time. Tables not listed yet are still documented there.
+
+| Table | Modular extension | Code |
+|---|---|---|
+| [ai.tbl](ai.tbl) | `xxx-aic.tbm` | /ai/aicode.cpp |

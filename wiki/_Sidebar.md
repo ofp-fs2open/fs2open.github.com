@@ -22,6 +22,8 @@
   - [Additions to existing tables](OFP-Tables#additions-to-existing-tables)
     - [props.tbl](props.tbl)
     - [species.tbl](species.tbl)
+  - [All tables](OFP-Tables#all-tables)
+    - [ai.tbl](ai.tbl)
 
 **SEXPs**
 - [OFP SEXPs](OFP-SEXPs)

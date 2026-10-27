@@ -1,0 +1,252 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **ai.tbl** defines the AI classes used in the game. Each AI class sets four abilities for each of the five difficulty levels, and can override many [ai_profiles.tbl](ai_profiles.tbl) values for ships of that class.
+
+This table is one of the Modular Tables and can be extended with **xxx-aic.tbm**.
+
+Code: /ai/aicode.cpp. See [OFP Tables](OFP-Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [Required elements](#required-elements)
+   1. [$Name:](#name)
+   2. [+nocreate](#nocreate)
+   3. [$Accuracy:](#accuracy)
+   4. [$Evasion:](#evasion)
+   5. [$Courage:](#courage)
+   6. [$Patience:](#patience)
+3. [Optional elements](#optional-elements)
+   1. [Other AI class attributes](#other-ai-class-attributes)
+   2. [AI Profiles overrides](#ai-profiles-overrides)
+   3. [AI Profiles flag overrides](#ai-profiles-flag-overrides)
+4. [Sample entries](#sample-entries)
+
+---
+
+## Format
+
+- The table starts with `#AI Classes` and ends with `#End`. Each AI class starts with `$Name:`.
+- Fields must appear in the order they are listed on this page. A field out of order is not read.
+- Difficulty lists hold five values, for the very easy, easy, medium, hard and insane difficulty levels in that order. Commas between the values are optional.
+
+---
+
+## Required elements
+
+### $Name:
+
+- Defines a name for the AI class that can be used with [ships.tbl](ships.tbl) and in the mission editors.
+- In a modular table, a name that already exists edits that AI class instead of creating a new one. In ai.tbl itself, a duplicate name is an error.
+- **Syntax:** *String*, name of the AI class
+
+### +nocreate
+
+![FSO 23.2](images/badges/fso-23.2.svg)
+
+- Optional. Goes directly after `$Name:`.
+- In a modular table, edits the AI class only if it already exists, instead of creating a new one.
+- Using it in ai.tbl itself logs a warning.
+
+### $Accuracy:
+
+![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+
+- How accurately the ship fires its weapons. The value scales the error in the AI's aim. With repeated shots, AI aim improves. The AI is always 100% accurate when aiming for subsystems, as in the original game.
+- Value from 0.0 to 1.0
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+### $Evasion:
+
+![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+
+- How good the ship is at evading. The value sets how often the AI changes course while evading.
+- Value from 0 to 100
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+### $Courage:
+
+![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+
+- How likely the ship is to risk danger to accomplish its goals. The lower the value, the sooner the AI starts evading when attacked, and the less likely it is to target turrets.
+- Value from 0 to 100
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+### $Patience:
+
+![FSO 23.2](images/badges/fso-23.2.svg) This element is now optional.
+
+- How willing the ship is to wait for an advantage before pursuing goals. In the original game this was never implemented and did nothing.
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- Sets how quickly the AI tries to break a stalemate it has detected. Only applies if `$Stalemate Time Threshold:` and `$Stalemate Distance Threshold:` are used. The higher the patience, the longer the ship waits in a stalemate before breaking it. At 100, the AI never breaks a stalemate.
+
+- Value from 0 to 100
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+---
+
+## Optional elements
+
+### Other AI class attributes
+
+**Important:** if these attributes are not set, the code uses the AI class's position in the table instead. Use them for finer control over AI classes, or so that the order of the AI classes doesn't affect their behavior. Having a different number of AI classes than the original game can cause strange behavior if these are not set. If you make heavy use of custom AI classes, set all of these and set `$Autoscale by AI Class Index:` to NO.
+
+#### $Afterburner Use Factor:
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- How likely the AI is to use afterburners in "maybe" situations. 1 means always, 2 means half the time, 3 a third of the time, and so on.
+- **Syntax:** *Integer list*, five values, one for each difficulty level
+
+#### $Shockwave Evade Chances Per Second:
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- How likely a ship is to start evading a shockwave. The higher the number, the more chances per second the ship has to evade.
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+#### $Get Away Chance:
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- How likely the AI is to use a "get away" maneuver instead of simply making evasive turns. A get away usually means flying straight away, often on afterburner, with small jinking motions instead of large evasive turns. Higher values make for more "jousting" fights.
+- Range: 0.0 (never) to 1.0 (always)
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+#### $Secondary Range Multiplier:
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- Multiplier for how far away the AI starts firing secondary weapons. Capped by the weapon's actual maximum range. The penalty for firing in a nebula still applies on top of this.
+- Range: 0.0 (point blank, never fires) to 1.0 (fires from maximum range)
+- **Syntax:** *Float list*, five values, one for each difficulty level
+
+#### $Autoscale by AI Class Index:
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+- If YES (the default), a number of miscellaneous AI chances depend on the AI class's position in the table, for example the chance to fire countermeasures. Classes near the start of the table are generally weaker than classes near the end. NO turns this off, so the AI class's position doesn't affect its behavior.
+- Even when this is NO, the other attributes in this section still follow the AI class's position unless they are set. For complete independence, set all of them.
+- If AI classes are added in a modular table, autoscaling can change, and the log says so. Add classes in ai.tbl if that's not wanted.
+- **Default:** YES
+- **Syntax:** *Boolean*
+
+### AI Profiles overrides
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+These override the matching [ai_profiles.tbl](ai_profiles.tbl) values for ships of this AI class. All are optional. Values not set here come from the mission's AI profile. The syntax is the same as in ai_profiles.tbl: five values, one for each difficulty level.
+
+- `$AI Countermeasure Firing Chance:`
+- `$AI In Range Time:`
+- `$AI Always Links Ammo Weapons:`
+- `$AI Maybe Links Ammo Weapons:`
+- `$Primary Ammo Burst Multiplier:`
+- `$AI Always Links Energy Weapons:`
+- `$AI Maybe Links Energy Weapons:`
+- `$Predict Position Delay:`
+- `$AI Shield Manage Delay:` (also accepted as `$AI Shield Manage Delays:`)
+- `$Friendly AI Fire Delay Scale:`
+- `$Hostile AI Fire Delay Scale:`
+- `$Friendly AI Secondary Fire Delay Scale:`
+- `$Hostile AI Secondary Fire Delay Scale:`
+- `$AI Turn Time Scale:`
+- `$Glide Attack Percent:`
+- `$Circle Strafe Percent:`
+- `$Glide Strafe Percent:`
+- `$Random Sidethrust Percent:`
+- `$Stalemate Time Threshold:`
+- `$Stalemate Distance Threshold:`
+- `$Chance AI Has to Fire Missiles at Player:`
+- `$Max Aim Update Delay:`
+- `$Turret Max Aim Update Delay:`
+
+The percent overrides (`$Glide Attack Percent:`, `$Circle Strafe Percent:`, `$Glide Strafe Percent:` and `$Random Sidethrust Percent:`) take values from 0 to 100. A value outside that range logs a warning and is set to 0.
+
+### AI Profiles flag overrides
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg)
+
+These override the matching [ai_profiles.tbl](ai_profiles.tbl) flags for ships of this AI class. All are optional. Flags not set here come from the mission's AI profile.
+
+- **Syntax:** *Boolean*
+
+- `$big ships can attack beam turrets on untargeted ships:`
+- `$smart primary weapon selection:`
+- `$smart secondary weapon selection:`
+- `$smart shield management:`
+- `$smart afterburner management:`
+- `$allow rapid secondary dumbfire:`
+- `$huge turret weapons ignore bombs:`
+- `$don't insert random turret fire delay:`
+- `$prevent turrets targeting too distant bombs:`
+- `$smart subsystem targeting for turrets:`
+- `$allow turrets target weapons freely:`
+- `$allow vertical dodge:`
+- `$no extra collision avoidance vs player:`
+
+![FSO 3.6.14](images/badges/fso-3.6.14.svg)
+
+- `$all ships manage shields:`
+
+![FSO 3.8](images/badges/fso-3.8.svg)
+
+- `$ai can slow down when attacking big ships:`
+
+![FSO 19.0](images/badges/fso-19.0.svg)
+
+- `$free afterburner use:` (goes after `$smart afterburner management:`)
+- `$use actual primary range:`
+
+![FSO 23.2](images/badges/fso-23.2.svg)
+
+- `$firing requires exact los:`
+
+![FSO 25.0](images/badges/fso-25.0.svg)
+
+- `$AI balances shields instead of directs when attacked:`
+
+---
+
+## Sample entries
+
+A minimal entry:
+
+```
+#AI Classes
+
+$Name:         Captain
+$accuracy:     0.5      0.55     0.6      0.65     0.7
+$evasion:      10,      20,      30,      40,      50
+$courage:      10,      20,      30,      40,      50
+$patience:     10,      20,      30,      40,      50
+
+#End
+```
+
+![FSO 3.6.12](images/badges/fso-3.6.12.svg) An entry using some optional elements:
+
+```
+#AI Classes
+
+$Name:                           Captain
+$accuracy:                       0.5      0.55     0.6      0.65     0.7
+$evasion:                        10,      20,      30,      40,      50
+$courage:                        10,      20,      30,      40,      50
+$patience:                       10,      20,      30,      40,      50
+$Get Away Chance:                0.40,    0.45,    0.50,    0.55,    0.6
+$Autoscale by AI Class Index:    NO
+$AI In Range Time:               2,       1.6,     1.2,     0.8,     0.4
+$Primary Ammo Burst Multiplier:  0.6,     0.65,    0.7,     0.75,    0.8
+$Glide Attack Percent:           30,      40,      50,      60,      70
+$allow rapid secondary dumbfire: NO
+$allow vertical dodge:           YES
+
+#End
+```
