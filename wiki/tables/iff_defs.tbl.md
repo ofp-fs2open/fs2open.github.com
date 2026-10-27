@@ -1,0 +1,376 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **iff_defs.tbl** (Identification Friend or Foe) defines the teams ships belong to: who attacks whom, the colors each team is shown in, and related HUD colors. The engine has a built-in version (shown as the sample below), so the table is only needed to add or change IFFs.
+
+This table is one of the Modular Tables and can be extended with **xxx-iff.tbm**.
+
+Code: [/iff_defs/iff_defs.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/iff_defs/iff_defs.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [General Format](#general-format)
+2. [$IFF Name:](#iff-name)
+3. [Sample Entry](#sample-entry)
+
+---
+
+## General Format
+
+- IFF_defs table consist of the generic definitions followed by actual iff definitions
+- Table begins with #**IFFs**
+- The traitor must be defined with **$Traitor IFF:**
+  - This entry is used to define which IFF is used to represent the traitors IFF
+- Different IFFs entries begin with [$IFF Name:](#iff-name)
+- Table ends with #**End**
+- The settings before the first `$IFF Name:` must be in the order listed here, and so must each IFF's fields.
+
+### $Traitor IFF:
+
+- This entry is used to define which IFF is used to represent the traitors IFF
+- An IFF that doesn't exist logs a warning, and a default is used.
+- Syntax: ***String***, IFF entry
+
+### $Accessibility Supported:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Adds an accessibility option to the game's options. When the player turns it on, IFFs use their `$Accessibility Color:` and `+Accessibility Sees ... As:` colors instead of the normal ones (for example, colors that are easier to tell apart for colorblind players).
+- Default: NO; without it the option isn't offered.
+- Syntax: **Boolean**
+
+### $Selection Color: or $Selection Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the targeting brackets of selected targets (like asteroids and multi targeting targets and such)
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 255, 255, 255 )
+
+### $Message Color: or $Message Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the targeting brackets of the ship currently sending a message
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 127, 127, 127 )
+
+### $Tagged Color: or $Tagged Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the tagged targets
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 255, 255, 0 )
+
+### $Dimmed IFF brightness:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines how much dimmer (transparent) are the dimmed objects of the HUD (most displays, distant targets on radar etc.)
+- Syntax: **Integer**, values from 0 to 15
+
+*Default: 4
+
+### $Use Alternate Blip Coloring:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- If set forces all blips to use uniform transparency based 'dimming' method instead of using 1/2 brightness (non-transparent) on the non-ship blips
+- Syntax: **Boolean**
+- Also accepted as `$Use Alternate Blip Colouring:`.
+
+*Default: NO
+
+### $Missile Blip Color: or $Missile Blip Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the weapons (bombs) on radar screen. Dimmed color is 1/2 unless alternate blip coloring is in use.
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 127, 127, 0 )
+
+### $Navbuoy Blip Color: or $Navbuoy Blip Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the navbuoys on radar screen. Dimmed color is 1/2 unless alternate blip coloring is in use.
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 127, 127, 127 )
+
+### $Warping Blip Color: or $Warping Blip Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the warping ships on radar screen. Dimmed color is 1/2 unless alternate blip coloring is in use.
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 0, 0, 255 )
+
+### $Node Blip Color: or $Node Blip Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the jump nodes on radar screen. Dimmed color is 1/2 unless alternate blip coloring is in use.
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 127, 127, 127 )
+
+### $Tagged Blip Color: or $Tagged Blip Colour:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the color of the tagged targets on radar screen. Dimmed color is 1/2 unless alternate blip coloring is in use.
+- Syntax: **Integer list**, values from 0 to 255, red, green and blue respectively
+
+*Default: ( 255, 255, 0 )
+
+### $Radar Target ID Flags:
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+- Defines the appearance of the currently targeted blip on radar screen.
+- Syntax: ( **"String"** ), name of the flag
+  - List of flags:
+    - *"crosshairs"*
+    - *"blink"*
+    - *"pulsate"*
+    - *"enlarge"*
+
+#### +reset
+
+- Optional, directly after the list. Clears all of the flags instead, so the targeted blip looks like any other.
+
+## $IFF Name:
+
+- The name of the IFF
+- A name used twice in iff_defs.tbl is an error. In a modular table, a name that already exists edits that IFF.
+- Syntax: **String**
+
+### +nocreate
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Optional. Goes directly after `$IFF Name:`.
+- In a modular table, edits the IFF only if it already exists, instead of creating a new one. Using it in iff_defs.tbl itself is an error.
+- **Known issue:** once one entry in a file uses `+nocreate`, every later entry in that file is treated as if it had it too, so a new IFF after it in the same file is skipped. Put new IFFs before any `+nocreate` entry, or in a separate file.
+
+### $Colour: or $Color:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- Defaults to white if not defined
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the color of the IFF as seen in by default (e.g. in briefing icons).
+- Syntax: ( **Color** ), three **integers**, values from 0 to 255; red, green and blue respectively
+  - Example: ( 0, 255, 0 )
+
+### $Accessibility Color: or $Accessibility Colour:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- The IFF's color when the player has turned the accessibility option on (see [$Accessibility Supported:](#accessibility-supported)).
+- Default: white
+- Syntax: ( **Color** ), three **integers**, values from 0 to 255; red, green and blue respectively
+
+### $Attacks:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the IFFs that are attacked by default
+- Syntax: ( **String** ), name of the IFF
+  - Example: ( "Friendly" "Neutral" "Traitor" )
+
+### +Sees *IFF Name* As:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- IFF can be set to be seen as in different color than what that IFFS default color is.
+- Same IFF may have multiple *+Sees **IFF Name** As:* entries
+- ***IFF Name*** defines the name of the IFF to have a different color.
+  - Example: +Sees **Hostile** As:
+- Syntax: ( **Color** ), three **integers**, values from 0 to 255; red, green and blue respectively
+  - Example: ( 255, 0, 0 )
+
+### +Accessibility Sees *IFF Name* As:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- The same as `+Sees ... As:`, for when the player has turned the accessibility option on.
+- Syntax: ( **Color** ), three **integers**, values from 0 to 255; red, green and blue respectively
+
+### +Hotkey Team:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Which side of the hotkey screen (F3) ships of this IFF are listed under: **Friendly**, **Hostile** (or **Enemy**), or **None** to leave them off. Without it, the side follows who the IFF attacks. An unknown value logs a warning.
+- Syntax: **String**
+
+### $Flags:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- IFFs can have special flags assigned to them.
+- The IFF's flags are cleared before this is read, so a modular table that edits an IFF must list all of its flags again. An unknown flag logs a warning.
+- Syntax: ( **"String"** ), name of the flag
+  - Example: ( "support allowed" )
+  - List of flags:
+    - *"support allowed"*
+      - When a ship with this IFF is disabled and in a wing, it can call for support (normal behavior for a disabled ship in a wing is to self-destruct)
+    - *"exempt from all teams at war"*
+      - As the name says, when the "All Teams at War" flag is set for a mission, ships belonging to this iff will follow normal rules when choosing targets
+    - *"orders hidden"*
+      - The HUD will not show a targeted ship's orders
+    - *"orders shown"*
+      - The HUD will show a targeted ship's orders (enabled by default for all friendly IFFs)
+    - *"wing name hidden"*
+      - The HUD will not show a targeted ship's name if it is in a wing
+
+### $Default Ship Flags:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Ships of this IFF start with these flags when placed in the mission editor.
+- Syntax: ( **"String" "String"** ), names of the flags
+  - Example: ( "cargo-known" )
+- Any of the mission editor's ship flags:
+  - *"cargo-known"*
+  - *"ignore-count"*
+  - *"protect-ship"*
+  - *"reinforcement"*
+  - *"no-shields"*
+  - *"escort"*
+  - *"player-start"*
+  - *"no-arrival-music"*
+  - *"no-arrival-warp"*
+  - *"no-departure-warp"*
+  - *"locked"*
+  - *"invulnerable"*
+  - *"hidden-from-sensors"*
+  - *"scannable"*
+  - *"kamikaze"*
+  - *"no-dynamic"*
+  - *"red-alert-carry"*
+  - *"beam-protect-ship"*
+  - *"flak-protect-ship"*
+  - *"laser-protect-ship"*
+  - *"missile-protect-ship"*
+  - *"guardian"*
+  - *"special-warp"*
+  - *"vaporize"*
+  - *"stealth"*
+  - *"friendly-stealth-invisible"*
+  - *"don't-collide-invisible"*
+  - *"primitive-sensors"*
+  - *"no-subspace-drive"*
+  - *"nav-carry-status"*
+  - *"affected-by-gravity"*
+  - *"toggle-subsystem-scanning"*
+  - *"targetable-as-bomb"*
+  - *"no-builtin-messages"*
+  - *"primaries-locked"*
+  - *"secondaries-locked"*
+  - *"no-death-scream"*
+  - *"always-death-scream"*
+  - *"nav-needslink"*
+  - *"hide-ship-name"*
+  - *"set-class-dynamically"*
+  - *"lock-all-turrets"*
+  - *"afterburners-locked"*
+  - *"force-shields-on"*
+  - *"immobile"*
+  - *"don't-change-position"*
+  - *"don't-change-orientation"*
+  - *"no-ets"*
+  - *"cloaked"*
+  - *"ship-locked"*
+  - *"weapons-locked"*
+  - *"scramble-messages"*
+  - *"no_collide"*
+  - *"no-disabled-self-destruct"*
+  - *"hide-in-mission-log"*
+  - *"same-arrival-warp-when-docked"*
+  - *"same-departure-warp-when-docked"*
+  - *"ai-attackable-if-no-collide"*
+  - *"fail-sound-locked-primary"*
+  - *"fail-sound-locked-secondary"*
+  - *"aspect-immune"*
+  - *"cannot-perform-scan-hide-cargo"*
+  - *"cannot-perform-scan-show-cargo"*
+  - *"no-targeting-limits"*
+  - *"no-scanned-cargo"*
+
+### $Default Ship Flags2:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- The same as `$Default Ship Flags:`, kept for compatibility; it takes the same list, and its flags are added to the ones above.
+
+## Sample Entry
+
+```
+#IFFs
+   
+;; Every iff_defs.tbl must contain a Traitor entry.  Traitors attack	
+;; one another (required by the dogfighting code) but it is up to you	
+;; to decide who attacks the traitor or whom else the traitor attacks.	
+$Traitor IFF: Traitor
+   
+;------------------------												
+; Friendly																
+;------------------------												
+$IFF Name: Friendly														
+$Color: ( 0, 255, 0 )													
+$Attacks: ( "Hostile" "Neutral" "Traitor" )						
+$Flags: ( "support allowed" )											
+$Default Ship Flags: ( "cargo-known" )								
+   	
+;------------------------												
+; Hostile																
+;------------------------												
+$IFF Name: Hostile													
+$Color: ( 255, 0, 0 )													
+$Attacks: ( "Friendly" "Neutral" "Traitor" )						
++Sees Friendly As: ( 255, 0, 0 )										
++Sees Hostile As: ( 0, 255, 0 )
+
+;------------------------												
+; Neutral																
+;------------------------												
+$IFF Name: Neutral														
+$Color: ( 255, 0, 0 )													
+$Attacks: ( "Friendly" "Traitor" )									
++Sees Friendly As: ( 255, 0, 0 )										
++Sees Hostile As: ( 0, 255, 0 )											
++Sees Neutral As: ( 0, 255, 0 )											
+  	
+;------------------------												
+; Unknown																
+;------------------------												
+$IFF Name: Unknown														
+$Color: ( 255, 0, 255 )													
+$Attacks: ( "Hostile" )												
++Sees Neutral As: ( 0, 255, 0 )											
++Sees Traitor As: ( 0, 255, 0 )											
+$Flags: ( "exempt from all teams at war" )							
+
+;------------------------												
+; Traitor																
+;------------------------												
+$IFF Name: Traitor														
+$Color: ( 255, 0, 0 )													
+$Attacks: ( "Friendly" "Hostile" "Neutral" "Traitor" )			
++Sees Friendly As: ( 255, 0, 0 )										
+ 	
+#End	
+```

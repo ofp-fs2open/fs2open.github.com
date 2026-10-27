@@ -50,5 +50,6 @@
   - [help.tbl](help.tbl)
   - [hud_gauges.tbl](hud_gauges.tbl)
   - [icons.tbl](icons.tbl)
+  - [iff_defs.tbl](iff_defs.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
