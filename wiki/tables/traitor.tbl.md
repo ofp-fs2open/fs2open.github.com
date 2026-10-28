@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#149](https://github.com/ofp-fs2open/fs2open.github.com/pull/149)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **traitor.tbl** defines the text displayed when the player ends the mission with the Traitor IFF and the mission does not have the No Traitor flag.
