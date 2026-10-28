@@ -1,0 +1,512 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **rank.tbl** is used to define the different ranks that can be obtained during the game, and the promotion voice and text for each.
+
+This table is one of the Modular Tables and can be extended with **xxx-rnk.tbm**.
+
+Code: [/stats/scoring.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/stats/scoring.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Notes](#notes)
+2. [Format](#format)
+3. [Ranks](#ranks)
+4. [Sample](#sample)
+
+---
+
+## Notes
+
+- Points gained in the game depend heavily on the difficulty level:
+  - **Very Easy** x 0.2
+  - **Easy** x 0.4
+  - **Medium** x 0.7
+  - **Hard** x 1.0
+  - **Insane** x 1.2
+
+## Format
+
+- Table begins with **[RANK NAMES]** (retail) or ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) **#Ranks**. Either is optional.
+- Individual ranks, each starting with **$Name:**
+- Table ends with **#End**
+- The fields of a rank must be in the order listed here. Every field is optional unless noted.
+- At least one rank must exist after all tables are read; otherwise it is an error.
+- ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Ranks will be automatically sorted at parse based on point value. A pilot's rank is saved as its position in this sorted list, so changing the number or order of ranks in a released campaign changes existing pilots' ranks (a rank past the end becomes the highest rank).
+
+## Ranks
+
+### $Name:
+
+- Defines the name of the rank
+- A name used twice in rank.tbl is an error. In a modular table, a name that already exists edits that rank.
+- Syntax: **String**
+
+### +nocreate
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Optional. Goes directly after `$Name:`.
+- In a modular table, edits the rank only if it already exists, instead of creating a new one. Using it in rank.tbl itself logs a warning.
+
+### $Alt Name:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- A name shown instead of `$Name:` wherever the rank's name is displayed, so the rank can be renamed without changing the name tables and scripts use.
+- Syntax: **String**
+
+### $Title:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- A title for the rank, available to Lua scripts (`rank.Title`). The game itself doesn't show it.
+- Syntax: **String**
+
+### $Points:
+
+- Defines the number of points required to achieve the particular rank
+- Without it, a number just above the ranks before it is used.
+- Syntax: **Integer**
+
+### $Bitmap:
+
+- Required. Defines the name of the bitmap used for the rank insignia. A rank without one is an error.
+- Syntax: **String**
+
+### $Promotion Voice Base:
+
+- Defines the base name of the voice file used for the promotion. Without it, the rank's name is used.  In different parts of the campaign different voices are used; these are controlled by the debriefing persona.  This is hard-coded for the main FreeSpace2 campaign but can be specified for user-made campaigns.
+- Syntax: **String**
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- If the value of Debriefing Persona for the mission has been set, that value plus an underscore plus the base filename becomes the filename FSO will search for.
+- For example, if this value is set to **rank_a.wav** and the mission's Debriefing Persona value is 10, FSO will look for and play the file **10_rank_a.wav**. If that file doesn't exist, or there is no persona, it plays **9_rank_a.wav**.
+
+### $Promotion Text:
+
+- Defines the text displayed at the debriefing when the rank is achieved. Value is a reference for the translations found from [tstrings.tbl](tstrings.tbl). Is always followed by **$end_multi_text**. A rank needs one text without a `+Persona:` (the default); without it, a warning is logged and the text is empty.
+- Syntax: XSTR( "**String**", **Integer** )
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) Multiple **$Promotion Text** fields may exist, each (except for the default) followed by its own Persona.  The mission's Debriefing Persona Index controls which one is used.
+
+#### +Persona:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Optional.  Defines the persona associated with this text.  If specified, this particular text will be chosen when the Debriefing Persona Index matches. The Debriefing Persona is a number set for a given mission using the campaign editor.
+- A negative persona logs a warning and the text is ignored.
+- Syntax: **Integer**
+
+## Sample
+
+- Retail FreeSpace 2 table
+```
+[RANK NAMES]
+$Name:	Ensign
+$Points:	0
+$Bitmap:	medal12.pcx
+$Promotion Voice Base: rank_0.wav
+$Promotion Text:
+
+XSTR("You have received your commission in the GTVA. Congratulations, Ensign.", 2929)
+
+$end_multi_text
+
+$Name: Lieutenant Junior Grade
+$Points:	4000
+$Bitmap:	medal12a.pcx
+$Promotion Voice Base: rank_a.wav
+$Promotion Text:
+
+XSTR("Because of your achievements, character, and potential, you are duly awarded the rank of Lieutenant Junior Grade.", 2930)
+
+$end_multi_text
+
+$Name:	Lieutenant
+$Points:	10000
+$Bitmap:	medal12b.pcx
+$Promotion Voice Base: rank_b.wav
+$Promotion Text:
+
+XSTR("After reviewing your service record and the recommendations of your superior officers, Allied Command has authorized your promotion. Congratulations, Lieutenant.", 2931)
+
+$end_multi_text
+
+$Name:	Lieutenant Commander
+$Points:	22000
+$Bitmap:	medal12c.pcx
+$Promotion Voice Base: rank_c.wav
+$Promotion Text:
+
+XSTR("For your excellent record of service, leadership, and conduct under fire, you have attained the rank of Lieutenant Commander.", 2932)
+
+$end_multi_text
+
+$Name:	Commander
+$Points:	50000
+$Bitmap:	medal12d.pcx
+$Promotion Voice Base: rank_d.wav
+$Promotion Text:
+
+XSTR("Because your achievements distinguish you as an officer of the highest caliber, you have been promoted to the rank of Commander.", 2933)
+
+$end_multi_text
+
+$Name:	Captain
+$Points:	150000
+$Bitmap:	medal12e.pcx
+$Promotion Voice Base: rank_e.wav
+$Promotion Text:
+
+XSTR("For your brilliance as a pilot, tactician, and leader, Allied Command confers upon you the rank of Captain.", 2934)
+
+$end_multi_text
+
+;; the Brass
+$Name:	Commodore
+$Points:	400000
+$Bitmap:	medal12f.pcx
+$Promotion Voice Base: rank_f.wav
+$Promotion Text:
+
+XSTR("Captain, your long and illustrious record distinguishes you as a leader of integrity, courage, and wisdom. You are duly promoted to the rank of Commodore.", 2935)
+$end_multi_text
+
+$Name:	Rear Admiral
+$Points:	2000000
+$Bitmap:	medal12g.pcx
+$Promotion Voice Base: rank_g.wav
+$Promotion Text:
+
+XSTR("On behalf of the GTVA Security Council and General Assembly, it is my honor to confer upon you the prestigious rank of Rear Admiral. Congratulations. ", 2936)
+
+$end_multi_text
+
+$Name:	Vice Admiral
+$Points:	5000000
+$Bitmap:	medal12h.pcx
+$Promotion Voice Base: rank_h.wav
+$Promotion Text:
+
+XSTR("Your career stands as a shining example of our ideals and values, and few officers have rendered greater service to the Alliance. On behalf of the GTVA Security Council and General Assembly, I hereby confer upon you the prestigious rank of Vice Admiral.", 2937)
+
+$end_multi_text
+
+$Name:	Admiral
+$Points:	9000000
+$Bitmap:	medal12i.pcx
+$Promotion Voice Base: rank_i.wav
+$Promotion Text:
+
+XSTR("Congratulations. You have earned your place in the highest echelon of allied leadership. Your character, courage, and genius are an inspiration to us all. On behalf of the GTVA Security Council and General Assembly, I hereby confer upon you the prestigious rank of Admiral. Now go read a book.", 2938)
+
+$end_multi_text
+
+#End
+```
+
+## Sample with Personas
+
+- From Sol:A History, this file uses four person indexes 10, 20, 30, 40
+- Note that the promotion voice base file is defined only once for each rank
+- FSO will expect to find voice files prefixed by the index number and an underscore
+```
+[RANK NAMES]
+$Name:	XSTR("Ensign", 309)
+$Points:	0
+$Bitmap:	medal12.pcx
+$Promotion Voice Base: rank_0.wav
+
+$Promotion Text:
+XSTR("Dang, you're still an Ensign!  You must have gotten busted!", 310)
+$end_multi_text
+
+$Promotion Text:
+XSTR("You have received your commission in the GTA. Congratulations, Ensign.", 3775)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("You have received your commission in the GTA. Congratulations, Ensign.", 3775)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("You have received your commission in the EA. Congratulations, Ensign.", 3775)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("You have received your commission in the EA. Congratulations, Ensign.", 3775)
+$end_multi_text
++Persona: 40
+
+$Name: XSTR("Lieutenant Junior Grade", 311)
+$Points:	4000
+$Bitmap:	medal12a.pcx
+$Promotion Voice Base: rank_a.wav
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank Lieutenant Junior Grade.", 312)
+$end_multi_text
+
+$Promotion Text:
+XSTR("Because of your achievements, character, and potential, you are duly awarded the rank of Lieutenant Junior Grade.", 3776)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("Because of your achievements, character, and potential, you are duly awarded the rank of Lieutenant Junior Grade.", 3776)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("Because of your achievements, character, and potential, you are duly awarded the rank of Lieutenant Junior Grade.", 3776)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("Because of your achievements, character, and potential, you are duly awarded the rank of Lieutenant Junior Grade.", 3776)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Lieutenant", 313)
+$Points:	10000
+$Bitmap:	medal12b.pcx
+$Promotion Voice Base: rank_b.wav
+
+$Promotion Text:
+XSTR("Per GTAR 64-2a you are hereby promoted to the rank of Lieutenant.  Congratulations.", 314)
+$end_multi_text
+
+$Promotion Text:
+XSTR("Per GTAR 64-2a you are hereby promoted to the rank of Lieutenant.  Congratulations.", 314)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("Per GTAR 64-2a you are hereby promoted to the rank of Lieutenant.  Congratulations.", 314)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("Per EA Reg 79B you are hereby promoted to the rank of Lieutenant.  Congratulations.", 314)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("Per EA Reg 79B you are hereby promoted to the rank of Lieutenant.  Congratulations.", 314)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Lieutenant Commander", 315)
+$Points:	22000
+$Bitmap:	medal12c.pcx
+$Promotion Voice Base: rank_c.wav
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank of Lieutenant Commander.", 316)
+$end_multi_text
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank of Lieutenant Commander.", 316)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank of Lieutenant Commander.", 316)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank of Lieutenant Commander.", 316)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("Congratulations.  Your achievements have been noted and you are duly awarded the rank of Lieutenant Commander.", 316)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Commander", 317)
+$Points:	50000
+$Bitmap:	medal12d.pcx
+$Promotion Voice Base: rank_d.wav
+
+$Promotion Text:
+XSTR("Because of your consistent sense of duty and obvious skill as a leader, you have been promoted to the rank of Commander.", 318)
+$end_multi_text
+
+$Promotion Text:
+XSTR("Because of your consistent sense of duty and obvious skill as a leader, you have been promoted to the rank of Commander.", 318)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("Because of your consistent sense of duty and obvious skill as a leader, you have been promoted to the rank of Commander.", 318)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("Because of your consistent sense of duty and obvious skill as a leader, you have been promoted to the rank of Commander.", 318)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("Because of your consistent sense of duty and obvious skill as a leader, you have been promoted to the rank of Commander.", 318)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Captain", 319)
+$Points:	150000
+$Bitmap:	medal12e.pcx
+$Promotion Voice Base: rank_e.wav
+
+$Promotion Text:
+XSTR("For displaying a commanding nature and the ability to lead others you are hereby promoted to Captain.  Congratulations!", 320)
+$end_multi_text
+
+$Promotion Text:
+XSTR("For displaying a commanding nature and the ability to lead others you are hereby promoted to Captain.  Congratulations!", 320)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("For displaying a commanding nature and the ability to lead others you are hereby promoted to Captain.  Congratulations!", 320)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("For displaying a commanding nature and the ability to lead others you are hereby promoted to Captain.  Congratulations!", 320)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("For displaying a commanding nature and the ability to lead others you are hereby promoted to Captain.  Congratulations!", 320)
+$end_multi_text
++Persona: 40
+
+;; the Brass
+$Name:	XSTR("Commodore", 321)
+$Points:	400000
+$Bitmap:	medal12f.pcx
+$Promotion Voice Base: rank_f.wav
+
+$Promotion Text:
+XSTR("For outstanding service through the war, leading many successful missions, and promoting a sense of honor and pride in the Alliance you have been promoted to the rank of Commodore.", 322)
+$end_multi_text
+
+$Promotion Text:
+XSTR("For outstanding service through the war, leading many successful missions, and promoting a sense of honor and pride in the Alliance you have been promoted to the rank of Commodore.", 322)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("For outstanding service through the war, leading many successful missions, and promoting a sense of honor and pride in the Alliance you have been promoted to the rank of Commodore.", 322)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("For outstanding service through the war, leading many successful missions, and promoting a sense of honor and pride in the Alliance you have been promoted to the rank of Commodore.", 322)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("For outstanding service through the war, leading many successful missions, and promoting a sense of honor and pride in the Alliance you have been promoted to the rank of Commodore.", 322)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Rear Admiral", 323)
+$Points:	2000000
+$Bitmap:	medal12g.pcx
+$Promotion Voice Base: rank_g.wav
+
+$Promotion Text:
+XSTR("We aren't sure how you've done it, but you are hereby promoted to the prestigious rank of Rear Admiral.  (We think you cheated.)", 324)
+$end_multi_text
+
+$Promotion Text:
+XSTR("We aren't sure how you've done it, but you are hereby promoted to the prestigious rank of Rear Admiral.  (We think you cheated.)", 324)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("We aren't sure how you've done it, but you are hereby promoted to the prestigious rank of Rear Admiral.  (We think you cheated.)", 324)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("We aren't sure how you've done it, but you are hereby promoted to the prestigious rank of Rear Admiral.  (We think you cheated.)", 324)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("We aren't sure how you've done it, but you are hereby promoted to the prestigious rank of Rear Admiral.  (We think you cheated.)", 324)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Vice Admiral", 325)
+$Points:	5000000
+$Bitmap:	medal12h.pcx
+$Promotion Voice Base: rank_h.wav
+
+$Promotion Text:
+XSTR("You really must have cheated to get this rank!  Do you want to sit behind a desk or something?  That is what Vice Admirals do.", 326)
+$end_multi_text
+
+$Promotion Text:
+XSTR("You really must have cheated to get this rank!  Do you want to sit behind a desk or something?  That is what Vice Admirals do.", 326)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("You really must have cheated to get this rank!  Do you want to sit behind a desk or something?  That is what Vice Admirals do.", 326)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("You really must have cheated to get this rank!  Do you want to sit behind a desk or something?  That is what Vice Admirals do.", 326)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("You really must have cheated to get this rank!  Do you want to sit behind a desk or something?  That is what Vice Admirals do.", 326)
+$end_multi_text
++Persona: 40
+
+$Name:	XSTR("Admiral", 327)
+$Points:	9000000
+$Bitmap:	medal12i.pcx
+$Promotion Voice Base: rank_i.wav
+
+$Promotion Text:
+XSTR("You really have got to stop cheating.  This could become a natural thing for you... and that would be bad.  Go on Admiral Cheater, I think you have to perform some ceremony or inspection or something.", 328)
+$end_multi_text
+
+$Promotion Text:
+XSTR("You really have got to stop cheating.  This could become a natural thing for you... and that would be bad.  Go on Admiral Cheater, I think you have to perform some ceremony or inspection or something.", 328)
+$end_multi_text
++Persona: 10
+
+$Promotion Text:
+XSTR("You really have got to stop cheating.  This could become a natural thing for you... and that would be bad.  Go on Admiral Cheater, I think you have to perform some ceremony or inspection or something.", 328)
+$end_multi_text
++Persona: 20
+
+$Promotion Text:
+XSTR("You really have got to stop cheating.  This could become a natural thing for you... and that would be bad.  Go on Admiral Cheater, I think you have to perform some ceremony or inspection or something.", 328)
+$end_multi_text
++Persona: 30
+
+$Promotion Text:
+XSTR("You really have got to stop cheating.  This could become a natural thing for you... and that would be bad.  Go on Admiral Cheater, I think you have to perform some ceremony or inspection or something.", 328)
+$end_multi_text
++Persona: 40
+
+#End
+```

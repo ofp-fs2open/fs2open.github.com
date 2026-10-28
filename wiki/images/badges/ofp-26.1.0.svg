@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="90" height="24" role="img" aria-label="OFP 26.1.0">
+<svg xmlns="http://www.w3.org/2000/svg" width="98" height="30" role="img" aria-label="OFP 26.1.0">
 <title>OFP 26.1.0</title>
-<rect x="0.5" y="0.5" width="89" height="23" rx="4" fill="#0f2f4f" stroke="#4fc3f7"/>
-<rect x="3.5" y="3.5" width="83" height="17" rx="2" fill="none" stroke="#4fc3f7"/>
-<text x="10" y="16" fill="#e1f5fe" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11" font-weight="bold" textLength="70" lengthAdjust="spacingAndGlyphs">OFP 26.1.0</text>
+<rect x="0.5" y="0.5" width="97" height="29" rx="5" fill="#0f2f4f" stroke="#4fc3f7"/>
+<rect x="3.5" y="3.5" width="91" height="23" rx="3" fill="none" stroke="#4fc3f7"/>
+<rect x="6.5" y="6.5" width="85" height="17" rx="2" fill="none" stroke="#4fc3f7"/>
+<text x="14" y="19" fill="#e1f5fe" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11" font-weight="bold" textLength="70" lengthAdjust="spacingAndGlyphs">OFP 26.1.0</text>
 </svg>

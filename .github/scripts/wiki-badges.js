@@ -32,7 +32,7 @@ const BADGES = {
 	'fso-26.2':   ['FSO 26.2',   '#222222', '#EE22DD', '#CC22AA'],
 };
 
-// OFP badges get a double border so they stand out from the FSO ones
+// OFP badges get a triple border so they stand out from the FSO ones
 const OFP_BADGES = {
 	'ofp-26.1.0': ['OFP 26.1.0', '#0f2f4f', '#4fc3f7', '#e1f5fe'],
 };
@@ -40,7 +40,7 @@ const OFP_BADGES = {
 const CHAR_WIDTH = 7;   // Verdana bold at 11px, averaged; textLength makes the text fit exactly
 const PAD = 8;
 const HEIGHT = 20;
-const OFP_HEIGHT = 24;
+const OFP_HEIGHT = 30;
 
 const out = path.join(__dirname, '..', '..', 'wiki', 'images', 'badges');
 fs.mkdirSync(out, { recursive: true });
@@ -62,12 +62,13 @@ ${text(label, PAD, 14, color, textWidth)}
 
 for (const [name, [label, bg, border, color]] of Object.entries(OFP_BADGES)) {
 	const textWidth = label.length * CHAR_WIDTH;
-	const width = textWidth + (PAD + 2) * 2;
+	const width = textWidth + (PAD + 6) * 2;
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${OFP_HEIGHT}" role="img" aria-label="${label}">
 <title>${label}</title>
-<rect x="0.5" y="0.5" width="${width - 1}" height="${OFP_HEIGHT - 1}" rx="4" fill="${bg}" stroke="${border}"/>
-<rect x="3.5" y="3.5" width="${width - 7}" height="${OFP_HEIGHT - 7}" rx="2" fill="none" stroke="${border}"/>
-${text(label, PAD + 2, 16, color, textWidth)}
+<rect x="0.5" y="0.5" width="${width - 1}" height="${OFP_HEIGHT - 1}" rx="5" fill="${bg}" stroke="${border}"/>
+<rect x="3.5" y="3.5" width="${width - 7}" height="${OFP_HEIGHT - 7}" rx="3" fill="none" stroke="${border}"/>
+<rect x="6.5" y="6.5" width="${width - 13}" height="${OFP_HEIGHT - 13}" rx="2" fill="none" stroke="${border}"/>
+${text(label, PAD + 6, 19, color, textWidth)}
 </svg>
 `;
 	fs.writeFileSync(path.join(out, name + '.svg'), svg);

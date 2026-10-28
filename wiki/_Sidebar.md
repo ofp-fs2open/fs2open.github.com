@@ -64,4 +64,5 @@
   - [Particle Effects (-part.tbm)](Particle-Effects)
   - [post_processing.tbl](post_processing.tbl)
   - [props.tbl](props.tbl)
+  - [rank.tbl](rank.tbl)
   - [species.tbl](species.tbl)
