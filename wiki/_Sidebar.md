@@ -41,6 +41,7 @@
   - [curves.tbl](curves.tbl)
   - [cutscenes.tbl](cutscenes.tbl)
   - [decals.tbl](decals.tbl)
+  - [default_settings.tbl](default_settings.tbl)
   - [editor.tbl](editor.tbl)
   - [fireball.tbl](fireball.tbl)
   - [fonts.tbl](fonts.tbl)
