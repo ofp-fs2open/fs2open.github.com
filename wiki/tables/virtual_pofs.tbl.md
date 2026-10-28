@@ -1,0 +1,388 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+The **virtual_pofs.tbl** defines virtual POF models, created from other POF files by a list of operations.
+
+This table is one of the Modular Tables and can be extended with **xxx-pof.tbm**.
+
+Code: [/model/modelreplace.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/modelreplace.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [Format](#format)
+2. [$POF:](#pof)
+3. [+Base POF:](#base-pof)
+4. [Operations](#operations)
+5. [Example](#example)
+
+---
+
+The POFs defined here can be used from all other parts of the engine as if they were real, existing POF-files.
+It can / will be able to be used for a variety of different purposes:
+- Variety without copying models, by having one base model POF with the variations defined as virtual POFs
+- Better dependency on other assets, by being able to modify existing models of depending mods instead of needing a full modified copy of the model.
+- To modify models in a mod without having to redefine the ship classes
+- To semi-dynamically generate certain types of models, like ships with modular hardpoints for certain turrets or other parts, or large structures like asteroid fields.
+
+## Format
+
+- The table begins with **#Virtual POFs** and ends with **#End**; both are required, in every table.
+- Each virtual POF starts with `$POF:`, then `+Base POF:`, then one or more operations, in any order and as many as needed.
+- Operation names are matched exactly, capitalization included (`$Set Subobject Data:` works, `$Set subobject data:` does not). An unknown operation is an error, and that whole virtual POF is dropped.
+- When an operation can't be done (for example a subobject that doesn't exist), a warning is logged and the virtual POF is left without that change.
+
+## $POF:
+
+- The virtual filename of this POF.
+  - If a POF of this filename already exists, this virtual POF will replace it. Virtual POFs can replace other virtual POFs as well, including those that already replace other POFs themselves.
+  - Accessing a POF with the same name from this definition will use the POF to-be-replaced.
+  - (Example: Virtual POF A overwrites the real A.pof. Accessing A.pof within the definition of the virtual POF A will yield the original A.pof. Accessing A.pof from the engine will yield virtual POF A)
+
+## +Base POF:
+
+- Required. The filename of the base POF to be modified.
+
+## Operations
+
+- Here, the actual modification operations are specified. The operations that are defined here, need to be a list with elements made out of the following:
+
+### $Add Subobject:
+
+- This operation adds a subobject from a different POF to the current POF to be modified.
+
+#### +POF to Add:
+
+- The filename of the POF from which the new subobject is to be copied.
+  - Syntax: **string**, filename
+
+#### +Source Subobject:
+
+- The name of the subobject in the to-be-added POF that should be copied
+  - Syntax: **string**
+
+#### +Copy Children:
+
+- **Optional**: If set to true, the subobject and all of its children will be copied. If false, only the single subobject is copied. Default is true.
+  - Syntax: **boolean**
+
+#### +Copy Turrets:
+
+- **Optional**: If set to true, all turret definitions will be copied over to the new POF. If false, only the models but not the functionality of the turrets will be copied. Default is false.
+  - Syntax: **boolean**
+
+#### +Copy Glowpoints:
+
+- **Optional**: If set to true, the glowpoints on the submodels to be added will be copied. Default is false.
+  - Syntax: **boolean**
+
+#### $Rename Subobjects:
+
+- **Optional**: Can be used to rename the copied subobjects. This is optional, except if the resulting model would have two subobjects of the same name. This is not allowed, a model must always have unique submodel names.
+  - Syntax: [See `$Rename Subobjects:`](#rename-subobjects-1)
+
+#### +Destination Subobject:
+
+- The name of the subobject in the to-be-modified POF that will be the parent of the to-be-copied submodel
+  - Syntax: **string**
+
+---
+
+### $Add Turret:
+
+- This operation adds a turret definition (but not model data!) to a submodel on the current POF
+
+#### +POF to Add:
+
+- The filename of the POF which has the turret definition.
+  - Syntax: **string**, filename
+
+#### +Source Turret:
+
+- The name of the base subobject in the to-be-added POF that has the turret definition
+  - Syntax: **string**
+
+#### +Destination Turret:
+
+- The name of the base subobject in POF that should receive the turret definition
+  - Syntax: **string**
+
+#### +Destination Barrel:
+
+- The name of the barrel subobject in POF that should receive the turret definition. Must be specified if the source turret is a multipart. Can be omitted otherwise.
+  - Syntax: **string**
+
+---
+
+### $Add Engine:
+
+- This operation adds an engine definition to the current POF.
+
+#### +POF to Add:
+
+- The filename of the POF which has the engine definition.
+  - Syntax: **string**, filename
+
+#### +Source Engine:
+
+- Specifies the number of the engine (1-index based) in the source POF. Either this or `+Source Engine Subsystem` must be specified.
+  - Syntax: **integer**, engine number
+
+#### +Source Engine Subsystem:
+
+- Specifies the subsystem name of the engine in the source POF. Only valid if the source subsystem name is not ambiguous. Either this or `+Source Engine` must be specified.
+  - Syntax: **string**, subsystem name
+
+#### +Move Engine:
+
+- **Optional**: If set, will move the engine by the specified amount
+  - Syntax: **three floats**, offset in x, y, z
+
+#### +Destination Subsystem:
+
+- **Optional**: Specifies the subsystem name that the engine is attached to in the combined POF. If not set, the engine will be attached to a subsystem with the same name as in the source POF. Has no effect if the engine was not attached to any subsystem in the source.
+  - Syntax: **string**, subsystem name
+
+---
+
+### $Add Glowpoint:
+
+- This operation adds a glowpoint to the current POF.
+
+#### +POF to Add:
+
+- The filename of the POF which has the glowpoint.
+  - Syntax: **string**, filename
+
+#### +Source Glowpoint:
+
+- Specifies the number of the glowpoint (1-index based) in the source POF.
+  - Syntax: **integer**, glowpoint number
+
+#### +Move Glowpoint:
+
+- **Optional**: If set, will move the glowpoint by the specified amount
+  - Syntax: **three floats**, offset in x, y, z
+
+#### +Destination Submodel:
+
+- Specifies the submodel name the glowpoint will be attached to
+  - Syntax: **string**, submodel name
+
+---
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+### $Add Weapon Bank:
+
+- This operation adds a weapon bank to the current POF.
+
+#### +POF to Add:
+
+- The filename of the POF which has the weapon bank.
+  - Syntax: **string**, filename
+
+#### +Type:
+
+- The type of the weapon bank to add
+  - Syntax: **string**, either "Primary" or "Secondary"
+
+#### +Source Weapon Bank:
+
+- The number of the source weapon bank to copy
+  - Syntax: **integer**, weapon bank number
+
+#### +Destination Weapon Bank:
+
+- **Optional**: If set, the number of the weapon bank to replace. If not set, this operation will append a new weapon bank to the POF
+  - Syntax: **integer**, weapon bank number
+
+---
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+### $Add Dock Point:
+
+- This operation adds a dock point to the current POF.
+
+#### +POF to Add:
+
+- The filename of the POF which has the dock point.
+  - Syntax: **string**, filename
+
+#### +Source Dock Point:
+
+- The name of the source dock point to copy
+  - Syntax: **string**, the name of the dock point
+
+#### +Rename Dock Point:
+
+- **Optional**: If set, will rename this dock point. This can be needed, as dock point names must be unique.
+  - Syntax: **string**, the new name of the dock point
+
+#### +Rename Path:
+
+- **Optional**: If set, will rename a path of this dock point. This can be needed, as path names must be unique. This option can be repeated as often as required.
+
+##### +From:
+
+  - Syntax: **string**, the old name of the path to be renamed
+
+##### +To:
+
+  - Syntax: **string**, the new name of the path to be renamed
+
+#### +Parent Submodel:
+
+- **Optional**: If set, will be the parent submodel of this dock point. Must be specified if the dock point had a parent submodel in the originating POF
+  - Syntax: **string**, name of the submodel on the new POF
+
+---
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+### $Add Path:
+
+- This operation adds a path to the current POF.
+
+#### +POF to Add:
+
+- The filename of the POF which has the path.
+  - Syntax: **string**, filename
+
+#### +Source Path:
+
+- The name of the source path to copy
+  - Syntax: **string**, the name of the path
+
+#### +Rename Path:
+
+- **Optional**: If set, will rename this path. This can be needed, as Path names must be unique.
+  - Syntax: **string**, the new name of the path
+
+#### +Parent Submodel:
+
+- **Optional**: If set, will be the parent submodel, or, if such a submodel does not exist, the parent subsystem of this path. Must be specified if the path had a parent submodel in the originating POF. Optional if the path had no parent or just a subsystem parent. Set to `<none>` to clear an existing subsystem parent.
+  - Syntax: **string**, name of the submodel/subsystem on the new POF
+
+---
+
+### $Rename Subobjects:
+
+- This operation renames subobjects. The following two entries can be repeated as often as needed
+
+#### +Replace:
+
+- The name of the subobject to be renamed
+  - Syntax: **string**
+
+#### +With:
+
+- The new name of the subobject
+  - Syntax: **string**
+
+---
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+### $Set Subsystem Data:
+
+- This operation can be used to modify a specific subsystem.
+
+#### +Subsystem:
+
+- The name of the subsystem to be modified
+  - Syntax: **string**
+
+#### +Set Position:
+
+- **Optional**: If set, modifies the position of the subsystem, relative to the center of its parent
+  - Syntax: **Vector**, three *floats*, x, y, z respectively
+
+#### +Set Radius:
+
+- **Optional**: If set, modifies the radius of the subsystem
+  - Syntax: **Float**
+
+#### +Set Properties:
+
+- **Optional**: Mutually exclusive with **+Append Properties:**.  If set, modifies the POF properties of the subsystem
+  - Syntax: **String**
+
+#### +Append Properties:
+
+- **Optional**: Mutually exclusive with **+Set Properties:**.  If set, appends properties to the existing POF properties of the subsystem
+  - Syntax: **String**
+
+---
+
+### $Set Subobject Data:
+
+- This operation can be used to modify a specific subobject.
+
+#### +Submodel:
+
+- The name of the subobject to be modified
+  - Syntax: **string**
+
+#### +Set Offset:
+
+- **Optional**: If set, modifies the offset of the subobject, relative to the center of its parent
+  - Syntax: **Vector**, three *floats*, x, y, z respectively
+
+---
+
+### $Set Header Data:
+
+- This operation can be used to modify the header data of a model
+
+#### +Set Radius:
+
+- **Optional**: If set, modifies the radius of the model. The model can only collide with parts that lie within this radius, measured from the model center
+  - Syntax: **float**
+
+#### $Set Bounding Box:
+
+- **Optional**: If set, modifies the bounding box of the model. The model can only collide with parts that lie within this bounding box
+
+##### +Minimum:
+
+- The corner of the bounding box with lower coordinates
+  - Syntax: **Vector**, three *floats*, x, y, z respectively
+
+##### +Maximum:
+
+- The corner of the bounding box with higher coordinates
+  - Syntax: **Vector**, three *floats*, x, y, z respectively. All values must be larger than those specified in `+Minimum:`
+
+## Example
+
+```
+#Virtual POFs
+
+$POF: Fighter01.pof
+	+Base POF: Fighter01.pof
+	$Add Subobject:
+		+POF to Add: Fenris_FS2.pof
+		+Source Subobject: detailbox_engines
+		+Destination Subobject: detail0
+	$Add Subobject:
+		+POF to Add: Fenris_FS2.pof
+		+Source Subobject: radar01a-dish
+		$Rename Subobjects:
+			+Replace: radar01a-dish
+			+With: radar
+		+Destination Subobject: detail0
+	$Set Subobject Data:
+		+Submodel: detailbox_engines
+		+Set Offset: 0, 0, -15
+	$Set Subobject Data:
+		+Submodel: radar
+		+Set Offset: 0, 10, 0
+		
+#End
+```

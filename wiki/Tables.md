@@ -81,3 +81,4 @@ Table pages mark when a field or behavior was added with a version badge. Fields
 | [tips.tbl](tips.tbl)\* | `xxx-tip.tbm` | [/menuui/playermenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/playermenu.cpp) | Main hall tips |
 | [traitor.tbl](traitor.tbl)\* | `xxx-trtr.tbm` | [/stats/scoring.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/stats/scoring.cpp) | Traitor debriefing text and voice, and mission-selectable overrides |
 | [tstrings.tbl](tstrings.tbl)\* | `xxx-tlc.tbm` | [/localization/localize.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/localization/localize.cpp) | Translations of table, mission and campaign text |
+| [virtual_pofs.tbl](virtual_pofs.tbl)\* | `xxx-pof.tbm` | [/model/modelreplace.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/model/modelreplace.cpp) | Virtual models built from other POF files |
