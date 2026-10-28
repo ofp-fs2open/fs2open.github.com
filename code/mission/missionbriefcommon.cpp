@@ -1671,6 +1671,16 @@ void brief_cancel_pending_highlight_anims()
 	Play_highlight_flag = 0;
 }
 
+// The editors only draw a preview of briefing text. A mod's own UI (SCPUI, for one) may give $ sequences a
+// meaning the color tags don't have, so in the editors an unknown tag goes to the log instead of a warning popup.
+static void brief_warn_invalid_color_tag(const char* tag)
+{
+	if (Fred_running) {
+		mprintf(("Invalid text color tag '$%s' used in mission: '%s'.\n", tag, Mission_filename));
+	} else {
+		Warning(LOCATION, "Invalid text color tag '$%s' used in mission: '%s'.\n", tag, Mission_filename);
+	}
+}
 
 bool brief_verify_color_tag(unicode::codepoint_t color_tag)
 {
@@ -1680,13 +1690,14 @@ bool brief_verify_color_tag(unicode::codepoint_t color_tag)
 		SCP_string tag_str;
 		unicode::encode(color_tag, std::back_inserter(tag_str));
 
-		Warning(LOCATION, "Invalid text color tag '$%s' used in mission: '%s'.\n", tag_str.c_str(), Mission_filename);
+		brief_warn_invalid_color_tag(tag_str.c_str());
 		return false;
 	}
 	char char_tag = (char)color_tag;
 
 	if ( Tagged_Colors.find(char_tag) == Tagged_Colors.end() ) {
-		Warning(LOCATION, "Invalid text color tag '$%c' used in mission: '%s'.\n", char_tag, Mission_filename);
+		const char tag_str[2] = { char_tag, '\0' };
+		brief_warn_invalid_color_tag(tag_str);
 		return false;
 	}
 	return true;
