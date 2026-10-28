@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#140](https://github.com/ofp-fs2open/fs2open.github.com/pull/140)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **ships.tbl** defines all the ship classes used in FSO: their models, physics, weapons, subsystems, effects and sounds.
