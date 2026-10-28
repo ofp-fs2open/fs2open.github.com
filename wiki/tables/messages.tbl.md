@@ -1,0 +1,749 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **messages.tbl** is used to link actions, animations, and sounds of the messages received during the mission. Personas are used to group messages by the same talker, for example, all the Wingman 1 (Male Terran Pilot) messages go with a Wingman 1 persona.
+
+Each message is composed of a text macro, and optionally a head .ani and/or an audio macro.
+
+This table is one of the Modular Tables and can be extended with **xxx-msg.tbm**.
+
+Code: [/mission/missionmessage.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionmessage.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [#Custom Message Types](#custom-message-types)
+3. [#Message Settings](#message-settings)
+4. [#Message Frequencies](#message-frequencies)
+5. [#Moods](#moods)
+6. [#Personas](#personas)
+7. [#Messages](#messages)
+8. [#Simulated Speech Overrides](#simulated-speech-overrides)
+9. [Filters](#filters)
+10. [Sample](#sample)
+
+---
+
+## Format
+
+The sections must be in this order. Only `#End` after the messages is always required; a modular table can leave out any section it doesn't need.
+
+1. [#Custom Message Types](#custom-message-types) ... `#End` (optional)
+2. [#Message Settings](#message-settings) (optional)
+3. [#Message Frequencies](#message-frequencies) (optional)
+4. [#Moods](#moods) ... `#End` (optional)
+5. [#Personas](#personas)
+6. [#Messages](#messages)
+7. `#End`
+8. [#Simulated Speech Overrides](#simulated-speech-overrides) ... `#End` (optional)
+
+The fields inside each entry must also be in the order listed here.
+
+## #Custom Message Types
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) Optional. Adds new built-in message types, which can then have messages in [#Messages](#messages) like any other type. The game never sends them on its own; they are sent with the `send-builtin-message` SEXP or the `mn.sendBuiltinMessage` Lua function.
+
+This section is read before everything else in every table, so a type can be used in any table.
+
+### $Custom Message Type:
+
+- The name of the new type. A name that already exists logs a warning and is skipped.
+- Syntax: **String**
+
+#### +Fallback:
+
+- Required. The type used instead when no message of this type is found for the sender, for example **Yes**, or **None** for no fallback. An unknown type logs a warning.
+- Syntax: **String**, message type
+
+#### +Priority:
+
+- Required. **High**, **Normal** or **Low**.
+- Syntax: **String**
+
+## #Message Settings
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Optional settings for messages behavior
+
+### $Always loop head anis:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Head animations loop until the message's voice is done, instead of playing once (death messages still play once).
+- Default: NO
+- Syntax: ***boolean***
+
+### $Use newer head ani suffix features:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Changes how the head animation file is picked from `+AVI Name:`. Instead of a random *a*, *b* or *c* variant, the game uses *<name>*-reg.ani for normal messages and *<name>*-death.ani for death messages (for every persona type except command, which never has a death animation).
+- Default: NO
+- Syntax: ***boolean***
+
+### $Allow Any Ship To Send Backup Messages:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- By default, Backup messages won't play unless they have at least one filter. Enabling this option will enable backup messages globally
+- Default: NO
+- Syntax: ***boolean***
+
+### $Chance for Command to announce enemy arrival:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- The percent chance that Command, instead of a wingman, sends the Arrive Enemy message.
+- Default: 25. Values outside 0 to 100 log a warning and are clamped.
+- Syntax: **Integer**
+
+## #Message Frequencies
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional Group. Defines how often and how many times during the campaign the messages should be shown.
+
+### $Name:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Required. Defines the message to augment.
+- Syntax: **String**
+- Available Values: See [$Name in Messages.tbl](#name-1)
+- An unknown name logs a warning. **Known issue:** the name's `+` lines are then not read, which causes parse errors for the rest of the section, so check the spelling.
+
+### +Occurrence Chance:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional. Defines the % chance this message will be played when the associated event occurs. For example, if you score a kill, and the **+Occurrence Chance:** is 10 for a Praise message, then there is a 10% chance that a Praise message will play.
+- Syntax: **Integer**
+- Available Values: **Between 0 and 100**; anything else is ignored
+
+### +Maximum Count:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional. Defines the maximum number of times this message will be played during a given mission. -1 means no limit; values below -1 are ignored.
+- Syntax: **Integer**
+
+### +Minimum Delay:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional. Defines a minimum delay time between instances of this message being sent. This applies globally across all message sources. *Only supported for certain message types:* Check 6, Help, Praise (which applies to High Praise as well), Praise Self, and Death. ![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) Also supported for Arrive Enemy and Backup (which applies to the legacy Beta/Gamma/Delta/Epsilon Arrived messages as well).
+- Negative values are ignored.
+- Syntax: **Integer**, milliseconds
+
+The section ends at `#Moods` or `#Personas`; one of them must follow it.
+
+#### Built-in defaults
+
+Types not listed have a 100% chance, no maximum count and no minimum delay.
+
+| Type | Occurrence Chance | Maximum Count | Minimum Delay |
+|---|---|---|---|
+| Check 6 | 100 | 2 | 6000 |
+| Player Dead | 25 | | |
+| Praise | 50 | 10 | 60000 |
+| High Praise | 50 | | |
+| Backup | | | 5000 |
+| Help | | 10 | 60000 |
+| Death | 50 | 10 | 60000 |
+| Praise Self | 10 | 4 | 60000 |
+| Rearm, Repair, Rearm Primaries | 50 | | |
+| All Alone | 50 | | |
+| Arrive Enemy | | | 30000 |
+
+## #Moods
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional.  You can change the mission mood using the new set-mission-mood SEXP, and those moods can be used to filter what built-in messages are played by defining a mood within a message.  This section lists all available moods for use in the table and in the SEXP.
+
+### $Mood:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional.  The name of a mood to be attached to a message and set as a mission mood.  Example:  Happy, Vengeful, etc.
+- The mood **Default** always exists. A mood listed again is skipped.
+- Syntax: **String**
+
+## #End
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) The moods section, if it exists, must end with #End.
+
+## #Personas
+
+Required.
+
+- **Known issue:** if `#Personas` is not followed by `#Messages` (for example a modular table that only adds personas), the closing `#End` causes a parse error. Add an empty `#Messages` line before `#End`. The #Personas group is used to define all of the personas used for the messages.
+
+### $Persona:
+
+Required. Defines the name of the persona
+- A persona name that already exists (in this or an earlier table) logs a warning and the new one is ignored, so a modular table can add personas but not change them.
+- Syntax: **String**
+
+### $Type:
+
+Required. Defines the type of the persona
+- Syntax: **String**
+- Available types: **wingman**, **support**, **large**, **command**. An unknown type logs a warning.
+- The last command persona read is the default Command persona, and the first support persona is the default support persona.
+
+### +<Species>
+
+Optional. The +<Species> (such as **+Vasudan**) can be used to assign personas to other species. If omitted, the Persona is assigned to the **default** (first) species. An unknown species logs a warning.
+- Syntax: +**String**
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) This line can now appear multiple times, allowing a persona to be used by multiple species.
+
+### $Allow substitution of missing messages:
+
+![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) Optional. This is set to true by default, meaning that in cases where a Persona does not have defined messages for all built-in message types, the engine will try to find a matching message from other personas of the same type and species.
+- Syntax: **Boolean**
+
+### $No automatic assignment:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Optional. This excludes a persona from being assigned to a ship that needs to send a message but does not have a specific persona assigned.
+- Syntax: **Boolean**
+
+### $Custom data:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) Optional. Defines a set of custom data for this persona, which can then be accessed through Lua scripts. There can be any amount of +Val: entries. It requires a $end_custom_data entry at the end.
+
+#### +Val:
+
+Specifies a custom data value and its name, in the format
+
+```
++Val: Name Value
+```
+
+## #Messages
+
+Required. The #Messages group contains all available messages.
+
+- Messages are never replaced: every message in every table is added, and when there are several for the same type and persona, the game picks among them (preferring messages that match the mood and filters).
+
+### $Name:
+
+Required. Defines the type of the message
+- Not case sensitive. An unknown type logs a warning.
+- Syntax: **String**
+- Available types (types marked with ***** do not have code support) :
+  - **All Alone**
+  - **All Clear** *
+  - **Arrive Enemy**
+  - **Attack Target**
+  - **AWACS at 25**
+  - **AWACS at 75**
+  - **Backup**
+  - **Check 6**
+  - **Death**
+  - **Depart**
+  - **Disable Target**
+  - **Disarm Target**
+  - **Docking Start** *
+  - **Engage**
+  - **Help**
+  - **Ignore Target**
+  - **Instructor Attack**
+  - **Instructor Hit**
+  - **No Target**
+  - **No**
+  - **On way**
+  - **Oops 1** * (Only Command has code support in Retail)
+  - **Permission** *
+  - **Player Dead**
+  - **Praise**
+  - **Rearm on Way**
+  - **Rearm warping in**
+  - **Rearm**
+  - ![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg) **Rearm Primaries** (falls back to Rearm)
+  - **Repair Aborted**
+  - **Repair Done**
+  - **Repair**
+  - **Stray Warning Final**
+  - **Stray Warning**
+  - **Stray** *
+  - **Support Killed**
+  - **Traitor**
+  - **yes**
+
+![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
+
+  - **High Praise** (falls back to Praise)
+  - **Praise Self**
+  - **Primaries Low**
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+  - **Attack Subsystem** (falls back to Attack Target)
+  - **Cover me**
+  - **Form on my wing**
+  - **Protect Target**
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- The following have been deprecated. Use **Backup** with a **+Wing Name:** [Filter](#filters) instead.
+    - **Beta Arrived**
+    - **Gamma Arrived**
+    - **Delta Arrived**
+    - **Epsilon Arrived**
+
+### $Team:
+
+Optional, before the message text. Used by team-versus-team multiplayer missions: the team (0 or 1) that receives the message. It is meant for mission files, where messages use the same format.
+
+- Syntax: **Integer**
+
+### $Message: and $MessageNew:
+
+Required (one of the two). Defines the message shown in game screen when the message is triggered. Value is a reference to [tstrings.tbl](tstrings.tbl).
+**$Message:** is used for single-line messages, while **$MessageNew:** is used for multi-line messages (but can also be used for single-line messages)
+- **$MessageNew:** is preferred over **$Message:**
+- Syntax: XSTR("**string**", **integer**)
+
+### +Persona:
+
+Optional. Defines the persona associated with the message
+- An unknown persona logs a warning.
+- Syntax: **String**
+
+### +AVI Name:
+
+Optional. Determines the ANI file to be played when the message is triggered.
+
+In FSO 3.7.4 and later, the game initially attempts to use the file *<string>*.ani with a persona message.  In earlier versions, or if *<string>*.ani does not exist, the game picks one of *<string>*a.ani, *<string>*b.ani and *<string>*c.ani each time.  So if you have defined *+Avi Name: Head-Joe*, and *Head-Joe.ani* does not exist, the game will attempt to use the files *Head-Joea.ani*, *Head-Joeb.ani* and *Head-Joec.ani*.  For wingmen personas, the *c* variant is assumed to be a death animation.
+- Syntax: **String**
+
+### +Wave Name:
+
+Optional. Sets the sounds file that is played when the message is triggered
+- Syntax: **String**
+
+### +Note:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Optional. A note for mission designers, shown in the mission editor and ignored by the game. Ends with $end_multi_text.
+
+- Syntax: **Multi-line string**
+
+### $Mood:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) The mood where this message should ideally be played.  It may be played on other moods as long as it is not excluded for them below, if no better matching message is found.
+- A mood not listed in [#Moods](#moods) logs a warning.
+- Syntax: **String**
+
+#### +Require exact match
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) Optional, directly after `$Mood:`. The message is only played in that mood: every other mood is excluded, and `$Exclude Mood:` isn't read.
+
+### $Exclude Mood:
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) A list of moods not to play this message, ever.  The list goes in parentheses.  See Terran 'Attack Target' example below for usage.
+- Syntax: **String List**
+
+### $Filter by sender:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Control when this message can be sent based on the ship sending it. For example, you may want to give a pilot different lines based on whether they're flying a fighter or bomber.
+- This may be followed by any number of filters. All filters must match for a message to be sent. A message with at least one filter is preferred to a message with no filters.
+- Behind the scenes, "Beta Arrived", "Gamma Arrived", "Delta Arrived", and "Epsilon Arrived" messages are converted to Backup messages with a sender filter. This can be done manually to let other wings announce themselves; for example, `$Filter by sender:` followed by `+Wing name: Zeta` sets up a "Zeta Arrived" message.
+- Syntax: See [Filters](#filters)
+
+### $Filter by subject:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Control when this message can be sent based on the ship the message is "about". For order confirmations, the subject is the target of the order. For Praise/High Praise/Praise Self messages, it's the ship that died. For Help and Check 6, it's the attacker. For arrival messages, it's the wing leader of the arriving wing.
+- For example, you might want to provide a special message when enemy bombers arrive, or a special confirmation when attacking a warship.
+- This may be followed by any number of filters. All filters must match for a message to be sent. A message with at least one filter is preferred to a message with no filters.
+- Syntax: See [Filters](#filters)
+
+### $Filter by other ship:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Control when this message can be sent based on some other ship in the mission.
+- This may be followed by any number of filters. At least one ship in the mission must match these filters, as well as the range checks below, if specified. A message with at least one filter is preferred to a message with no filters.
+- Syntax: See [Filters](#filters)
+
+### +Within range of sender:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Require that the 'other ship' must be within a certain range of the ship sending the message.
+- Optional, directly after `$Filter by other ship:` and before its filters.
+- Syntax: **Integer**, meters
+
+### $Prefer this message very highly
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Prefer this message to any message without `$Prefer this message very highly` set.
+- Use only one of the three `$Prefer` lines.
+
+### $Prefer this message highly
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Prefer this message to any message without `$Prefer this message highly` or `$Prefer this message very highly` set.
+
+### $Prefer this message
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Prefer this message to any message without `$Prefer this message`, `$Prefer this message highly` or `$Prefer this message very highly` set.
+
+## #End
+
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) The very last entry must be #End. No exceptions.
+
+## #Simulated Speech Overrides
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg) Optional.  Used to add file names to the generic message list, which defaults to 'none', 'cuevoice', 'cue_voice', 'emptymsg', 'generic', and 'msgstart'.  Filenames listed below will be overridden by Text to Speech (TTS) when it is enabled, in addition to those in the default list.
+
+### $File Name:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg) Optional.  File name to add to the overrides list.  Filenames provided here, however, must include an extension or a warning will be issued, for example msg_1.wav. ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) The extension must be .wav or .ogg; any other logs a warning and the file is skipped.
+- Syntax: **String**
+
+## #End
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg) Must also end the optional Simulated Speech Overrides section with #End.
+
+## Filters
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Messages can be filtered with [$Filter by sender:](#filter-by-sender), [$Filter by subject:](#filter-by-subject), or  [$Filter by other ship:](#filter-by-other-ship).
+- These can be applied multiple times for each filter. So the following example would match Vasudan or Shivan Bombers and nothing else.
+- Filter lines must be in the order listed here (all `+Ship name:` lines, then all `+Callsign:` lines, and so on).
+- An unknown species, type or team logs a warning and is ignored.
+```
++Species: Vasudan
++Species: Shivan
++Type: Bomber
+```
+
+### +Ship name:
+
+- Matches the name of the ship
+- Syntax: ***String***
+
+### +Callsign:
+
+- Matches the callsign of the ship
+- Syntax: ***String***
+
+### +Class name:
+
+- Matches the class of the ship
+- Respects alt-names as defined in FRED
+- Syntax: ***String***
+
+### +Wing name:
+
+- Matches the wing that the ship is in
+- Syntax: ***String***
+
+### +Species:
+
+- Matches the species of the ship
+- Syntax: ***String***
+
+### +Type:
+
+- Matches the type of the ship as defined in [objecttypes.tbl](objecttypes.tbl)
+- Syntax: ***String***
+
+### +Team:
+
+- Matches the ship's team as defined in [iff_defs.tbl](iff_defs.tbl)
+- Typically used with 'other ship' filters
+- Syntax: ***String***
+
+## Sample
+
+This is a snippet of the retail FreeSpace 2 table, highlighting two major examples between a default (Terran) persona and a species (Vasudan) persona. Command, Support, and Large ship message examples are also included.  Newer features have been added for extra clarification of their usage.
+```
+;; This is a list of moods that the game will use for builtin 
+;; messages. Any message without a mood is treated as General
+
+#Moods
+
+$Mood: Happy
+$Mood: Angry
+$Mood: Vengeful
+
+#End
+
+#Personas
+
+$Persona: Wingman 1	  
+$Type: wingman
+
+$Persona: Wingman 6
+$Type: wingman
++Vasudan
+
+$Persona: Support Ship
+$Type: support
+
+$Persona: Support Ship Vasudan
+$Type: support
++Vasudan
+
+$Persona: Large Ship
+$Type: large
+
+$Persona: Large Ship Vasudan
+$Type: large
++Vasudan
+
+$Persona: Terran Command
+$Type: Command
+
+#Messages
+
+;; ALL CLEAR ..................................................................................
+
+$Name: All Clear
+$Message: XSTR("Command, we have secured the area.", 2725)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_allclear.wav
+
+$Name: All Clear
+$Message: XSTR("All enemy forces negated.", 2730)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_allclear.wav
+
+;; ARRIVAL (Enemy) ...................................................................
+
+$Name: Arrive Enemy
+$Message: XSTR("Bandits incoming!", 1079)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_arrival.wav
+
+$Name: Arrive Enemy
+$Message: XSTR("Reading hostile indicators.", 2734)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_arrival.wav
+
+$Name: Arrive Enemy
+$Message: XSTR("Incoming jump signature! Hostile configuration!", 2736)
++Persona: Terran Command
++Avi Name: Head-CM2
++Wave Name: TC_arrival.wav
+
+;; ATTACK MY TARGET ...........................................................................
+
+$Name: Attack Target
+$Message: XSTR("Roger that, sir. Engaging your target.", 2737)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_attack.wav
+
+$Name: Attack Target
+$Message: XSTR("Yes sir, I'll make the bastards pay for Capella!", 2737)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_attack_shivans_suck.wav
+$Mood: Vengeful
+$Exclude Mood: ( "Happy" )
+$Filter by subject:
++Species: Shivan
+
+$Name: Attack Target
+$Message: XSTR("Yes sir. I just love killing Shivans!", 2737)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_attack_love_killing_shivans.wav
+$Mood: Happy
+$Exclude Mood: ( "Angry" "Vengeful" )
+$Filter by subject:
++Species: Shivan
+
+$Name: Attack Target
+$Message: XSTR("Affirmative. We will destroy your target.", 2742)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_attack.wav
+
+$Name: Attack Target
+$Message: XSTR("Affirmative. Bombing run commencing.", 2802)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_attack_bombing.wav
+$Filter by sender:
++Type: Bomber
+$Filter by subject:
++Type: Transport
++Type: Freighter
++Type: AWACS
++Type: Gas Miner
++Type: Cruiser
++Type: Corvette
++Type: Capital
++Type: Super Cap
++Type: Drydock
+
+;; BACKUP ARRIVAL (previously named "REINFORCEMENTS") .........................................
+
+; These line won't be used unless $Allow Any Ship To Send Backup Messages: is turned on.
+
+$Name: Backup
+$Message: XSTR("Reinforcements on station. Request status brief.", 2744)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_backup.wav
+
+$Name: Backup
+$Message: XSTR("We are here to assist. What is your status?", 2749)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_backup.wav
+
+; This line will be used, since it has a filter.
+
+$Name: Backup
+$Message: XSTR("Omega wing on station. Request permission to kick ass.", 2803)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_backup_omega.wav
+$Filter by sender:
++Wing name: Omega
+
+;; BETA WING ARRIVAL ..........................................................................
+
+$Name: Beta Arrived
+$Message: XSTR("Beta wing here. Standing by.", 2751)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_beta.wav
+
+$Name: Beta Arrived
+$Message: XSTR("Beta wing is on station.", 2756)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_beta.wav
+
+;; CHECK YOUR SIX .............................................................................
+
+$Name: Check 6
+$Message: XSTR("Check your six!", 2758)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_Check6.wav
+
+$Name: Check 6
+$Message: XSTR("Take evasive action, pilot!", 2763)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_Check6.wav
+
+;; DEATH (previously wingman scream)...................................................
+
+$Name: Death
+$Message: XSTR("Noooooooo!!!", 2765)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_Death.wav
+
+$Name: Death
+$Message: XSTR("Avenge me!", 2770)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_Death.wav
+
+;; DELTA WING ARRIVAL .........................................................................
+
+$Name: Delta Arrived
+$Message: XSTR("This is Delta wing. What's your status?", 2772)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_Delta.wav
+
+; Or equivalently...
+; $Name: Delta Arrived
+; $Message: XSTR("This is Delta wing. What's your status?", 2772)
+; +Persona: Wingman 1
+; +Avi Name: Head-TP1
+; +Wave Name: 1_Delta.wav
+; $Filter by sender:
+; +Wing name: Delta
+
+$Name: Delta Arrived
+$Message: XSTR("Delta wing is ready to assist, pilot.", 2777)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_Delta.wav
+
+;; DEPART (previously named "WARPOUT") ........................................................
+
+$Name: Depart
+$Message: XSTR("Yes, sir! I'm outta here!", 2779)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_depart.wav
+
+$Name: Depart
+$Message: XSTR("We are departing as ordered.", 2784)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_depart.wav
+
+$Name: Depart
+$Message: XSTR("I copy. Engaging jump drive now.", 2786)
++Persona: Support Ship
++Avi Name: Head-TP3
++Wave Name: S_depart.wav
+
+$Name: Depart
+$Message: XSTR("Departing field of engagement.", 2787)
++Persona: Support Ship Vasudan
++Avi Name: Head-VP2
++Wave Name: VS_depart.wav
+
+$Name: Depart
+$Message: XSTR("We are departing as ordered.", 2788)
++Persona: Large Ship Vasudan
++Avi Name: Head-VP1
++Wave Name: 6_depart.wav
+
+;; DISABLE TARGET .............................................................................
+
+$Name: Disable Target
+$Message: XSTR("Roger that, sir. Disabling your target.", 2789)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_Disable.wav 
+
+$Name: Disable Target
+$Message: XSTR("Affirmative. Disabling your target.", 2794)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_Disable.wav
+
+;; DISARM TARGET ..............................................................................
+
+$Name: Disarm Target
+$Message: XSTR("Yes, sir! Targeting weapons now!", 2796)
++Persona: Wingman 1
++Avi Name: Head-TP1
++Wave Name: 1_Disarm.wav 
+
+$Name: Disarm Target
+$Message: XSTR("Acknowledged. Weapon subsystem targeted. ", 2801)
++Persona: Wingman 6
++Avi Name: Head-VP1
++Wave Name: 6_Disarm.wav 
+
+#End
+
+#Simulated Speech Overrides
+
+$File Name: msg_1.wav
+$File Name: msg_2.wav
+$File Name: msg_3.wav
+$File Name: msg_4.wav
+$File Name: msg_5.wav
+$File Name: msg_6.wav
+
+#End
+```

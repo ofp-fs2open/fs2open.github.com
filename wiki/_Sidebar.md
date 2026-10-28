@@ -55,5 +55,6 @@
   - [lightning.tbl](lightning.tbl)
   - [mainhall.tbl](mainhall.tbl)
   - [medals.tbl](medals.tbl)
+  - [messages.tbl](messages.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
