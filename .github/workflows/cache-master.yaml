@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore: # OFP: wiki-only merges don't change what the caches hold
+      - 'wiki/**'
 
 jobs:
   build_linux:
