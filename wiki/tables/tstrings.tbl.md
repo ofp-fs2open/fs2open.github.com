@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#150](https://github.com/ofp-fs2open/fs2open.github.com/pull/150)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **tstrings.tbl** is used for translations quite like the [strings.tbl](strings.tbl), except that it is used for **t**able **strings**: the text in the other tables and in missions and campaigns.
