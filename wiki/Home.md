@@ -64,3 +64,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [ships.tbl](ships.tbl): Ship classes
   - [sounds.tbl](sounds.tbl): Game sounds
   - [species_defs.tbl](species_defs.tbl): Species definitions
+  - [ssm.tbl](ssm.tbl): Subspace missile strikes
