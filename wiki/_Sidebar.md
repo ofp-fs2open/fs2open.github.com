@@ -42,6 +42,7 @@
   - [cutscenes.tbl](cutscenes.tbl)
   - [Decals (-dcl.tbm)](Decals)
   - [default_settings.tbl](default_settings.tbl)
+  - [Dynamic SEXPs (-sexp.tbm)](Dynamic-SEXPs)
   - [editor.tbl](editor.tbl)
   - [fireball.tbl](fireball.tbl)
   - [fonts.tbl](fonts.tbl)
