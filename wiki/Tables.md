@@ -78,3 +78,4 @@ Table pages mark when a field or behavior was added with a version badge. Fields
 | [ssm.tbl](ssm.tbl)\* | `xxx-ssm.tbm` | [/hud/hudartillery.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/hud/hudartillery.cpp) | Subspace missile strikes |
 | [stars.tbl](stars.tbl)\* | `xxx-str.tbm` | [/starfield/starfield.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/starfield.cpp) | Background bitmaps, suns and lens flares, and motion debris |
 | [strings.tbl](strings.tbl)\* | `xxx-lcl.tbm` | [/localization/localize.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/localization/localize.cpp) | Translations of the built-in interface text, and custom languages |
+| [tips.tbl](tips.tbl)\* | `xxx-tip.tbm` | [/menuui/playermenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/playermenu.cpp) | Main hall tips |

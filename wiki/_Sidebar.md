@@ -74,3 +74,4 @@
   - [ssm.tbl](ssm.tbl)
   - [stars.tbl](stars.tbl)
   - [strings.tbl](strings.tbl)
+  - [tips.tbl](tips.tbl)

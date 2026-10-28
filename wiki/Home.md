@@ -67,3 +67,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [ssm.tbl](ssm.tbl): Subspace missile strikes
   - [stars.tbl](stars.tbl): Backgrounds, suns and motion debris
   - [strings.tbl](strings.tbl): Interface text translations
+  - [tips.tbl](tips.tbl): Main hall tips
