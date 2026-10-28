@@ -52,5 +52,6 @@
   - [icons.tbl](icons.tbl)
   - [iff_defs.tbl](iff_defs.tbl)
   - [lighting_profiles.tbl](lighting_profiles.tbl)
+  - [lightning.tbl](lightning.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
