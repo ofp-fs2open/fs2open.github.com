@@ -56,5 +56,6 @@
   - [mainhall.tbl](mainhall.tbl)
   - [medals.tbl](medals.tbl)
   - [messages.tbl](messages.tbl)
+  - [mflash.tbl](mflash.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

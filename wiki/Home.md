@@ -49,5 +49,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [mainhall.tbl](mainhall.tbl): Main hall screens
   - [medals.tbl](medals.tbl): Medals and badges
   - [messages.tbl](messages.tbl): Built-in messages and personas
+  - [mflash.tbl](mflash.tbl): Weapon muzzle flashes
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

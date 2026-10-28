@@ -60,5 +60,6 @@ Table pages mark when a field or behavior was added with a version badge. Fields
 | [mainhall.tbl](mainhall.tbl)\* | `xxx-hall.tbm` | [/menuui/mainhallmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/mainhallmenu.cpp) | Main hall screens: backgrounds, doors, animations and sounds |
 | [medals.tbl](medals.tbl)\* | `xxx-mdl.tbm` | [/stats/medals.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/stats/medals.cpp) | Medals, badges and the medal case |
 | [messages.tbl](messages.tbl)\* | `xxx-msg.tbm` | [/mission/missionmessage.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/mission/missionmessage.cpp) | Built-in messages, personas, moods and message types |
+| [mflash.tbl](mflash.tbl)\* | `xxx-mfl.tbm` | [/weapon/muzzleflash.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/weapon/muzzleflash.cpp) | Weapon muzzle flashes |
 | [props.tbl](props.tbl)\* | `xxx-prp.tbm` | [/prop/prop.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/prop/prop.cpp) | Prop classes (only OFP's additions documented so far) |
 | [species.tbl](species.tbl)\* | `xxx-intl.tbm` | [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp) | Tech room intel entries (only OFP's additions documented so far) |

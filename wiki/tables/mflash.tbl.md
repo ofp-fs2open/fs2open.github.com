@@ -1,0 +1,89 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **mflash.tbl** is used to define different muzzleflashes that are seen in game. Weapons use them by name with `$Muzzleflash:` in [weapons.tbl](weapons.tbl).
+
+This table is one of the Modular Tables and can be extended with **xxx-mfl.tbm**.
+
+Code: [/weapon/muzzleflash.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/weapon/muzzleflash.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [$Mflash:](#mflash)
+3. [Sample](#sample)
+
+---
+
+## Format
+
+- Table begins with **#Muzzle flash types**
+- Each muzzleflash is its own section that starts with **$Mflash:**
+- Table ends with **#end**
+
+## $Mflash:
+
+### +name:
+
+- Required. Defines the name of the muzzleflash
+- Every muzzleflash may have several graphics (animations) attached to it
+- Every 'blob' needs their own **+blob_name:**, **+blob_offset:**, and **+blob_radius:** properties, in that order
+- A name that already exists (in this or an earlier table) logs a warning, and the new entry is ignored, unless it uses `+override`.
+- Syntax: **String**
+
+#### +override
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Optional, directly after `+name:`. Replaces the existing muzzle flash of that name: its blobs are all removed, and the blobs listed here are used instead. There is no way to add blobs to an existing muzzle flash without listing them all again.
+- If no muzzle flash has that name yet, it is simply added.
+
+#### +blob_name:
+
+- Defines the animation used for the 'blob'. Each blob plays its animation once, at the gun, moving with the ship.
+- Syntax: **String**
+
+#### +blob_offset:
+
+- Required after `+blob_name:`. Defines the distance from the firing point along the 'line of fire' for the centerpoint of animation
+- Syntax: **Float**, meters
+
+#### +blob_radius:
+
+- Required after `+blob_offset:`. Defines the radius of the animation
+- Syntax: **Float**, meters
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) A minimum on-screen size for all muzzle flashes can be set with [$Minimum Pixel Size Muzzle Flashes:](game_settings.tbl#minimum-pixel-size-muzzle-flashes) in game_settings.tbl.
+
+## Sample
+
+- Retail FreeSpace 2 table
+- Has 1 muzzleflash that has four animations attached to it
+```
+#Muzzle flash types
+
+;; small muzzle flash
+$Mflash:
++name:			mflash_small		;; whatever you want to name it
+
++blob_name:		expmissilehit1					;; anim name, offset from muzzle, radius
++blob_offset:	1.0 
++blob_radius:	6.0					
+
++blob_name:		expmissilehit1					;; anim name, offset from muzzle, radius
++blob_offset:	4.5
++blob_radius:	4.0					
+
++blob_name:		expmissilehit1					;; anim name, offset from muzzle, radius
++blob_offset:	6.0
++blob_radius:	3.0					
+
++blob_name:		expmissilehit1					;; anim name, offset from muzzle, radius
++blob_offset:	8.5
++blob_radius:	3.0					
+
+#end
+```
