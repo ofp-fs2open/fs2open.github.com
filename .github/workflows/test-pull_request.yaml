@@ -3,7 +3,31 @@ name: Check a pull request
 on: [pull_request]
 
 jobs:
+  # OFP: skip the builds on PRs that only change wiki/ (see build_result at the bottom)
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.files.outputs.code }}
+    steps:
+      - name: Check whether anything outside wiki/ changed
+        id: files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          other=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename | select(startswith("wiki/") | not)')
+          if [ -n "$other" ]; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+            echo "Only wiki/ changed: skipping the builds."
+          fi
+
   build_linux:
+    needs: changes # OFP
+    if: needs.changes.outputs.code == 'true' # OFP
     strategy:
       matrix:
         configuration: [Debug, Release]
@@ -72,6 +96,8 @@ jobs:
           fixesFile: clang-fixes.yaml
 
   build_windows:
+    needs: changes # OFP
+    if: needs.changes.outputs.code == 'true' # OFP
     strategy:
       matrix:
         configuration: [Debug, FastDebug, Release]
@@ -137,6 +163,8 @@ jobs:
           fi
 
   build_mac:
+    needs: changes # OFP
+    if: needs.changes.outputs.code == 'true' # OFP
     strategy:
       matrix:
         configuration: [Debug, Release]
@@ -200,3 +228,30 @@ jobs:
         uses: asarium/clang-tidy-action@v1
         with:
           fixesFile: clang-fixes.yaml
+
+  # OFP: the one check the master ruleset requires. Passes when the Linux and Windows builds passed,
+  # or were skipped because the PR only changes wiki/. Fails if either failed or was cancelled.
+  # (Mac builds still run but aren't required, as in SCP.)
+  build_result:
+    name: Build result
+    needs: [changes, build_linux, build_windows]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the build results
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          LINUX: ${{ needs.build_linux.result }}
+          WINDOWS: ${{ needs.build_windows.result }}
+        run: |
+          echo "Changes: $CHANGES, Linux: $LINUX, Windows: $WINDOWS"
+          if [ "$CHANGES" != "success" ]; then
+            echo "::error::Could not tell what this PR changes."
+            exit 1
+          fi
+          for r in "$LINUX" "$WINDOWS"; do
+            if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
+              echo "::error::A required build did not pass ($r)."
+              exit 1
+            fi
+          done
