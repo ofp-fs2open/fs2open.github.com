@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#146](https://github.com/ofp-fs2open/fs2open.github.com/pull/146)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **stars.tbl** defines the available background graphics, the suns that light the game, and the motion debris animations. (The FS1-style generated nebula background is defined in [generated_nebula.tbl](generated_nebula.tbl).)
