@@ -1,23 +1,149 @@
 > **Revision information**
-> OFP Revision: [#15](https://github.com/ofp-fs2open/fs2open.github.com/pull/15)
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
-The **props.tbl** defines prop classes: static, non-ship objects placed in a mission. Everything in it works in OFP as documented on the [FreeSpace Wiki](https://wiki.hard-light.net/index.php/Tables); this page covers only what OFP adds.
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+The **props.tbl** is used to define all of the props in the game. Props are distinct from ships in that they are entirely non-interactable except for collisions. They cannot move and they cannot be destroyed. Props are placed in the mission editor (in FRED, with SHIFT-CTRL-CLICK).
 
 This table is one of the Modular Tables and can be extended with **xxx-prp.tbm**.
 
-The OFP badge marks what OFP adds.
-
 Code: [/prop/prop.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/prop/prop.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. The OFP badge marks what OFP adds.
 
 ## Contents
 
-1. [Texture replacement](#texture-replacement)
-   1. [$Texture Replace:](#texture-replace)
+1. [General Format](#general-format)
+2. [#Prop Categories](#prop-categories)
+3. [#Props](#props)
+4. [Props.tbl flags](#propstbl-flags)
+5. [Sample](#sample)
 
 ---
 
-## Texture replacement
+## General Format
+
+- **#Prop Categories** (optional): the categories, used to color and sort the props in the mission editor's list.
+- **#Props** (required): the props.
+- **#End**
+- There is no `#End` between the two sections.
+- The fields of a prop must be in the order listed here. Every field is optional unless noted.
+
+## #Prop Categories
+
+- Used to define the color of the prop in the FRED list and to list props in similar categories together.
+
+### $Name:
+
+- Defines the name of the category
+- A name that already exists (in this or an earlier table, not case sensitive) replaces that category's color.
+- The order categories are listed in is the order props are sorted in.
+- Syntax: **string**
+
+### +Color:
+
+- Required. Defines the color of the prop text in the FRED list in RGB values.
+- Syntax: **( integer, integer, integer )**
+
+## #Props
+
+- The actual definitions for each prop.
+- Unlike ships and weapons, there is no limit to prop definitions.
+
+### $Name:
+
+- Defines the name of the prop. Must be unique.
+- A name used twice in props.tbl logs a warning and the second entry is skipped. In a modular table, a name that already exists edits that prop.
+- Syntax: **string**
+
+### +nocreate
+
+- Optional, directly after `$Name:`. In a modular table, edits the prop only if it already exists (in props.tbl or an earlier *-prp.tbm), instead of creating an incomplete new one. Using it in props.tbl itself logs a warning.
+
+### +remove
+
+- Optional, after `$Name:` (and `+nocreate`). In a modular table, removes a previously parsed prop. The name stays removed: a prop of that name in any later table is removed too.
+
+### $POF file:
+
+- The POF file for the prop. Every prop needs one; a prop without it logs a warning after all tables are read.
+- When a modular table changes it, a model file that doesn't exist logs a warning and the old one is kept.
+- Syntax: **string**
+
+### $Closeup_pos:
+
+- The position of the camera relative to the model center when the prop's model is shown in a menu view. Without it, a position in front of the model is worked out from its size.
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+### $Closeup_zoom:
+
+- How far the camera's zoomed in when the prop's model is shown in a menu view; defines the camera's FOV.
+- A value of 0 or less is noted in the log and 0.5 is used.
+- Syntax: ***Float***, radians
+
+### $Detail Distance:
+
+- Defines the distance where the change between different Levels-Of-Details (LODs) occurs
+- Take notice that these are base values. Model detail in Detail options, (within game press F2), applies a multiplier to these values. These multipliers default to (from left to right): 1/8, 1/4, 1, 4, and 8, and may be overridden by the [$Detail Distance Multiplier](ai_profiles.tbl#detail-distance-multiplier)
+- Syntax: ***(Detail Distances)*** , list of **integers** (same amount as LODs, at most 5), distances from the model in meters
+  - Example: *(0, 80, 300, 900)*
+
+### $Category:
+
+- The category (listed above) that this prop belongs to
+- A prop with no category, or one that doesn't exist, logs a warning and is put in a gray "Unknown Category"
+- Syntax: **string**
+
+### $Flags:
+
+- See [below](#propstbl-flags). An unknown flag logs a warning.
+- Syntax: ***( "String" "String" )***, names of the flags assigned to the prop
+  - Example: ( "no_collide" "no_fred" )
+
+### $Custom data:
+
+- Defines a set of custom data for this prop class, which can then be accessed through Lua scripts. There can be any amount of +Val: entries. It requires a $end_custom_data entry at the end.
+Check the scripting documentation of Prop Class to find the CustomData Lua Table.
+
+#### +Val:
+
+- Specifies a custom data value and its name, in the format
+- `+Val: Name Value`
+- These values will always be strings of text. If you use them in Lua as other types of value, you might need to convert them in the script.
+- Syntax: **string**
+
+#### $end_custom_data
+
+- Mandatory entry to indicate that the Custom Data list has ended.
+
+### $Custom Strings
+
+- Note: no colon. (The FreeSpace Wiki wrote `$Custom strings:`, which breaks parsing of the prop.)
+- Defines a set of custom strings for this prop class, which can then be accessed through Lua scripts. There can be any amount of entries. It requires a $end_custom_strings entry at the end.
+Check the scripting documentation of Prop Class to find the CustomStrings Lua Table.
+
+#### $Name:
+
+- Specifies a custom string name
+- Syntax: **string**
+
+#### +Value:
+
+- Required. Specifies a "value" or additional data point paired with the string. A common use case is an XSTR ID.
+- Syntax: **string**
+
+#### +String:
+
+- Required. The actual string which is a multitext string
+- Must end with $end_multi_text
+- Syntax: **string**
+
+#### $end_multi_text
+
+### $end_custom_strings
+
+- Mandatory entry to indicate that the Custom Strings list has ended.
 
 ### $Texture Replace:
 
@@ -49,4 +175,60 @@ $Texture Replace:
 +new: pod_hull_red
 +old: pod_decal
 +new: invisible
+```
+
+## #End
+
+- Mandatory entry to indicate the props definitions have ended.
+
+## Props.tbl flags
+
+### "no_collide"
+
+- Defines the prop as non-collideable, i.e. everything will go through it. Also accepted as "no-collide".
+
+### "no_fred"
+
+- The prop will not appear in the mission editor's prop list.
+
+### "no lighting"
+
+- The prop will not receive lighting calculations.
+
+## Sample
+
+- Single Prop entry table
+
+```
+#PROP CATEGORIES
+
+$Name: Rocks
++Color: (165, 42, 42)
+
+$Name: Planets
++Color: (0, 255, 0)
+
+#PROPS
+
+$Name: Planet 1
+$POF file: ast01.pof
+$Detail distance: (400, 1000, 2000, 4000)
+$Category: Planets
+
+$Name: Rock
+$POF file: asteroid01-01.pof
+$Detail distance: (400, 1000, 2000, 4000)
+$Category: Rocks
+
+$Name: Planet 2
+$POF file: ast02.pof
+$Detail distance: (400, 1000, 2000, 4000)
+$Category: Planets
+
+$Name: Rock 2
+$POF file: asteroid02-01.pof
+$Detail distance: (400, 1000, 2000, 4000)
+$Category: Rocks
+
+#END
 ```

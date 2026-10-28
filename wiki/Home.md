@@ -56,5 +56,5 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [objecttypes.tbl](objecttypes.tbl): Ship types and target priorities
   - [Particle Effects (-part.tbm)](Particle-Effects): Custom particle effects
   - [post_processing.tbl](post_processing.tbl): Post-processing effects
-  - [props.tbl](props.tbl): prop classes (OFP additions so far)
+  - [props.tbl](props.tbl): Prop classes
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
