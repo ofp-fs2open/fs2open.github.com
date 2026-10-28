@@ -53,5 +53,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [music.tbl](music.tbl): Soundtracks and menu music
   - [nebula.tbl](nebula.tbl): Nebula bitmaps and poofs
   - [objecttypes.tbl](objecttypes.tbl): Ship types and target priorities
+  - [Particle Effects (-part.tbm)](Particle-Effects): Custom particle effects
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

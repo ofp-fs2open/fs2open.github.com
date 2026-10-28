@@ -60,5 +60,6 @@
   - [music.tbl](music.tbl)
   - [nebula.tbl](nebula.tbl)
   - [objecttypes.tbl](objecttypes.tbl)
+  - [Particle Effects (-part.tbm)](Particle-Effects)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

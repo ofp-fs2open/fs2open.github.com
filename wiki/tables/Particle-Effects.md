@@ -1,0 +1,813 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+**Particle Effects** define custom particle effects that can be assigned to various engine properties, such as weapon impacts, muzzle flashes and trails.
+
+There is no main table: all particle effects are defined in modular tables, **xxx-part.tbm**.
+
+This page documents the format introduced in FSO 25.0. The older format is still read, and both formats can be used side by side in the same file; it is documented on the FreeSpace Wiki: [Legacy Particle Effects](https://wiki.hard-light.net/index.php/Legacy_Particle_Effects).
+
+Code: [/particle/ParticleParse.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/particle/ParticleParse.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [General Info](#general-info)
+2. [$Effect:](#effect)
+3. [Sample](#sample)
+
+---
+
+## General Info
+
+- Begins with #Particle Effects
+- Contains zero or more particle effect definitions
+- Ends with #End
+- The fields of an effect must be in the order listed on this page. Every field is optional unless noted.
+- Effects are looked up by name, not case sensitive. A name that's already used logs a warning in debug builds; either way, the first effect with that name is the one used. There is no `+nocreate` and no way to edit an existing effect.
+
+Particle effects are created by specifying a name and a type. The type dictates which values are valid and will be described below.
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Particles as described here and as described in [Legacy Particle Effects](https://wiki.hard-light.net/index.php/Legacy_Particle_Effects) both share the ***-part.tbm** table, and can exist alongside one another within the same file.
+- As such, it is not required to refactor legacy-style particles to the new format, unless the usage of newer features is desired.
+
+## $Effect:
+
+- Creates a new effect and specifies its name. The name must be at least one character long.
+- Other tables (such as [weapons.tbl](weapons.tbl) and [ships.tbl](ships.tbl)) use the effect by this name.
+- Syntax: **String**
+
+### +Filename:
+
+- Sets the filename of the animation that should be used.
+- Allows for setting list of filenames the animation should use. If multiple animations are listed it picks randomly from the list for each spawned animation.
+- Syntax: **String** or **String List**, filename(s)
+
+### +Animation Reversed:
+
+- If this is true, the animation specified will play in reverse.
+- Defaults to false.
+- Syntax: ***Boolean***
+
+### +Bitmap Alignment:
+
+- Sets how the bitmap is aligned
+- Syntax: One of **Screen Aligned**, **Random**, or **Default** (uses the setting defined globally in [Game_settings.tbl#$Randomize particle rotation:](https://wiki.hard-light.net/index.php/Game_settings.tbl#$Randomize_particle_rotation:))
+
+### +Radius:
+
+- Sets the radius of the created particles. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Exactly one of *+Radius* and *+Parent Radius Factor* is required.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Parent Radius Factor:
+
+- Sets the radius to be a factor of the current size of the particle that spawned it. Only works when spawned as a trail particle effect of another particle. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Length:
+
+- If specified, orients the animation along its velocity, and stretches it by this distance. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- This is optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Lifetime:
+
+- Sets the life time of the particles. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), or the string *<none>* in which case the runtime of the animation is used. Defaults to *<none>*.
+- This is optional, but only one between +Lifetime and +Parent Lifetime Factor may be used.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), or the string *<none>*
+
+### +Parent Lifetime Factor:
+
+- Sets the lifetime to be a factor of the remaining lifetime of the particle that spawned it. Only works when spawned as a trail particle effect of another particle. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- This is optional, but only one between +Lifetime and +Parent Lifetime Factor may be used.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Local position scaling:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- Scales the **local** position (wrt its hosting object) of particles before being offset by other properties of the particle effect by a random range.
+- Has no effect if the particle has no object parent.
+- This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Remain local to parent:
+
+- If this is true, the effect will be 'parented' to its spawner, and will move with it, inheriting all changes to the spawner's position and orientation. Very useful for some types of muzzle effect.
+- Defaults to false.
+- Syntax: ***Boolean***
+
+### +Intransitive parenting:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Typically, when a particle that is spawned from a particle has *+Remain local to parent:* set to on, it will inherit the parent of the particle that it was spawned from (i.e. a trail of a particle parented to a ship will also be parented to the ship)
+- In some cases, this is undesirable, and you want the trail particle to be parented to its trailhead rather than the parent of the trailhead.
+- Setting this option to true achieves this, and breaks the parent inheritance chain. Any descendant of this particle will be parented to this particle rather than to the ancestral parent of this particle.
+- **NOTE**: Particles are limited to the lifetime of their parents when *+Remain local to parent:* is on. As such, this will limit local descendant particles to the lifetime of *this* particle, rather than the lifetime of the originally parenting object.
+- Syntax: ***boolean***
+
+### $Render As Decal:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- If this is true, the effect will not spawn floating particles, but instead will render as decals attached to the surface of its parent. *+Remain local to parent:* must be enabled for this to work; without it, a warning is logged and decal rendering is turned off.
+- Defaults to false.
+- Syntax: ***Boolean***
+
+#### +Orientation Mode:
+
+- When rendering as decals, this controls how the decals are oriented towards their parent. Currently only one option is supported: *Towards Center*
+- Defaults to *Towards Center*
+- Syntax: ***Towards Center***
+
+#### +Emissive:
+
+- Whether or not the decal is an emissive decal as opposed to an albedo decal.
+- Defaults to false.
+- Syntax: ***Boolean***
+
+### $Emits Light:
+
+- If this is tabled, the particle will emit light during its lifetime
+
+#### +Type:
+
+- The type of the light. Required if **$Emits Light:** is tabled.
+- One of:
+  - *Point* - Will be a point light source at the particle's position
+  - *As Particle* - Will be a tube light the size of the particle if it has a length, will be a point light otherwise
+  - *To Last Position* - Will be a tube light from the particles position on the last frame to the particles position on the current frame
+  - *Cone* - Will be a cone light pointing in the direction of travel of the particle
+
+#### +Light Radius:
+
+- How far the light shines. Required if **$Emits Light:** is tabled.
+- Syntax: ***Float***
+
+#### +Light Source Radius:
+
+- How large the light source itself is. Defaults to 0.
+- Syntax: ***Float***
+
+#### +Intensity:
+
+- How bright the light is. Required if **$Emits Light:** is tabled.
+- Syntax: ***Float***
+
+#### +Color:
+
+- What color the light is. Required if **$Emits Light:** is tabled.
+- Syntax: ***Float*** ***Float*** ***Float*** as R G B respectively
+
+#### +Cone Angle:
+
+- The angle of the outer cone of the light. Only has an effect for the cone type. Defaults to 0.
+- Syntax: ***Float***
+
+#### +Cone Inner Angle:
+
+- The angle of the inner cone of the light. Only has an effect for the cone type. Defaults to 0.
+- Syntax: ***Float***
+
+### +Duration:
+
+- Sets for how long this effect will be active. The duration can be once, always or a random range. If the effect should run only once then you can use the string *Onetime*. If the effect should always be active you can specify the string *Always*. Otherwise a non-negative random range is expected.
+- This is optional
+- Syntax: *Onetime*, *Always*, or a [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+
+### +Delay:
+
+- Specifies after how much time after the effect is triggered the effect starts creating particles.
+- This is optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Spawns per second:
+
+- Specifies how many times per seconds particles will spawn from this effect. If this is not specified then the effect is triggered every frame. If this is specified then the amount of triggers per second is always the same regardless of the FPS the game is running at. Values higher than the FPS (e.g. 120 if the game is running at 60 FPS) are handled correctly and will trigger the effect multiple times per frame if necessary.
+- Batches of particles spawned at different points during a frame will be spawned at the correct positions along a moving spawner entity's trajectory, with millisecond precision, rather than all 'clumping' at the spawner's final position for that frame. This works for particles spawned from objects (like ships and weapons), and ones spawned from other particles (as with a $Trail effect), but does not currently work for particles spawned from beams.
+- This is optional
+- Syntax: *number*. Must be greater than 0.
+
+### +Particle Count Per Spawn:
+
+- Sets the amount of particles created every time this effect spawns new particles. This is a [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- This setting is multiplicative with *+Spawns per second:*. The former defines how often things are spawned, while *+Particle Count Per Spawn:* defined how many individual particles are spawned each time.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Direction:
+
+- Sets the direction of the particle spawner. This influences many following options, which will be marked with *affected by orientation*. Can be one of:
+  - *Aligned*: The direction of the particle spawner will be aligned by whatever created it. This  could be the direction a muzzle is facing, a weapon is flying, a beam is shooting, etc.
+  - *HitNormal*: The direction of the particle spawner will be set to the normal vector of the event that spawns the particle. This can be something like the normal vector of a weapon impact. If no normal vector exists for a given event, *Aligned* will be used instead.
+  - *Reflected*: The direction of the particle spawner will be set to the *Aligned* direction after it is reflected off using the normal vector. This is a good way of simulating armor deflecting a shot. If no normal vector is present in the current event, it'll be set to *Aligned* instead.
+  - *Reverse*: The reverse of the *Aligned* vector
+- Optional
+- Syntax: **String**, one of the strings specified above
+
+### +Position Offset:
+
+- Offsets the position of the particle source relative to the spawner. Positive Z means "forward".
+- While this is affected by the spawner orientation, it is *NOT* affected by the above **+Direction** parameter.
+- For effects spawned from sources with a full orientation, such as ships (including primary or secondary muzzle effects) and weapons (including hit effects), all three dimensions will work correctly.
+- For effects spawned from sources that just have a defined forward vector, such as particles (as with trail effects) or beams, the X and Y axes will have no influence.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+### +Velocity Offset:
+
+- Adds a constant velocity to particles spawned by this spawner. Positive Z means "forward".
+- *affected by orientation*
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+### +Spawn Position Volume:
+
+- Defines the volume around the particle effect spawner in which the particles will spawn (randomly distributed within the volume).
+- *affected by orientation*
+- Optional
+- Syntax: One of the following types
+
+#### Spheroid
+
+##### +Radius:
+
+- Specifies the radius of the volume
+- Optional
+- Syntax: float, default 1
+
+##### +Bias:
+
+- Causes the particles to spawn more frequently near the edges or near the center. Values greater than 1 bias the particles toward the center, less than 1 biases them towards the edge.
+- Optional
+- Syntax: float, default 1
+
+##### +Stretch:
+
+- 'Stretches' or squashes the spherical volume into an ellipsoid. Values greater than 1 stretch it, less than 1 squashes it.
+- Optional
+- Syntax: float, default 1
+
+##### +Volume Position Offset:
+
+- Offsets this volume by a fixed offset.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### +Volume Point Towards:
+
+- Rotates this volume to point towards a specific point defined in the local spawner's orientation.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### $Volume Curve:
+
+- A modular curve set. Repeated occurrences of the following:
+
+###### +Input
+
+For possible inputs see [the inputs for particle source curves](#particle-source-curve).
+Additionally, **Fraction Particles Spawned**, representing how many particles have been spawned in this single spawn event, from 0 to 1.
+
+###### +Output
+
+- One of: **Radius Mult**, **Bias Mult**, or **Stretch Mult**, which are multipliers for the respective tabled values of the spheroid volume. **Offset Rotate Around Fvec**, which rotates the *+Volume Position Offset:* around the spawner's orientation. **Point To Rotate Around Fvec**, which rotates the *+Volume Point Towards:* around the spawner's orientation.
+
+###### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+###### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+- Syntax: boolean, default true
+
+#### Cone
+
+##### +Deviation:
+
+- Specifies the standard deviation by how much an average particle will deviate from the given spawner direction in degrees.
+- Exactly one of *+Deviation* or *+Deviation Profile* is required
+- Syntax: float
+
+##### +Deviation Profile:
+
+- Specifies the deviation of a particle from the given spawner direction as a random range **in radians**.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+##### +Length:
+
+- Specifies the distance from the spawner at which particles spawn, in meters.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), default constant 1
+
+##### +Volume Position Offset:
+
+- Offsets this volume by a fixed offset.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### +Volume Point Towards:
+
+- Rotates this volume to point towards a specific point defined in the local spawner's orientation.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### $Volume Curve:
+
+- A modular curve set. Repeated occurrences of the following:
+
+###### +Input
+
+For possible inputs see [the inputs for particle source curves](#particle-source-curve)
+Additionally, **Fraction Particles Spawned**, representing how many particles have been spawned in this single spawn event, from 0 to 1.
+
+###### +Output
+
+- One of: **Deviation Mult**, or **Length Mult**, which are multipliers for the respective tabled values of the spheroid volume. **Offset Rotate Around Fvec**, which rotates the *+Volume Position Offset:* around the spawner's orientation. **Point To Rotate Around Fvec**, which rotates the *+Volume Point Towards:* around the spawner's orientation.
+
+###### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+###### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+- Syntax: boolean, default true
+
+#### Ring
+
+Defines a ring perpendicular to the spawner's orientation
+
+##### +Radius:
+
+- Specifies the radius of the ring
+- Optional
+- Syntax: float, default 1
+
+##### +On Edge:
+
+- Causes the particles to spawn just on the edge of the ring, rather than on the entire surface.
+- Optional
+- Syntax: boolean, default false
+
+##### +Volume Position Offset:
+
+- Offsets this volume by a fixed offset.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### +Volume Point Towards:
+
+- Rotates this volume to point towards a specific point defined in the local spawner's orientation.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### $Volume Curve:
+
+- A modular curve set. Repeated occurrences of the following:
+
+###### +Input
+
+For possible inputs see [the inputs for particle source curves](#particle-source-curve)
+Additionally, **Fraction Particles Spawned**, representing how many particles have been spawned in this single spawn event, from 0 to 1.
+
+###### +Output
+
+- One of: **Radius Mult**, which are multipliers for the respective tabled values of the ring volume. **Offset Rotate Around Fvec**, which rotates the *+Volume Position Offset:* around the spawner's orientation. **Point To Rotate Around Fvec**, which rotates the *+Volume Point Towards:* around the spawner's orientation.
+
+###### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+###### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+- Syntax: boolean, default true
+
+#### Point
+
+Defines a single point only
+
+##### +Volume Position Offset:
+
+- Offsets this volume by a fixed offset.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### +Volume Point Towards:
+
+- Rotates this volume to point towards a specific point defined in the local spawner's orientation.
+- Optional
+- Syntax: ***Vector***, three **floats**, x, y and z values respectively
+
+##### $Volume Curve:
+
+- A modular curve set. Repeated occurrences of the following:
+
+###### +Input
+
+For possible inputs see [the inputs for particle source curves](#particle-source-curve)
+Additionally, **Fraction Particles Spawned**, representing how many particles have been spawned in this single spawn event, from 0 to 1.
+
+###### +Output
+
+- One of:   **Offset Rotate Around Fvec**, which rotates the *+Volume Position Offset:* around the spawner's orientation. **Point To Rotate Around Fvec**, which rotates the *+Volume Point Towards:* around the spawner's orientation.
+
+###### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+###### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+- Syntax: boolean, default true
+
+#### ModelSurface
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+Defines a volume that samples random vertices from the surface of the host model.
+
+When used as a spawn position volume, particles will spawn on the surface of the model by randomly selecting vertices from the model's geometry. If the effect is attached to a submodel, particles will spawn on just that submodel's surface.
+
+##### +Scale:
+
+- Scales the sampled vertex position. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), default constant 1
+
+##### +Volume Position Offset:
+
+- Offsets this volume by a fixed offset.
+- Optional
+- Syntax: **Vector**, three **floats**, x, y and z values respectively
+
+##### +Volume Point Towards:
+
+- Rotates this volume to point towards a specific point defined in the local spawner's orientation.
+- Optional
+- Syntax: **Vector**, three **floats**, x, y and z values respectively
+
+##### $Volume Curve:
+
+A modular curve set. Repeated occurrences of the following:
+
+###### +Input
+
+For possible inputs see [the inputs for particle source curves](#particle-source-curve)
+Additionally, **Fraction Particles Spawned**, representing how many particles have been spawned in this single spawn event, from 0 to 1.
+
+###### +Output
+
+- One of: **Scale Mult**, which is a multiplier for the scale value. **Offset Rotate Around Fvec**, which rotates the *+Volume Position Offset:* around the spawner's orientation. **Point To Rotate Around Fvec**, which rotates the *+Volume Point Towards:* around the spawner's orientation.
+
+###### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+###### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+###### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+
+### +Spawn Position Noise:
+
+- This setting can be used to add random noise (sampled over the particle source lifetime and a curve-defined seed) to the spawn position of particles.
+- Optional
+- Specified in ANL's (unfortunately poorly documented) [DSL](https://github.com/JTippetts/accidental-noise-library#expressions).
+
+### +Spawn Position Noise Scale:
+
+- A random range, which is used to scale the sampled spawn position noise vector.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), default constant 1
+
+### +Velocity Volume:
+
+- Defines a volume. The position sampled in this volume is used as the velocity vector for the spawned particles. I.e., a sphere as the velocity volume will let the particles randomly accelerate outwards evenly.
+- *affected by orientation*
+- Optional
+- See [#+Spawn Position Volume:](https://wiki.hard-light.net/index.php/#+Spawn_Position_Volume:)
+
+### +Velocity Volume Scale:
+
+- A random range, which is used to scale the velocity vector sampled from the velocity volume.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), default constant 1
+
+### +Velocity Noise:
+
+- This setting can be used to add random noise (sampled over the particle source lifetime and a curve-defined seed) to the velocity of particles.
+- Optional
+- Specified in ANL's (unfortunately poorly documented) [DSL](https://github.com/JTippetts/accidental-noise-library#expressions).
+
+### +Velocity Noise Scale:
+
+- A random range, which is used to scale the sampled velocity noise vector.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range), default constant 1
+
+### +Velocity Direction Scale:
+
+- Sets whether the particles final velocity is scaled based on the direction of the velocity and the direction of the particle spawner.
+- *affected by orientation*
+- Optional, default *None*
+- Can be one of:
+  - *None*: No scaling is applied
+  - *Dot*: The velocity is scaled by the dot product between the velocity orientation and the spawner orientation. This means that particles flying in the same direction as the spawner points to will be faster.
+  - *Inverse Dot*: The velocity is scaled by the inverse dot product between the velocity orientation and the spawner orientation. This means that no matter the direction the particle velocity points to, all particles will have the same velocity in the direction of the spawner (assuming that the scalar velocity of all particles is equal).
+
+### +Velocity From Position:
+
+- If set, will add the particles relative position to the spawn point multiplied by this random range as velocity. This will make the particles naturally spread outwards from the spawner. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Has no effect if no spawn position volume is tabled.
+- Optional. Mututally exclusive with *+Absolute Velocity From Position*.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Absolute Velocity From Position:
+
+- See [#Velocity From Position:](https://wiki.hard-light.net/index.php/#Velocity_From_Position:), except that the position is normalized before applying the random range.
+
+### +Velocity From Orientation:
+
+- If set, will add the spawners orientation multiplied by this random range as velocity. This will make the particles naturally move in the direction the spawner points to. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- *affected by orientation*
+- Optional.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Velocity Inherit:
+
+- If set, will add the parent's velocity multiplied by this random range as velocity for the particle. This will make the particles naturally move along with their spawning entity. This is a random range; see [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range).
+- Optional. Mututally exclusive with *+Absolute Velocity Inherit*.
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+### +Absolute Velocity Inherit:
+
+- See [#+Velocity Inherit:](https://wiki.hard-light.net/index.php/#+Velocity_Inherit:), except that the parent velocity is normalized before applying the random range.
+
+### +Ignore Velocity Inherit If Parented:
+
+- If set, the velocity inherit will be forced to 0 if the effect has a valid parent that can be used for [#+Remain local to parent:](https://wiki.hard-light.net/index.php/#+Remain_local_to_parent:). Useful to create effects that want to use [#+Remain local to parent:](https://wiki.hard-light.net/index.php/#+Remain_local_to_parent:), but have to work in scenarios where sometimes only velocity inherit is available.
+- Optional, default false
+- Syntax: Boolean
+
+### $Particle Lifetime Curve:
+
+- A modular curve set.
+- This modular curve set affects the spawned **particle** during its lifetime, and not to the spawner of the particles.
+- Repeated occurrences of the following:
+
+#### +Input
+
+- One of:
+  - **Lifetime**: representing the lifetime of the particle, not the spawner, from 0 to 1
+  - **Age**: The age of the particle in seconds
+  - **Radius**: The radius of the particle (not considering curve modifications)
+  - **Velocity**: The velocity of the particle (not considering curve modification)
+  - **Post-Curves Velocity**: The velocity of the particle when accounting for curves. Note that when this is queried for the **Velocity** output, it will be identical to the unmodified **Velocity** input.
+  - **Parent Object Hitpoints**: The number of hitpoints the parent of this particle has. Note that a particle only has a parent if `+Remain local to parent:` is enabled.
+  - **Parent Ship Hitpoints Fraction**: The fraction of hitpoints the parent of this particle has. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Object Shield**: The number of shield hitpoints the parent of this particle has. Note that a particle only has a parent if `+Remain local to parent:` is enabled.
+  - **Parent Ship Shield Fraction**: The fraction of shield hitpoints the parent of this particle has. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship AB Fuel Left**: The amount of afterburner fuel left on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship Countermeasures Left**: The amount of countermeasures left on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship Weapon Energy Left**: The amount of weapon energy left on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship ETS Engines**: The fraction of energy going to engines on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship ETS Shields**: The fraction of energy going to shields on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship ETS Weapons**: The fraction of energy going to weapons on the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship EMP Intensity**: The intensity of EMP effects currently affecting the parent of this particle. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship.
+  - **Parent Ship Time Until Explosion**: The time in seconds until the parent of this particle explodes. Note that a particle only has a parent if `+Remain local to parent:` is enabled. Only works if the particle is parented to a ship, and this ship is in its deathroll.
+
+#### +Output
+
+- One of:
+  - **Radius Mult**: Multiplies the radius of the particle
+  - **Velocity Mult**, Multiplies the velocity of the particle
+  - **Length Mult**, Multiplies the length of the particle. Only works if a length is tabled at all for this particle.
+  - **Anim State**, sets the animation state of the particle, with 0.0 being the first frame of the animation, and 1.0 being the last. If this is used, all typical animation behavior (i.e. playing at a certain framerate over time) will be ignored.
+  - **Light Radius Mult**, Multiplies the emission radius of a light source attached to the particle, if any
+  - **Light Source Radius Mult**, Multiplies the source radius of a light source attached to the particle, if any
+  - **Light Intensity Mult**, Multiplies the intensity of a light source attached to the particle, if any
+  - **Light R Mult**, Multiplies the red component a light source attached to the particle, if any
+  - **Light G Mult**, Multiplies the green component of a light source attached to the particle, if any
+  - **Light B Mult**, Multiplies the blue component of a light source attached to the particle, if any
+  - **Light Cone Angle Mult**, Multiplies the angle of the cone of a light source attached to the particle if it is tabled as a cone
+  - **Light Cone Inner Angle Mult**, Multiplies the inner angle of the cone of a light source attached to the particle if it is tabled as a cone
+
+#### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+### $Particle Source Curve:
+
+- A modular curve set. Repeated occurrences of the following:
+
+#### +Input
+
+- One of:
+  - **Host Radius**: The radius of whatever object the particle spawner is attached to (such as the weapon spewing the particles, the ship being hit by a weapon having damage spew, etc).
+  - **Host Velocity**: The velocity of whatever object the particle spawner is attached to.
+  - **Trigger Radius**: The radius of whatever object caused the particles to spawn (such as the weapon hitting the ship, causing damage spew, etc).
+  - **Trigger Velocity**: The velocity of whatever object caused the particles to spawn.
+  - **Effects running**: The fraction of sub-effects of this effect that are still emitting particles.
+  - **Spawntime Left**: The remaining time this sub-effect will emit particles for.
+  - **Time Running**: The time this sub-effect has been emit particles for.
+  - **Apparent Visual Size At Emitter**: The visual size in pixels, based on the current viewing position, that the average particle will have if spawned at the particle source. This does not consider the Radius Mult particle curve output, and does not consider position changes from a Spawn Position Volume.
+  - **Total Particle Count**: The total number of particles currently present in the mission.
+  - **Particle Usage Score**: The total number of particles currently present in the mission, divided by the current particle detail setting.
+  - **Host Object Hitpoints**: The number of hitpoints the host of this particle spawner has.
+  - **Host Ship Hitpoints Fraction**: The fraction of hitpoints the host of this particle spawner has. Only works if the particle spawner is attached to a ship.
+  - **Host Object Shield**: The number of shield hitpoints the host of this particle spawner has.
+  - **Host Ship Shield Fraction**: The fraction of shield hitpoints the host of this particle spawner has. Only works if the particle spawner is attached to a ship.
+  - **Host Ship AB Fuel Left**: The amount of afterburner fuel left on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship Countermeasures Left**: The amount of countermeasures left on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship Weapon Energy Left**: The amount of weapon energy left on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship ETS Engines**: The fraction of energy going to engines on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship ETS Shields**: The fraction of energy going to shields on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship ETS Weapons**: The fraction of energy going to weapons on the host of this particle spawner. Only works if the particle spawner is attached to a ship.
+  - **Host Ship EMP Intensity**: The intensity of EMP effects currently affecting the parent of this particle. Only works if the particle spawner is attached to a ship.
+  - **Host Ship Time Until Explosion**: The time in seconds until the host of this particle spawner explodes. Only works if the particle spawner is attached to a ship, and this ship is in its deathroll.
+
+#### +Output
+
+- One of:
+  - **Particle Number Mult**: Multiplies the number of particles created each spawn
+  - **Particle Frequency Mult**: Multiplies the frequency with which particles are spawned
+  - **Radius Mult**: Multiplies the initial radius of spawned particles
+  - **Length Mult**: Multiplies the initial length of spawned particles
+  - **Lifetime Mult**: Multiplies the lifetime of spawned particles
+  - **Velocity Volume Mult**: Multiplies the velocity obtained from the tabled velocity volume
+  - **Velocity Inherit Mult**: Multiplies the velocity obtained from the tabled velocity inherit
+  - **Velocity Position Inherit Mult**: Multiplies the velocity obtained from the tabled velocity from position
+  - **Velocity Orientation Inherit Mult**: Multiplies the velocity obtained from the tabled velocity from orientation
+
+#### +Curve Name
+
+- The name of the curve which maps the input to the output
+- Syntax: string, the curve name
+
+#### +Random Scaling Factor:
+
+- A random range, which is used to divide the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+#### +Random Translation:
+
+- A random range, which is used to offset the input by the sampled value.
+- Optional
+- Syntax: See [Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)
+
+#### +Wraparound:
+
+- If set, values outside the defined range of the curve will be wrapped around instead of clipped.
+- Optional
+- Syntax: boolean, default true
+
+### $Trail Effect:
+
+- Adds a particle trail to this effect
+- Optional, mutually exclusive with *$Trail Inline Effect*
+- Syntax: string, the name of a particle effect (must be defined previously)
+
+### $Trail Inline Effect:
+
+- Adds a particle trail to this effect, defined inline
+- It is not possible to define inline trails for inline particles due to parsing ambiguity. If you really need trails of death particles / trails, use *$Trail Effect:*
+- Optional
+- Syntax: Define a new particle just as if *$Trail Inline Effect:* had been *$Effect*. It will not need a name to be specified after *$Trail Inline Effect:*.
+
+#### $Continue Trail Effect:
+
+- Adds a new sub-effect to the inline trail
+- Optional, can be repeated multiple times
+See [#$Continue Effect:](https://wiki.hard-light.net/index.php/#$Continue_Effect:)
+
+### $Death Effect:
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
+
+- Adds a particle effect that gets spawned when this particle dies
+- Optional, mutually exclusive with *$Death Inline Effect*
+- Syntax: string, the name of a particle effect (must be defined previously)
+
+### $Death Inline Effect:
+
+- Adds a particle effect that gets spawned when this particle dies, defined inline
+- It is not possible to define inline death effects for inline particles due to parsing ambiguity. If you really need death particles of death particles / trails, use *$Death Effect:*
+- Optional
+- Syntax: Define a new particle just as if *$Trail Inline Effect:* had been *$Effect*. It will not need a name to be specified after *$Trail Inline Effect:*.
+
+#### $Continue Death Effect:
+
+- Adds a new sub-effect to the inline death effect
+- Optional, can be repeated multiple times
+See [#$Continue Effect:](https://wiki.hard-light.net/index.php/#$Continue_Effect:)
+
+### $Continue Effect:
+
+- Adds a new sub-effect to this effect.
+- This will then spawn multiple different types of particle effect if the parent effect is called. Similar to the legacy composite effect type.
+- Optional, can be repeated multiple times
+- Syntax: Define a new particle just as if *$Continue Effect:* had been *$Effect*. It will not need a name to be specified after *$Continue Effect:*.
+
+### Sample
+
+```
+#Particle Effects
+
+$Effect: smoke_exhaust
+   +Filename: particle_smoke01
+   +Bitmap Alignment: Random
+   +Radius: (0.1 0.5)
+   +Duration: Always
+   +Spawns per Second: 5
+   +Particle Count Per Spawn: (1 2)
+   +Direction: Aligned
+   +Velocity Offset: 0,5,-5
+$Particle Source Curve:
+   +Input: Trigger Velocity
+   +Output: Radius Mult
+   +Curve Name: MB_SpeedCurve
+
+#End
+```
