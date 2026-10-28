@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#139](https://github.com/ofp-fs2open/fs2open.github.com/pull/139)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **scripting.tbl** attaches Lua scripts to the game: it says which scripts run, and when (the hooks) and where (the conditions). It is used for features such as custom HUDs, new game mechanics and interface changes.
