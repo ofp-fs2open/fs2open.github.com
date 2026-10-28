@@ -54,5 +54,6 @@
   - [lighting_profiles.tbl](lighting_profiles.tbl)
   - [lightning.tbl](lightning.tbl)
   - [mainhall.tbl](mainhall.tbl)
+  - [medals.tbl](medals.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
