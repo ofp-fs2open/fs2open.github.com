@@ -27,7 +27,7 @@ OFP is not a replacement for FSO. It is a parallel platform with different gover
 
 ## Building
 
-Build instructions follow FSO's existing documentation. CI runs on Linux, Windows, and macOS. All three platforms are first-class.
+To build OFP's engine and QtFRED from source, see the wiki: [Building OFP on Windows](https://github.com/ofp-fs2open/fs2open.github.com/wiki/Building-OFP-on-Windows), [Building OFP on Linux](https://github.com/ofp-fs2open/fs2open.github.com/wiki/Building-OFP-on-Linux), or [Building OFP on Mac](https://github.com/ofp-fs2open/fs2open.github.com/wiki/Building-OFP-on-Mac). CI runs on Linux, Windows, and macOS. All three platforms are first-class.
 
 Builds are published to [GitHub Releases](../../releases) and available on Nebula as a registered alternate build dependency.
 
