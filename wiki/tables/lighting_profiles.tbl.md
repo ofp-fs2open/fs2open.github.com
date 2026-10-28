@@ -1,0 +1,343 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
+
+The **lighting_profiles.tbl** provides controls for the game's lighting and rendering pipeline: the tonemapper, exposure, and adjustments to the brightness and size of each kind of light. It has a default profile and any number of named profiles, which missions can pick and the F3 lab can switch between.
+
+This table is one of the Modular Tables and can be extended with **xxx-ltp.tbm**.
+
+Code: [/lighting/lighting_profiles.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/lighting/lighting_profiles.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in.
+
+## Contents
+
+1. [#DEFAULT PROFILE](#default-profile)
+2. [#PROFILES](#profiles)
+3. [Adjustable values](#adjustable-values)
+4. [Sample Entry](#sample-entry)
+5. [References](#references)
+
+---
+
+## #DEFAULT PROFILE
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) This section defines the settings used by default (the profile named "Default Profile"). Entries may be included in any order, and the section must be closed by a #END DEFAULT PROFILE line.
+
+- A line the engine doesn't recognize logs a warning and is skipped.
+- Every setting starts at the default shown here, so a profile only needs the settings it changes. A modular table that sets a value again replaces it.
+
+### $Tonemapper:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Sets the algorithm used for the tonemapping stage of rendering. See [Tonemapping](https://wiki.hard-light.net/index.php/Tonemapping) for more information on what this means in detail and comparisons of the options.
+- Syntax: ***String***, not case sensitive
+- Default: Uncharted 2
+- **Known issue:** an unknown name isn't reported. The scene is then shown with no tonemapping at all, so check the spelling.
+- Options:
+  - Linear: Simple clamping and gamma correction. Not recommended in most cases.
+  - Uncharted 2: FSO's default tonemapper, a filmic look created by John Hable for the game of the same name. This option can also be selected with simply "Uncharted"
+  - ACES: A filmic tonemapper that is the default for Unreal Engine 4, based on film industry standards. Good for high contrasts, has the quirk that it quite visibly desaturates bright colored lights towards white. This is especially visible in Freespace with red Shivan glows, which are bright enough to turn orange.
+  - ACES Approximate: A simplification of ACES featuring more saturated bright colors and faster rendering. Does not desaturate bright colors.
+  - Cineon: Another filmic option, similar to ACES it provides high contrast and vibrant colors, it preserves deep blacks but isn't quite as aggressive as ACES on dimly lit scenes.
+  - Reinhard Extended: A version of a common tonemapper that acts on luminance
+  - Reinhard Jodie: Another version of Reinhard that makes bright colors less saturated than Reinhard Extended
+  - PPC (or "Piecewise Power Curve"): Piecewise power curve, a configurable curve meant to give artists flexible and simple control over the look. Applies to pixel luminance. Configuration options are also available in this table. See [Filmic Tonemapping with Piecewise Power Curves](http://filmicworlds.com/blog/filmic-tonemapping-with-piecewise-power-curves/) for a detailed breakdown of what this is doing.
+  - PPC RGB (or "Piecewise Power Curve (RGB)"): As with PPC, except applying to each color channel individually rather than combined luminance, which gives a more vibrant look.
+
+The best way to view the differences between all of these is to open the F3 lab.
+
+![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) When the game is outputting HDR10, this setting is ignored and a tonemapper made for HDR displays is used instead.
+
+### $Non-mission lighting profile:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- The profile used when ships and weapons are shown outside of a mission: the tech room, the briefing, and ship and weapon selection.
+- It is one setting for the whole game, not per profile: it can go in any profile, and the last one read wins.
+- A profile name that doesn't exist logs a message and the default profile is used.
+- Default: Default Profile
+- Syntax: ***String***, profile name
+
+### $Exposure:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) The rendered scene is multiplied by this value before being tonemapped. Conceptually similar to the exposure time on a camera, higher numbers are like a lens catching more light. By using lower exposure and higher values for static lights you could create a otherwise similar scene with more muted lights from ship glows, level backgrounds and weapons fire, or conversely using dim lights and high exposure would emphasize those other light sources.
+
+If you find this concept hard to grasp, consider how your eyes adapt to darkness or brightness. A high exposure is like an eye adapted to a dark room, a low exposure is an eye adapted to a bright room. So with high exposure, you'll see more details in dark scenes, but you're also more easily blinded by bright effects.
+- Syntax: ***Float***
+- Default: 4.0
+
+### PPC Adjustments
+
+The values are clamped when used: toe strength, toe length, shoulder length and shoulder angle to 0 to 1, shoulder strength to 0 or more.
+
+If you want to adjust the look of the PPC tonemapper, you can easily see what these settings do by using the F3 main lab.
+- When in the main menu, press F3
+- Select a ship class
+- Select a background from a mission of your choice.
+- Tweak settings and the desired tonemapper from the "Render Options" menu.
+  - Start by setting your desired exposure
+  - Set toe and shoulder strength to 0, then increase them slowly to see their effects in action.
+  - Adjust Exposure, Toe and Shoulder strength as desired.
+    - Use the length and angle settings for fine-tuning after you've honed down your desired look.
+  - Note the settings used and type them into this table.
+
+### $PPC Toe Strength:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Toe Strength adjusts how dark the shadows of a scene are. The higher the toe strength, the darker, and harder to distinguish from black, dark areas in the scene become. Conversely, a low value means that lowly lit objects are easier to distinguish from full black and each other, but setting it too low can make areas that should be black look grayish.
+This setting is very sensitive to exposure. If you lower exposure, you will want to lower toe strength to get some visibility back.
+- Syntax: ***Float***
+- Default: 0.5
+
+### $PPC Toe Length:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Toe length determines the mid-point where the toe stops and the shoulder begins. In layman's terms, this determines what the renderer considers "dark" areas and what it considers "bright" areas.
+- Syntax: ***Float***
+- Default: 0.5
+
+### $PPC Shoulder Length:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) There's no such thing as finite brightness in space, but there is on your monitor. Shoulder length determines at which point the tonemapper stops adjusting for overexposure and simply lets it happen. If you set this to a low value you'll see a lot of bright white spots, as the amount of lights that the tonemapper considers 'too bright to handle' increases. Setting this high means you'll see less full white areas, at the risk of making highlights look a bit dull as they're being compressed in order to fit within the displayable range.
+- Syntax: ***Float***
+- Default: 0.5
+
+### $PPC Shoulder Strength:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Shoulder strength adjusts how strongly the tonemapper compensates for bright areas. A high value means that brighter areas will be made less bright. A low value means that there's more "blindingly bright" areas in the scene. It differs from shoulder length in that shoulder length 'selects' the areas in which the shoulder should be applied, and shoulder strength determines how strongly it should be applied.
+This setting gradually has more effect as exposure increases.
+- Syntax: ***Float***
+- Default: 0.0
+
+### $PPC Shoulder Angle:
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Raising shoulder angle means that less bright areas in the shoulder are adjusted less, whilst very bright areas are compressed into a smaller range. In FS2 this is very noticeable in backgrounds, which become more saturated (and eventually oversaturated) as shoulder angle increases.
+- Syntax: ***Float***
+- Default: 0.1
+
+### $Missile light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of dynamic lights for missile weapons (any weapon using a model rather than a laser bitmap or beam).
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Missile light radius:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the light radius of dynamic lights for missile weapons (any weapon using a model rather than a laser bitmap or beam). +Default: is used for any such weapons not given specific sizes in the weapon tables.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+default: 20**
+
+### $Laser light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of dynamic lights for laser weapons (weapons using a laser bitmap).
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Laser light radius:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the light radius of dynamic lights for laser weapons (weapons using a laser bitmap). +Default: is used for any such weapons not given specific sizes in the weapon tables.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+default: 100**
+
+### $Beam light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of dynamic lights for beam weapons.
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Beam light radius:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the light radius of dynamic lights for beam weapons. Unless set otherwise on the specific weapon this is multiplied by the beam's width. +Default: is used for any such weapons not given specific sizes in the weapon tables.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+default: 37.5**
+
+### $Tube light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of all tube lights, such as light cast by beam weapons. It is applied after any more specific adjustments such as $Beam light brightness:
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Tube light radius:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the radius of all tube lights, such as light cast by beam weapons. It is applied after any more specific adjustments such as $Beam light radius:.
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Point light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of all point lights, such as light cast by non-beam weapons. It is applied after any more specific adjustments such as $laser light brightness:
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Point light radius:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the radius of all point lights, such as light cast by non-beam weapons. It is applied after any more specific adjustments such as $laser light radius:.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 1.25**
+
+### $Cone light brightness:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of all cone lights. It is applied after any more specific adjustments that might exist.
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Cone light radius:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the radius of all cone lights. It is applied after any more specific adjustments that might exist.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 1.25**
+
+### $Directional light brightness:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of all directional lights, such as level suns.
+- Syntax: See [Adjustable values](#adjustable-values)
+
+### $Ambient light brightness:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of ambient level lighting.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 0.286** (the inverse of the overall brightness default), **+adjust:** the `-emissive` command line value, or 0
+- The `-ambient` and `-light` command line options are multiplied in afterwards, and `-emissive` is used as a minimum.
+
+### $Overall brightness:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to all adjustable light.
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 3.5** (keeps the older look), **+minimum: 0**
+- The `-light` command line option is multiplied in afterwards.
+
+### $Cockpit light radius modifier:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the radius of all lights, only applied when rendering the player ship's cockpit and "show ship" model
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 1**
+
+### $Cockpit light intensity modifier:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- An [Adjustable value](#adjustable-values) applied to the brightness of all lights, only applied when rendering the player ship's cockpit and "show ship" model
+- Syntax: See [Adjustable values](#adjustable-values)
+- Default values: **+multiplier: 1**
+
+## #END DEFAULT PROFILE
+
+![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) Required to close the default profile section.
+
+## #PROFILES
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Begins the standard, named profiles section. Named profiles can have all the same profile values set, but must be given a name. The name "Default Profile" can be used to define, or alter, the primary default profile. Other profiles can be assigned on a per-mission basis (`$Lighting Profile:` in the mission file, set in the mission editor) or viewed in the F3 lab.
+
+- A mission that names a profile that doesn't exist logs a warning and keeps the profile that was in use.
+
+### $Profile:
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The name of the profile being defined or modified. See the values above in the default profiles section for documentation on available settings.
+
+- Followed by any of the settings above, up to the next `$Profile:` or `#END PROFILES`.
+- A new profile starts from the engine defaults listed above, not from the values of "Default Profile".
+- A name that already exists, in this file or an earlier one, edits that profile.
+- Syntax: ***String***
+
+## #END PROFILES
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) Required to close the profiles section.
+
+## Adjustable values
+
+Many profile values allow for a flexible set of configurable adjustments to existing values. These are applied to their inputs in a specific order and are listed here in that order, but can be defined in the tables in any order. Only the parts that are given are applied.
+
+- A value with none of these parts logs a warning. Names are not case sensitive.
+
+### +default:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Used in place of the input when it is negative (not set). For values that can be configured more specifically elsewhere, such as the sizes of dynamic weapon lights. Defaults are only meaningful for those properties that list one in their default settings.
+- Syntax: ***Float***
+
+### +Multiplier:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- The input value will be multiplied by this amount
+- Syntax: ***Float***
+
+### +adjust:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- This amount will be added to the input value, after the multiplier. Negative values allow for downward adjustments.
+- The FreeSpace Wiki called this `+Adjustment:`; that spelling is not read.
+- Syntax: ***Float***
+
+### +Minimum:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Inputs below this amount will be set to it.
+- Syntax: ***Float***
+
+### +Maximum:
+
+![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg)
+
+- Inputs above this amount will be set to it.
+- Syntax: ***Float***
+
+## Sample Entry
+
+```
+#DEFAULT PROFILE
+
+$Tonemapper: Uncharted 2
+$Exposure: 4.0
+
+$Missile Light Radius:
+  +default: 20
+
+$Laser Light Radius:
+  +default: 100
+
+$Beam Light Radius:
+  +default: 37.5
+
+$Point Light Radius:
+  +Multiplier: 1.25
+
+$Cone Light Radius:
+  +Multiplier: 1.25
+
+#END DEFAULT PROFILE
+```
+
+## References
+
+1. [Filmic Tonemapping with Piecewise Power Curves](http://filmicworlds.com/blog/filmic-tonemapping-with-piecewise-power-curves/), John Hable
+1. [Tone Mapping](https://64.github.io/tonemapping/), 64
+1. [Filmic Tonemapping Operators](http://filmicworlds.com/blog/filmic-tonemapping-operators/), John Hable

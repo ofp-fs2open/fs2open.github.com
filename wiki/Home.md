@@ -44,5 +44,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [hud_gauges.tbl](hud_gauges.tbl): HUD gauges
   - [icons.tbl](icons.tbl): briefing icons
   - [iff_defs.tbl](iff_defs.tbl): teams and team colors
+  - [lighting_profiles.tbl](lighting_profiles.tbl): Lighting and tonemapping profiles
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
