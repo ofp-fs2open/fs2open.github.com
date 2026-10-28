@@ -71,3 +71,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [traitor.tbl](traitor.tbl): Traitor debriefing
   - [tstrings.tbl](tstrings.tbl): Table and mission text translations
   - [virtual_pofs.tbl](virtual_pofs.tbl): Virtual POF models
+  - [weapons.tbl](weapons.tbl): Weapon classes

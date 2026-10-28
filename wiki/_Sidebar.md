@@ -78,3 +78,4 @@
   - [traitor.tbl](traitor.tbl)
   - [tstrings.tbl](tstrings.tbl)
   - [virtual_pofs.tbl](virtual_pofs.tbl)
+  - [weapons.tbl](weapons.tbl)
