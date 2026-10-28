@@ -1,0 +1,629 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **mainhall.tbl** is used to define the various main menu screens in the game: their backgrounds, animations, doors, sounds and music.
+
+This table is one of the Modular Tables and can be extended with **xxx-hall.tbm**.
+
+Code: [/menuui/mainhallmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/mainhallmenu.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [$Base mainhalls on retail defaults:](#base-mainhalls-on-retail-defaults)
+3. [$Num Resolutions:](#num-resolutions)
+4. [$Door animation delay on hover:](#door-animation-delay-on-hover)
+5. [$Main Hall](#main-hall)
+6. [Sample](#sample)
+
+---
+
+## Format
+
+- Table consists of several *$Main Hall* entries
+- All settings must be defined for each separate main hall with two main hall entries for different resolutions. First for 640 followed by another entry for the 1024 resolution.
+- The table ends with **#End**
+- The settings before the first `$Main Hall` must be in the order listed here, and so must each main hall's fields. Every field is optional unless noted.
+- In a modular table, a `$Main Hall` with the `+Name:` of an existing main hall edits it (each resolution entry edits the matching resolution). Fields given replace the old values, except that `+Num Intercom Sounds:`, `+Num Misc Animations:` and `+Num Door Animations:` *add* that many new entries after the existing ones. The door lists (`+Door mask value:` and the rest) replace the existing regions in order, from the first one.
+
+## $Base mainhalls on retail defaults:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Whether every main hall starts with the retail door regions: their mask values, actions (Exit, Barracks, Start, Techroom, Options, Campaigns, Quickstart), keys and descriptions. The `+Door ...` lists then only need what's different.
+- With NO, a main hall has no door regions except the ones its `+Door ...` lists define.
+- It is one setting, not per main hall: it applies to every main hall created after it is read, in this table and later ones.
+- Default: YES
+- Syntax: **Boolean**
+
+## $Num Resolutions:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the number of resolutions of each main hall in this file. Other main-hall tables are not affected, so you can have, say, two resolutions in mainhall.tbl and three in extrahalls-hall.tbm without messing up the former table.
+- If there are multiple resolutions, the game will pick the last one that is valid for the screen resolution and aspect ratio. If none are valid, or only one resolution exists, then the first one is used. This is done per main hall, not globally.
+- The default value is 2. A value below 1 is an error.
+- Syntax: **Integer**
+
+## $Door animation delay on hover:
+
+![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg)
+
+- Defines the time delay in milliseconds that door animations will wait to trigger when the player hovers the mouse over them. If you want door animations to trigger immediately when the player hovers over them set this to 0.
+- The default value is 175 milliseconds. A negative value is set to 0.
+- It is one setting for all main halls.
+- Syntax: **Integer**
+
+## $Main Hall
+
+### +Name:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg)
+
+- Sets the name by which the mainhall is referenced in the campaign file.
+- Replaces the mainhall's position index #.
+- If no +Name is specified, it defaults to the index number according to its position in the mainhall.tbl starting with '0'.
+- The name is only needed for the 640 section of the mainhall entry, but can also be under the 1024 section if the names are the same. A different name there logs a warning and the first one is used.
+- A name used twice in mainhall.tbl logs a warning and the second main hall is skipped.
+- Syntax: **String**
+
+#### +nocreate
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Optional, directly after `+Name:`. In a modular table, edits the main hall only if it already exists (in mainhall.tbl or an earlier *-hall.tbm), instead of creating an incomplete new one. Using it in mainhall.tbl itself logs a warning.
+
+### +Cheat String:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Exchanges animations once the given cheat code has been entered.
+- Must be paired with "+Anim To Change:" and "+Anim To Change To:".
+- Can have multiple cheats as long as each one is paired with the rest of the necessary options.
+- A cheat string longer than the cheat buffer can never be typed, and logs a warning.
+- Syntax: **String**
+
+### +Anim To Change:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- This is the animation to be replaced when the cheat code is entered.
+- Must be paired with "+Cheat String:" and "+Anim To Change To:".
+- Syntax: **String**
+
+### +Anim To Change To:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- This is the animation to replace with when the cheat code is entered.
+- Must be paired with "+Cheat String:" and "+Anim To Change:".
+- Syntax: **String**
+
+### +Min Resolution:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the minimum valid resolution for this main-hall configuration. Has no effect if this configuration is for the first resolution.
+- The default value is 0 0 for the first resolution and 1024 600 for subsequent resolutions.
+- Syntax: **Integer** **Integer**
+
+### +Min Aspect Ratio:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the narrowest valid aspect ratio for this main-hall configuration. The argument is a single floating-point number that is the quotient of width / height. Has no effect if this configuration is for the first resolution.
+- Because of possible rounding errors, avoid setting this to a value that exactly matches a common aspect ratio (e.g., 1.6 for 16:10). Instead, set it to a slightly lower value (e.g., 1.59).
+- The default value is 0.0.
+- Syntax: **Float**
+
+### +Bitmap:
+
+- Defines the bitmap used for the mainhall.
+- Syntax: **String**
+
+### +Mask:
+
+- Defines the 'mask' bitmap used for the mainhall. NOTE: FS2 (and by extension FS2_Open) needs the mask file to be in pcx format. Special care must be taken to ensure that the colors of the active areas in the mask file are in the right index of the palette. For reference, here's a list showing which palette index corresponds to which "Door":
+  - 0 = inactive
+  - 1 = Exit
+  - 2 = Barracks
+  - 3 = Ready Room
+  - 4 = Tech Room
+  - 5 = Options
+  - 6 = Campaign Room
+- These are the retail regions. [+Door mask value:](#door-mask-value) can set any other index for a door.
+- Syntax: **String**
+
+### +Music:
+
+- Defines the background music played while in the main hall.
+- Syntax: **String**
+
+### +Substitute Music:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- Defines the substitute background music played while in the main hall.
+- Syntax: **String**
+
+### +Help Overlay:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines which help overlay appears when F1 is pressed. Do not include the initial dollar sign.
+- If not specified, then the default is **main** for the first main hall and **main2** for other main halls.
+- Syntax: **String**
+
+### +Help Overlay Resolution Index:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets which overlay resolution to use.
+- The default value is 0 for the first main-hall resolution, 1 for the second, 2 for the third, and so on.
+- Syntax: **Integer**
+
+### +Allow Fishies:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Whether the retail fish cheat works in this main hall (the fish swim across the screen).
+- Default: YES for the retail Vasudan main hall (bitmap vhall or 2_vhall), NO for any other.
+- Syntax: **Boolean**
+
+### +Left Fish Anim:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The animation of the fish swimming to the left.
+- Default: f_left for the retail Vasudan main hall
+- Syntax: **String**, file name
+
+### +Right Fish Anim:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- The animation of the fish swimming to the right.
+- Default: f_right for the retail Vasudan main hall
+- Syntax: **String**, file name
+
+### +Headz Door Index:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Makes the retail heads cheat work in this main hall: it swaps one door's animation, and optionally the background, for another set, and toggles back when typed again.
+- The index of the door (counting from 0, in the order of `+Door anim:`) that changes.
+- Default: the retail Vasudan main hall uses the Options door with its retail heads graphics; other main halls don't have it.
+- Syntax: **Integer**
+
+#### +Headz Animation:
+
+- Required after `+Headz Door Index:`. The door animation used instead.
+- Syntax: **String**, file name
+
+#### +Headz Background:
+
+- Optional. The main hall bitmap used instead.
+- Syntax: **String**, file name
+
+#### +Headz sound:
+
+- Optional. The sound the door plays (for both opening and closing) instead. Value refers to the interface sounds section of the [sounds.tbl](sounds.tbl).
+- Default: the retail Vasudan heads sound
+- Syntax: **Integer** or **String**
+
+### +Zoom To:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- If set, tells the game to zoom in to this area of the main hall, cropping off the edges if necessary. This parameter allows you to make a single main-hall configuration that supports a range of aspect ratios without black bars or stretching.
+- If you do use this parameter, then make sure that all of the doors (or buttons) are inside the zoom area. If you don't, then they may go offscreen, making them impossible to click!
+- Syntax: **Integer** **Integer**
+
+### +Render Mod Title:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies whether the mod title and version, as defined in [game_settings.tbl](game_settings.tbl), are displayed on this main hall.  The default value is true.
+- Syntax: **Boolean**
+
+### +Render FSO Version:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Specifies whether the FreeSpace Open version is displayed on this main hall.  The default value is true.
+- Syntax: **Boolean**
+
+### +Mod Title Position:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- Where the mod title and version are drawn, in main hall pixels from the top left. A negative value keeps that coordinate's default: x 5, y just above the FSO version near the bottom left.
+- Syntax: **Integer** **Integer**
+
+### +FSO Version Position:
+
+![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg)
+
+- Where the FreeSpace Open version is drawn, in main hall pixels from the top left. A negative value keeps that coordinate's default: x 5, y near the bottom left.
+- Syntax: **Integer** **Integer**
+
+### +Ambient Sound:
+
+![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg)
+
+- Defines the ambient sound played while in the main hall.  Value refers to the interface sounds section of the [sounds.tbl](sounds.tbl).  The default ambient sound, as well as the sound played on the pilot select screen, is interface sound 12. The retail Vasudan main hall defaults to the Vasudan ambient sound instead.
+- Syntax: **Integer** or **String**
+
+### +Num Intercom Sounds:
+
+- Defines the number of the intercom sounds played on the background while in the main hall.
+- Each of the intercom sounds requires three attributes (delay, actual sound and pan effect) that are filled with one attribute at a time - that is all intercom delays have to be defined before intercom sounds for example. Each line is required, once per sound.
+- Syntax: **Integer**
+
+#### +Intercom delay:
+
+- Defines the *minimum* and *maximum* times (in milliseconds) for the intercom sounds to be played.
+- Syntax: **Integer** **Integer**, milliseconds
+
+#### +Intercom sound:
+
+- Defines the sound played. Value refers to the interface sounds section of the [sounds.tbl](sounds.tbl).
+- Syntax: **Integer**, ![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg) or **String** (the sound's name)
+
+#### +Intercom pan:
+
+- Defines the panning effect for the sound. The left side of the screen is -1.0, 0 is the center and the 1.0 is the right side of the screen.
+- Syntax: **Float**
+
+### +Num Misc Animations:
+
+- Defines the number of miscellaneous animations.
+- Each animation requires several attributes which are filled one attribute for every animation at a time (i.e. all animation names come before animation delays). The group, sounds, handles, flags and over doors lines are optional; the rest are required, once per animation.
+- Syntax: **Integer**
+
+#### +Misc anim:
+
+- Sets the animation used for the particular misc animation.
+- Syntax: **String**
+
+#### +Misc anim group:
+
+![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
+
+- Sets the anim group number. Used to play a random animation (1 at a time per group).
+- Can have several anims in the same location, only 1 per group will be played at a time.
+- -1 is no group.
+- Syntax: **Integer**
+
+#### +Misc anim delay:
+
+- First value sets the time until the misc anim is played again (usually set as -1).
+- The last two values define the *minimum* and *maximum* delays (in milliseconds) for the miscellaneous animations.
+- Syntax: **Integer** **Integer** **Integer**
+
+#### +Misc anim coords:
+
+- Defines the coordinates for the misc animation.
+- Measured from the top left corner in X,Y.
+- Syntax: **Integer** **Integer**
+
+#### +Misc anim mode:
+
+- Defines the type of the misc animation. Type 0 is a looping animation, type 1 is animation that stays at the end frame after playing, type 2 is timed animation.
+- Type must be set to 2 if anim is part of a group.
+- Syntax: **Integer**
+
+#### +Misc anim pan:
+
+- Defines the panning effect for the anim sounds. The left side of the screen is -1.0, 0 is the center and the 1.0 is the right side of the screen.
+- Syntax: **Float**
+
+#### +Misc anim sounds:
+
+- First value sets the number of sounds played with the animation.
+- Rest of the values - equal to the numbers of the sounds played with the animation - define the sounds from the interface sounds section of the [sounds.tbl](sounds.tbl).
+
+- Syntax: **Integer** **Integer** **Integer**
+- ![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg) The sounds can also be given by name, and the first value (the count) is no longer needed.
+
+#### +Misc anim trigger:
+
+- First value sets the number of sound triggers for the animation.
+- Rest of the values - equal to the numbers of the sounds in "Misc Anim Sounds" - define the frame of the animation when the sound is to be played.
+- If there are more triggers than sounds listed in "Misc Anim Sounds" it will loop around and play the first sound listed again.
+- Syntax: **Integer** **Integer** **Integer**
+
+#### +Misc anim handles:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg) Deprecated: the line is still accepted, but ignored.
+
+- Defines the number of sounds that can play concurrently.
+- Syntax: **Integer**
+
+#### +Misc anim flags:
+
+![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg) Deprecated: the line is still accepted, but ignored.
+
+- Defines which sound from "Misc Anim Sounds" will be played first.
+- There is some confusion on this one, best leave it as '1' (Or retail value).
+- Syntax: **Integer**
+
+#### +Misc anim over doors:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Renders the given misc anim after (on top of) the door animations.
+- Default: NO
+- Syntax: **Boolean**
+
+### +Num Door Animations:
+
+- Sets the number of door animations for the mainhall.
+- Like the misc animations, each attribute is listed once per door, all of one attribute before the next. The door anim, coords and pan lines are required.
+- Syntax: **Integer**
+
+#### +Door anim:
+
+- Defines the animation used for the door animation.
+- Syntax: **String**
+
+#### +Door coords:
+
+- First two values define the coordinates for the animation and the last two values the centerpoint of the animation.
+- Measured from the top left corner.
+- First two are the X,Y for the anim, the second 2 are the X,Y for the center of the anim.
+- Syntax: **Integer** **Integer** **Integer** **Integer**
+
+#### +Door sounds:
+
+- Defines the sounds that are played when door opens and closes. Values are references to the interface sounds section of the [sounds.tbl](sounds.tbl).
+
+- Syntax: **Integer** **Integer**, open sound then close sound
+- ![FSO 3.7](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.svg) The sounds can also be given by name.
+
+#### +Door pan:
+
+- Defines the panning effect for the sound effect. The left side of the screen is -1.0, 0 is the center and the 1.0 is the right side of the screen.
+- Syntax: **Float**
+
+#### +Door mask value:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets the color the masked area for the door has: the mask's palette index is 255 minus this value, so 255 is index 0, 254 is index 1 and so on.
+- You can put decimal or hexadecimal (0x...) here.
+- This and the other `+Door ...` lists below set doors in order, starting from the first: one line per door, all mask values first, then all actions, and so on. They can list more doors than `+Num Door Animations:`, for regions without an animation.
+- Syntax: **Integer**
+
+#### +Door action:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets the action the door takes when clicked.
+- Can be any of the following: Exit, Barracks, Readyroom, Techroom, Options, Campaigns, Multiplayer, Load Mission, Quickstart, Skilllevel, ![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg) Start or "Script <LUA code>".
+- Start goes to the ready room, or to multiplayer when the pilot is a multiplayer pilot (the retail ready room door uses it).
+- The names must match exactly, capitalization included. An unknown action is an error that lists the valid ones.
+- Syntax: **String**
+
+#### +Door key:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets keypress shortcut for the door.
+- Can be any key that FSO checks for input. Only the first character is used.
+- Syntax: **String**
+
+#### +Door description:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets the description that is displayed in the tooltip when the mouse hovers over a particular door.
+- `default` keeps the door's current description (for example the retail one), so later doors can be changed without retyping earlier ones.
+- Syntax: **String**
+
+### +Font:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines the font used for the text in this main hall. This can either be a string or a number. A string references a font with a specific name while a number references a font with a specific index in the fonts table. The number option is deprecated and is only there for backwards-compatibility. Use the name if possible. Does not affect pop-up messages or the F1 overlay.
+- Default value is the first font.
+- Syntax: **String** or **Integer**
+
+### +Tooltip Padding:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Defines how much the shading area should extend above the tooltips. Also affects the "Press F1 for help" text at the top.
+- This was previously hardcoded as two values, one for each resolution: 4 for 640x480 and 7 for 1024x768. These are still used as the default values.
+- Syntax: **Integer**
+
+### +Tooltip Y:
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+- Sets the Y-coordinate for drawing the tooltip text.
+
+- If this entry is omitted, the tooltip will default to the bottom of the visible screen.
+- Syntax: **Integer**
+
+### +Escape Key Script Action:
+
+![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
+
+- Lua code run when Escape is pressed in this main hall, instead of asking to quit the game.
+- Code that fails to run logs a warning.
+- Syntax: **String**, Lua code (the rest of the line)
+
+## Sample
+
+- Galatea mainhall from the FSPort-MVPs.
+```
+;; Galatea A
+;; Index 0
+;; GR_640
+$Main Hall
++Name: Galatea A
+
++Bitmap:					LOW_Galatea
++Mask:						LOW_Galatea-m	
++Music:						Aquitaine
++Substitute Music:				FS1-Choco Mousse
+
++Num Intercom Sounds:	3				;; There is no limit anymore
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 0
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 1
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 2
++Intercom sound:	pa_1				;; SND_MAIN_HALL_INT1
++Intercom sound:	pa_2				;; SND_MAIN_HALL_INT2
++Intercom sound:	pa_3				;; SND_MAIN_HALL_INT3
++Intercom pan:		0.0					;; pan for intercom sound 0
++Intercom pan:		0.0					;; pan for intercom sound 1
++Intercom pan:		0.0					;; pan for intercom sound 2
+
++Num Misc Animations:	2				;; There is no limit anymore
++Misc anim:		LOWgal-m1				;; anim for misc anim 1
++Misc anim:		LOWgal-m2				;; anim for misc anim 2
++Misc anim delay:	-1 15000 20000			;; time until we will next play a misc anim, min delay, max delay
++Misc anim delay:	-1 9000 30000			;; time until we will next play a misc anim, min delay, max delay
++Misc anim coords:	14 14					;; coords for misc anim 1
++Misc anim coords:	174 198					;; coords for misc anim 2
++Misc anim mode:	0				;; anim 1 mode (0 == loop, 1 == hold, 2 == timed)
++Misc anim mode:	2				;; anim 2 mode (0 == loop, 1 == hold, 2 == timed)
++Misc anim pan:		-0.5					;; pan for anim 1
++Misc anim pan:		-0.25					;; pan for anim 2
++Misc anim sounds:	2 weld01 weld02 		;; # sounds, sound number for each, anim 1
++Misc anim sounds:	3 lift01a switch lift01a	;; # sounds, sound number for each, anim 2
++Misc anim trigger:	4 1 20 42 96				;; # of triggers, frame to play sound on, anim 1
++Misc anim trigger:	3 25 200 274				;; # of triggers, frame to play sound on, anim 2
+
++Num Door Animations:	6				;; There is no limit anymore
++Door anim:		LOWgal-d1				;; door anim 1
++Door anim:		LOWgal-d6				;; door anim 2
++Door anim:		LOWgal-d3				;; door anim 3
++Door anim:		LOWgal-d4				;; door anim 4
++Door anim:		LOWgal-d5				;; door anim 5
++Door anim:		LOWgal-d2				;; door anim 6
++Door coords:		68 260 103 298			;; door 1, coords and center of anim
++Door coords:		309 34 110 61			;; door 2, coords and center of anim
++Door coords:		312 264 385 330			;; door 3, coords and center of anim
++Door coords:		457 34 404 367			;; door 4, coords and center of anim
++Door coords:		530 206 174 412			;; door 5, coords and center of anim
++Door coords:		305 133 385 330			;; door 6, coords and center of anim
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		itemdraw 61				;; screen on, screen off
++Door sounds:		itemdraw 61				;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door pan:		-0.7				;; door sound pan
++Door pan:		0.07				;; door sound pan
++Door pan:		0.2				;; door sound pan
++Door pan:		0.73				;; door sound pan
++Door pan:		0.75				;; door sound pan
++Door pan:		0.11				;; door sound pan
+
++Tooltip Y:		469				;; y coord to draw tooltip text
+;; -----------------------------------
+;; GR_1024
+$Main Hall
+
++Cheat String:      wwwa
++Anim To Change:    2_gal-m1a-a
++Anim To Change To: 2_gal-m1a-neon
+ 
++Cheat String:      wwwz
++Anim To Change:    2_gal-d6
++Anim To Change To: 2_gal-d6_lights
+
++Bitmap:					2_MainHall_Galatea_a
++Mask:						2_MainHall_Galatea-m	
++Music:						Aquitaine
++Substitute Music:				FS1-Choco Mousse
+
++Num Intercom Sounds:	3				;; There is no limit anymore
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 0
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 1
++Intercom delay:	8000 15000				;; min and max random delay for intercom sound 2
++Intercom sound:	pa_1				;; SND_MAIN_HALL_INT1
++Intercom sound:	pa_2				;; SND_MAIN_HALL_INT2
++Intercom sound:	pa_3				;; SND_MAIN_HALL_INT3
++Intercom pan:		0.0					;; pan for intercom sound 0
++Intercom pan:		0.0					;; pan for intercom sound 1
++Intercom pan:		0.0					;; pan for intercom sound 2
+
++Num Misc Animations:	2				;; There is no limit anymore
++Misc anim:		2_gal-m1a-a				;; anim for misc anim 1 (Sparks)
++Misc anim:		2_gal-m2a-a				;; anim for misc anim 2 (Elevator)
++Misc anim group:	-1				;; group number anim belongs to (-1 is no group)
++Misc anim group:	-1				;; group number anim belongs to (-1 is no group)
++Misc anim delay:	-1 0 0					;; time until we will next play a misc anim, min delay, max delay
++Misc anim delay:	-1 20000 90000				;; time until we will next play a misc anim, min delay, max delay
++Misc anim coords:	0 0				;; coords for misc anim 1
++Misc anim coords:	263 255				;; coords for misc anim 2
++Misc anim mode:	0					;; anim 1 mode (0 == loop, 1 == hold, 2 == timed)
++Misc anim mode:	2					;; anim 2 mode (0 == loop, 1 == hold, 2 == timed)
++Misc anim pan:		-0.5				;; pan for anim 1
++Misc anim pan:		-0.25				;; pan for anim 2
++Misc anim sounds:	2 weld01 weld02 			;; # sounds, sound number for each, anim 1
++Misc anim sounds:	3 lift01a switch lift01a		;; # sounds, sound number for each, anim 2
++Misc anim trigger:	4 1 20 42 96			;; # of triggers, frame to play sound on, anim 1
++Misc anim trigger:	3 25 200 274			;; # of triggers, frame to play sound on, anim 2
++Misc anim over doors: 0
++Misc anim over doors: 0
+
++Num Door Animations:	7				;; There is no limit anymore
++Door anim:		2_gal-d1				;; door anim 1 exit
++Door anim:		2_gal-d6				;; door anim 2 barracks
++Door anim:		2_gal-d3				;; door anim 3 ready room
++Door anim:		2_gal-d4				;; door anim 4 tech room
++Door anim:		2_gal-d5				;; door anim 5 options
++Door anim:		2_gal-d2				;; door anim 6 campaign
++Door anim:		2_gal-d7				;; door anim 7 multi
++Door coords:		0 368 177 412			;; door 1, coords and center of anim
++Door coords:		433 0 519 65			;; door 2, coords and center of anim
++Door coords:		440 357 581 410			;; door 3, coords and center of anim
++Door coords:		749 0 897 155			;; door 4, coords and center of anim
++Door coords:		803 277 945 457			;; door 5, coords and center of anim
++Door coords:		451 176 559 250			;; door 6, coords and center of anim
++Door coords:		0 368 177 412			;; door 7, coords and center of anim
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		itemdraw 61				;; screen on, screen off
++Door sounds:		itemdraw 61				;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door sounds:		dooropen doorclose			;; door open, door close
++Door pan:		-0.7				;; door sound pan
++Door pan:		0.00				;; door sound pan
++Door pan:		0.0				;; door sound pan
++Door pan:		0.73				;; door sound pan
++Door pan:		0.75				;; door sound pan
++Door pan:		0.0				;; door sound pan
++Door pan:		-0.7				;; door sound pan
++Door mask value:      255
++Door mask value:      254
++Door mask value:      253
++Door mask value:      252
++Door mask value:      251
++Door mask value:      250
++Door mask value:      249
++Door action:          Exit
++Door action:          Barracks
++Door action:          Readyroom
++Door action:          Techroom
++Door action:          Options
++Door action:          Campaigns
++Door action:          Multiplayer
++Door description:     Exit - Quit Between the Ashes
++Door description:     Barracks - Manage your FSO pilots
++Door description:     Ready Room - Start or continue a campaign
++Door description:     Tech Room - View specifications of BtA ships and weaponry
++Door description:     Options - Change your FSO options
++Door description:     Campaign Room - View all available campaigns
++Door description:     Multiplayer - Start or join a coop game
+
++Tooltip Y:		755				;; y coord to draw tooltip text
+```

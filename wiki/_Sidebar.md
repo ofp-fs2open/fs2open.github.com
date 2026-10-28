@@ -53,5 +53,6 @@
   - [iff_defs.tbl](iff_defs.tbl)
   - [lighting_profiles.tbl](lighting_profiles.tbl)
   - [lightning.tbl](lightning.tbl)
+  - [mainhall.tbl](mainhall.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

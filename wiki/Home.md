@@ -46,5 +46,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [iff_defs.tbl](iff_defs.tbl): teams and team colors
   - [lighting_profiles.tbl](lighting_profiles.tbl): Lighting and tonemapping profiles
   - [lightning.tbl](lightning.tbl): Nebula lightning bolts and storms
+  - [mainhall.tbl](mainhall.tbl): Main hall screens
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
