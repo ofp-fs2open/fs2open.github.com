@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#145](https://github.com/ofp-fs2open/fs2open.github.com/pull/145)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **ssm.tbl** defines subspace missile (SSM) strikes: the weapons that warp in around a target, how many, and in what formation.
