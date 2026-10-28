@@ -57,5 +57,6 @@
   - [medals.tbl](medals.tbl)
   - [messages.tbl](messages.tbl)
   - [mflash.tbl](mflash.tbl)
+  - [music.tbl](music.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

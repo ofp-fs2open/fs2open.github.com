@@ -50,5 +50,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [medals.tbl](medals.tbl): Medals and badges
   - [messages.tbl](messages.tbl): Built-in messages and personas
   - [mflash.tbl](mflash.tbl): Weapon muzzle flashes
+  - [music.tbl](music.tbl): Soundtracks and menu music
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
