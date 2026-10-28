@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#130](https://github.com/ofp-fs2open/fs2open.github.com/pull/130)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **mflash.tbl** is used to define different muzzleflashes that are seen in game. Weapons use them by name with `$Muzzleflash:` in [weapons.tbl](weapons.tbl).
