@@ -55,3 +55,12 @@ body:
       description: Attach fs2_open.log or relevant screenshots if applicable.
     validations:
       required: false
+
+  - type: checkboxes
+    id: ai-policy
+    attributes:
+      label: AI Usage Policy
+      description: Bug reports must be written by a person. See [AI_POLICY.md](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/AI_POLICY.md).
+      options:
+        - label: I wrote this report myself, and any AI-generated text in it is quoted and labeled.
+          required: true

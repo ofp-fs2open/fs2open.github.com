@@ -22,6 +22,7 @@ OFP is not a replacement for FSO. It is a parallel platform with different gover
 - **Found a bug?** [Open an issue](../../issues/new/choose)
 - **Have a feature request?** [Start a Discussion](../../discussions/new?category=feature-requests)
 - **Want to contribute code?** Read [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Using AI tools?** Read [AI_POLICY.md](AI_POLICY.md) before opening an issue, PR or Discussion
 - **Want to understand governance?** Read [GOVERNANCE.md](GOVERNANCE.md)
 
 ## Building

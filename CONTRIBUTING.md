@@ -9,6 +9,7 @@ Welcome. OFP is a community-governed fork of FreeSpace Open. This document cover
 - **Bug fixes** are always welcome. Open a PR, get it merged. No prerequisites.
 - **Feature work** should draw from the Community Queue (see below). Personal features are allowed but subject to reviewer prioritization.
 - All contributions must be compatible with FSO licensing terms. New OFP-originated contributions are released under the Unlicense.
+- Issues, PRs and Discussions follow the [AI Usage Policy](AI_POLICY.md): write your own posts, disclose any AI-written code, and don't submit large AI-written PRs.
 
 ---
 
@@ -90,9 +91,10 @@ A recused Maintainer may still comment technically but does not vote or merge. I
 2. Write clear commit messages.
 3. If implementing a Queue item, reference the Discussion in your PR description.
 4. If skipping a Queue item, explain why in your PR description.
-5. Ensure CI passes on Linux, Windows, and macOS before requesting review.
-6. Request review from a Reviewer or Maintainer.
-7. Once the PR is approved, document it in `wiki/` (see below) and push that to the same PR. A PR can't merge until it's documented.
+5. Write the PR description yourself, and disclose any AI use in it (see the [AI Usage Policy](AI_POLICY.md)).
+6. Ensure CI passes on Linux, Windows, and macOS before requesting review.
+7. Request review from a Reviewer or Maintainer.
+8. Once the PR is approved, document it in `wiki/` (see below) and push that to the same PR. A PR can't merge until it's documented.
 
 ### Documenting your change
 
