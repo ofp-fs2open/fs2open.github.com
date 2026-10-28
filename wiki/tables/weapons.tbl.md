@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#152](https://github.com/ofp-fs2open/fs2open.github.com/pull/152)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **weapons.tbl** defines all the weapons: primaries, secondaries, beams and countermeasures.
