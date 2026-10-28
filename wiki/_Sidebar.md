@@ -76,3 +76,4 @@
   - [strings.tbl](strings.tbl)
   - [tips.tbl](tips.tbl)
   - [traitor.tbl](traitor.tbl)
+  - [tstrings.tbl](tstrings.tbl)

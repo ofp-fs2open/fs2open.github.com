@@ -69,3 +69,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [strings.tbl](strings.tbl): Interface text translations
   - [tips.tbl](tips.tbl): Main hall tips
   - [traitor.tbl](traitor.tbl): Traitor debriefing
+  - [tstrings.tbl](tstrings.tbl): Table and mission text translations

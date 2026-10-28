@@ -1,0 +1,79 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **tstrings.tbl** is used for translations quite like the [strings.tbl](strings.tbl), except that it is used for **t**able **strings**: the text in the other tables and in missions and campaigns.
+
+This table is one of the Modular Tables and can be extended with **xxx-tlc.tbm**.
+
+Code: [/localization/localize.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/localization/localize.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [General Info](#general-info)
+2. [Format](#format)
+3. [Sample](#sample)
+
+---
+
+## General Info
+
+- Other files use the index values for finding translations located in the **tstrings.tbl**: the number in an `XSTR("text", number)`.
+- Only the section for the language the game is running in is read. (When running in a language other than English, the `#default` section is also read, for internal use.)
+
+## Format
+
+- Table consists of one or more sections, each beginning with a number sign followed by the name of the language (e.g., **#German**), as the language is named in [strings.tbl](strings.tbl). The exception is the English section, which must begin with **#default**.
+- Each section ends at the next line that starts with **#** (normally **#end**).
+- Each section consists of many indexed text entries.
+
+### Individual Lines
+
+- Each line starts with the number or index that it will be linked to from other tables.
+- Each line also contains the full text to use for that index throughout FSO, in double quotes. The text can span several lines.
+- ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) There is no limit on the number of strings (it was 4,500 per section).
+- An index can't be negative: a negative index logs a warning and the rest of the file is not read.
+- An index used twice in one table logs a warning. A modular table that uses an existing index replaces that string.
+- Syntax: **Integer**, **String**
+
+## Sample
+
+- Part of retail FreeSpace 2 table
+```
+#default
+0, "The main FreeSpace 2 campaign."
+
+1, "Special Operations Command has selected you for a dangerous covert assignment. Will you accept?"
+
+2, "Special Operations Command requests your participation in a high-risk rescue mission. Will you volunteer?"
+
+3, "Act 3"
+
+4, "Shivan Gauntlet"
+
+5, "A gauntlet module in which you face waves of Shivan fighters and warships.
+"
+
+6, "Blah"
+...
+...
+3413, "*Aeolus Duel"
+
+3414, "*Deimos Duel"
+
+3415, "*Close Quarters"
+
+3416, "*Ganymede Redux"
+
+3417, "*Team Chaos"
+
+3418, "*Ganymede Showdown"
+
+3419, "So where's the Iceni, Command? Let's end this now."
+
+3420, "Protect Tatenen"
+
+#end
+```
