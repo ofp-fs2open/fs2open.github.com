@@ -100,7 +100,7 @@ The [OFP wiki](https://github.com/ofp-fs2open/fs2open.github.com/wiki) is publis
 
 - **New engine or QtFRED feature:** add a row to `wiki/OFP-Engine-Features.md` or `wiki/OFP-QtFRED-Features.md`.
 - **Fix to code OFP shares with SCP:** add a row to the top of `wiki/OFP-Bug-Fixes.md`. Fixes to OFP's own features don't need a row.
-- **New or changed tables, SEXPs or Lua:** update the matching page (table pages are in `wiki/tables/`), and set its "OFP Revision" line to your PR. Mark new table fields with the OFP version badge, as the existing pages do. A new page also needs an entry in `wiki/_Sidebar.md` and `wiki/Home.md`.
+- **New or changed tables, SEXPs or Lua:** update the matching page (table pages are in `wiki/tables/`), and set its "OFP Revision" line to your PR. Mark new table fields with the OFP version badge, as the existing pages do. A new page also needs an entry in `wiki/_Sidebar.md` and `wiki/Home.md`. After changing a table page's fields, run `node .github/scripts/wiki-field-index.js` to update the page's Field index; the **Documentation** check fails if it is out of date.
 
 Link your PR (`[#123](https://github.com/ofp-fs2open/fs2open.github.com/pull/123)`) wherever a row or revision line asks for one.
 

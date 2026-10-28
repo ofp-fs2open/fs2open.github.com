@@ -35,3 +35,11 @@ jobs:
 
           echo "::error::This PR doesn't change anything under wiki/. Document the change there (see CONTRIBUTING.md), or ask a maintainer for the no-docs label if there is nothing to document."
           exit 1
+
+      - uses: actions/checkout@v7
+        name: Checkout
+
+      # The field index on each table page is generated from the page's headings; it must be
+      # regenerated whenever a table page's fields change.
+      - name: Check the table pages' field indexes are up to date
+        run: node .github/scripts/wiki-field-index.js --check
