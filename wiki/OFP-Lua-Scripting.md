@@ -29,7 +29,7 @@ Coordinate points are an OFP object type: named locations in a mission that can 
 
 ### mn.CoordinatePoints
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 A library (part of `mn`) for accessing the mission's coordinate points.
 
@@ -42,7 +42,7 @@ A library (part of `mn`) for accessing the mission's coordinate points.
 
 ### coordinatepoint object
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 A handle to one coordinate point. It **derives from `object`**, so everything available on an object handle also works on it: `Position`, `Orientation`, `isValid()`, `getBreedName()` and so on. `tostring()` on it gives `"<name> coordinate point"`.
 
@@ -67,7 +67,7 @@ Colour, shape, size and angle are not exposed to Lua. They come from the mission
 
 ### Coordinate points in other API types
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 - **`object`:** any API that hands back a generic object (for example, the player's current target) returns a `coordinatepoint` handle when the object is a coordinate point.
 - **`oswpt`:** SEXP arguments that accept a ship/wing/waypoint/team can also hold a coordinate point. On such an argument, `getType()` returns `"coordinatepoint"` and `get()` returns the `coordinatepoint` handle.
@@ -80,7 +80,7 @@ Ships can carry named [custom data](editor.tbl) values, set in qtFRED's Ship Edi
 
 ### ship:getCustomData
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 string ship:getCustomData(string key, [string defaultValue = ""])
@@ -91,7 +91,7 @@ string ship:getCustomData(string key, [string defaultValue = ""])
 
 ### ship:setCustomData
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 boolean ship:setCustomData(string key, [string value])
@@ -102,7 +102,7 @@ boolean ship:setCustomData(string key, [string value])
 
 ### ship:hasCustomData
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 boolean ship:hasCustomData([string key])
@@ -113,7 +113,7 @@ boolean ship:hasCustomData([string key])
 
 ### ship:clearCustomData
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 boolean ship:clearCustomData([string key])
@@ -132,7 +132,7 @@ Intel entries can have a 3D model through `$Tech Model:` in intel.tbl (see [inte
 
 ### intelentry:renderTechModel
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 boolean intelentry:renderTechModel(number X1, number Y1, number X2, number Y2,
@@ -149,7 +149,7 @@ This matches `shipclass:renderTechModel`.
 
 ### intelentry:renderTechModel2
 
-**OFP, 26.1:**
+![OFP 26.1.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.1.0.svg)
 
 ```
 boolean intelentry:renderTechModel2(number X1, number Y1, number X2, number Y2,

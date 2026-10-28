@@ -334,6 +334,58 @@ Badges show the version a field or behavior was added in.
 - [Center Text On Gauge X-Position:](#center-text-on-gauge-x-position)
 - [Ngon Sides:](#ngon-sides)
 - [Ngon Offset:](#ngon-offset)
+- [Cockpit View Choice:](#cockpit-view-choice)
+- [Enable Rearm Timer:](#enable-rearm-timer)
+- [First Background Size:](#first-background-size)
+- [Entry Size:](#entry-size)
+- [Right Background Offset:](#right-background-offset)
+- [Last Background Offset:](#last-background-offset)
+- [On Text Color:](#on-text-color)
+- [Max Line Width:](#max-line-width)
+- [Monitor Alpha Mask Filename:](#monitor-alpha-mask-filename)
+- [Subsystem Name Offsets:](#subsystem-name-offsets)
+- [Subsystem Integrity Offsets:](#subsystem-integrity-offsets)
+- [Disabled Status Offsets:](#disabled-status-offsets)
+- [Desaturate:](#desaturate)
+- [Wireframe:](#wireframe)
+- [Wireframe Color:](#wireframe-color)
+- [Text Alignment:](#text-alignment)
+- [Always Show Text:](#always-show-text)
+- [Text Follows:](#text-follows)
+- [Show Ballistic Ammo:](#show-ballistic-ammo)
+- [Armed Guns List Offsets:](#armed-guns-list-offsets)
+- [Armed Guns List Alignment:](#armed-guns-list-alignment)
+- [Armed Guns List Entry Height:](#armed-guns-list-entry-height)
+- [Show Max Speed Label:](#show-max-speed-label)
+- [Show Min Speed Label:](#show-min-speed-label)
+- [Current Speed Offsets:](#current-speed-offsets)
+- [Target Speed Offsets:](#target-speed-offsets)
+- [Show Percentage:](#show-percentage)
+- [Glide Status Offsets:](#glide-status-offsets)
+- [Match Speed Status Offsets:](#match-speed-status-offsets)
+- [Enable Target Info:](#enable-target-info)
+- [Count Offsets:](#count-offsets)
+- [Icon Width:](#icon-width)
+- [Icon Height:](#icon-height)
+- [Max Icons:](#max-icons)
+- [Max Columns:](#max-columns)
+- [Name Alignment:](#name-alignment)
+- [Line Width:](#line-width)
+- [View Direction:](#view-direction)
+- [Show Primary Weapons:](#show-primary-weapons)
+- [Show Secondary Weapons:](#show-secondary-weapons)
+- [First Background Height:](#first-background-height)
+- [First Background X-offset:](#first-background-x-offset)
+- [Entry Background Height:](#entry-background-height)
+- [Entry Background X-offset:](#entry-background-x-offset)
+- [Last Background X-offset:](#last-background-x-offset)
+- [Last Background Y-offset:](#last-background-y-offset)
+- [List Start Y-offset:](#list-start-y-offset)
+- [Ammo X-offset:](#ammo-x-offset)
+- [Link X-offset:](#link-x-offset)
+- [Unlink X-offset:](#unlink-x-offset)
+- [Reload X-offset:](#reload-x-offset)
+- [Off Text Color:](#off-text-color)
 
 </details>
 <!-- field-index:end -->
@@ -685,7 +737,7 @@ Adds a custom gauge type.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Name:](#name)
   - [Text:](#text)
   - [X Offset:](#x-offset) (Optional)
@@ -713,7 +765,7 @@ Adds a scripted gauge type.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Name:](#name)
 
 #### +Messages:
@@ -733,7 +785,7 @@ Adds a gauge that display mission messages.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Max Lines:](#max-lines) (Optional)
   - [Max Width:](#max-width) (Optional)
@@ -759,7 +811,7 @@ Adds a text box, like the ones seen in the FS1 and FS2 training missions.
   - [Display Size:](#display-size)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Support:
 
@@ -778,14 +830,14 @@ Adds a text box that shows the Support ship's status and ETA
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename)
   - [Header Offsets:](#header-offsets) (Optional)
   - [Text Y-offset:](#text-y-offset) (Optional)
   - [Dock Status X-offset:](#dock-status-x-offset) (Optional)
   - [Dock Time X-offset:](#dock-time-x-offset) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Enable Rearm Timer:` (Optional boolean. Enables the countdown timer for rearm and repair. Overrides the commandline setting.)
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Enable Rearm Timer:](#enable-rearm-timer) (Optional boolean. Enables the countdown timer for rearm and repair. Overrides the commandline setting.)
 
 #### +Damage:
 
@@ -804,7 +856,7 @@ Adds a gauge that shows how much damage a target (or the player?) has.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Top Background Filename:](#top-background-filename) (Optional)
   - [Entry Background Filename:](#entry-background-filename) (Optional)
@@ -836,7 +888,7 @@ Adds a gauge that monitors the status of your wing and squadron.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Left Background Filename:](#left-background-filename) (Optional) (needs an animation with one frame)
   - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [First Background Filename:](#first-background-filename) (Optional) (needs an animation with one frame)
@@ -847,11 +899,11 @@ Adds a gauge that monitors the status of your wing and squadron.
   - [Header Offsets:](#header-offsets) (Optional)
   - ![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) [Fixed Header Position:](#fixed-header-position) (Optional)
   - [Left Background Width:](#left-background-width) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `First Background Size:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [First Background Size:](#first-background-size) (Optional)
   - [Entry Width:](#entry-width) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Entry Size:` (Optional)
-  - `Right Background Offset:` (Optional)
-  - `Last Background Offset:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Entry Size:](#entry-size) (Optional)
+  - [Right Background Offset:](#right-background-offset) (Optional)
+  - [Last Background Offset:](#last-background-offset) (Optional)
   - [Single Wing Offsets:](#single-wing-offsets) (Optional)
   - [Multiple Wing Start Offsets:](#multiple-wing-start-offsets) (Optional)
   - [Wing Name Offsets:](#wing-name-offsets) (Optional)
@@ -878,13 +930,13 @@ Adds the Auto-Speed mode gauge.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (needs animation with 4 frames, 3rd is without auto-match-speed enabled, 4th is with... and frames 0 & 1 are not used, done this way because retail fs2 uses the same animation file for the auto speed & auto targeting gauges)
   - [Auto Offsets:](#auto-offsets) (Optional)
   - [Speed Offsets:](#speed-offsets) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `On Text Color:` (Optional)
-  - `Off Text Color:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [On Text Color:](#on-text-color) (Optional)
+  - [Off Text Color:](#off-text-color) (Optional)
 
 #### +Auto Target:
 
@@ -903,13 +955,13 @@ Adds the Auto-target mode gauge.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (needs animation with 2 frames, 1st is without auto-targeting enabled, 2nd is with)
   - [Auto Offsets:](#auto-offsets) (Optional)
   - [Target Offsets:](#target-offsets) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `On Text Color:` (Optional)
-  - `Off Text Color:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [On Text Color:](#on-text-color) (Optional)
+  - [Off Text Color:](#off-text-color) (Optional)
 
 #### +Countermeasures:
 
@@ -928,7 +980,7 @@ Adds a gauge that monitors the amount of remaining countermeasures the player's 
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (needs an animation with a single frame)
   - [Text Offsets:](#text-offsets) (Optional)
@@ -951,7 +1003,7 @@ Adds a video window to display pilot message videos (a.k.a talking heads).
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename)
   - [Header Offsets:](#header-offsets) (Optional)
@@ -976,7 +1028,7 @@ Adds a gauge that displays all currently active directives (includes current , c
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Top Background Filename:](#top-background-filename) (Optional) (needs animation with one frame)
   - [Entry Background Filename:](#entry-background-filename) (Optional) (needs animation with one frame)
   - [Bottom Background Filename:](#bottom-background-filename) (Optional) (needs animation with one frame)
@@ -985,7 +1037,7 @@ Adds a gauge that displays all currently active directives (includes current , c
   - [List Start Offsets:](#list-start-offsets) (Optional)
   - [Entry Height:](#entry-height) (Optional)
   - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Bottom Background Offset:](#bottom-background-offset) (Optional)
-  - `Max Line Width:` (Optional)
+  - [Max Line Width:](#max-line-width) (Optional)
   - ![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg) [Key Line X Offset:](#key-line-x-offset) (Optional)
 
 #### +Weapons:
@@ -1005,7 +1057,7 @@ Adds a weapon status and ammunition gauge.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Primary List Top Background Filename:](#primary-list-top-background-filename) (Optional) (needs animation with a single frame)
   - [Alt Ballistic Filename:](#alt-ballistic-filename)  (Optional) (needs animation with a single frame)
@@ -1056,7 +1108,7 @@ Adds a Objective notifier gauge. This gauge alerts the player when receiving a n
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename)
   - [Objective Text Y-offset:](#objective-text-y-offset) (Optional)
@@ -1090,7 +1142,7 @@ Adds the squad message gauge. In FS1 and FS2, this gauge is used to send command
 
 ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
 
-![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 [Slew:](#slew) (Optional)
 [Top Background Filename:](#top-background-filename) (Optional)
@@ -1124,7 +1176,7 @@ Adds a Lag gauge.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename)
 
@@ -1145,7 +1197,7 @@ Adds a mini Target shields gauge. In FS1 and FS2, the Mini Target Shield gauge i
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (animation needs 8 frames; 0->3 are the top, right, bottom & left shield quads; 4->7 are the same except brighter for when the quad is flashing from being hit)
   - [3 Digit Hull Offsets:](#3-digit-hull-offsets) (Optional)
@@ -1169,7 +1221,7 @@ Adds a gauge that shows the shield and hull status icon of the player's craft or
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
 
 #### +Target Shields:
@@ -1189,7 +1241,7 @@ Adds a gauge that shows the shield and hull status icon of the targeted craft or
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
 
 #### +Escort View:
@@ -1209,7 +1261,7 @@ Adds an escort monitor/view gauge. This gauge monitors the status of all ships a
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Top Background Filename:](#top-background-filename) (Optional)
   - [Entry Background Filename:](#entry-background-filename) (Optional)
@@ -1243,7 +1295,7 @@ Adds a gauge that displays the current mission time.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Text Offsets:](#text-offsets) (Optional)
@@ -1266,7 +1318,7 @@ Adds a gauge that displays the current mission time.
   - ![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg) [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
@@ -1292,7 +1344,7 @@ Adds a gauge that displays the energy transfer rate for the energy weapons.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
@@ -1317,7 +1369,7 @@ Adds a gauge that displays the energy transfer rate for the afterburner/engines.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
@@ -1342,7 +1394,7 @@ Adds a gauge that displays the energy transfer rate for the shields.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
@@ -1367,9 +1419,9 @@ Adds a target monitor gauge that shows the targeted ship's relative orientation 
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Monitor Filename:](#monitor-filename) (Optional) (needs animation with 2 frames, 1st is the background for the target, 2nd is the border; rendered last)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Monitor Alpha Mask Filename:` (Optional) (needs animation with a single frame)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Monitor Alpha Mask Filename:](#monitor-alpha-mask-filename) (Optional) (needs animation with a single frame)
   - [Integrity Bar Filename:](#integrity-bar-filename) (Optional) (needs animation with 2 frames, 1st is a zero/dark filled bar, 2nd is a max/bright filled bar)
   - [Viewport Offsets:](#viewport-offsets) (Optional)
   - [Viewport Size:](#viewport-size) (Optional)
@@ -1384,12 +1436,12 @@ Adds a target monitor gauge that shows the targeted ship's relative orientation 
   - [Cargo Contents Offsets:](#cargo-contents-offsets) (Optional)
   - [Cargo Scan Start Offsets:](#cargo-scan-start-offsets) (Optional)
   - [Cargo Scan Size:](#cargo-scan-size) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Subsystem Name Offsets:` (Optional)
-  - `Subsystem Integrity Offsets:` (Optional)
-  - `Disabled Status Offsets:` (Optional)
-  - `Desaturate:` (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Wireframe:` (Optional. Valid values match $Wireframe Targetbox: and will override the global setting)
-  - `Wireframe Color:` (Optional. Color. Takes three ints 0-255, R,G,B; will override the global setting)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Subsystem Name Offsets:](#subsystem-name-offsets) (Optional)
+  - [Subsystem Integrity Offsets:](#subsystem-integrity-offsets) (Optional)
+  - [Disabled Status Offsets:](#disabled-status-offsets) (Optional)
+  - [Desaturate:](#desaturate) (Optional)
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Wireframe:](#wireframe) (Optional. Valid values match $Wireframe Targetbox: and will override the global setting)
+  - [Wireframe Color:](#wireframe-color) (Optional. Color. Takes three ints 0-255, R,G,B; will override the global setting)
   - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cargo Scan Type:](#cargo-scan-type) (Optional)
 
 #### +Extra Target Data:
@@ -1409,7 +1461,7 @@ Adds a gauge that displays "extra" target data, such as its current orders and d
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional) (needs an animation with 1 frame)
   - [Bracket Offsets:](#bracket-offsets) (Optional)
@@ -1439,7 +1491,7 @@ Adds a standard radar gauge
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Filename:](#filename) (Optional) (needs animation with 2 frames, only the 2nd frame is used)
   - ![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) [Radar Center Offsets:](#radar-center-offsets) (Optional)
   - [Radar Size:](#radar-size) (Optional)
@@ -1464,7 +1516,7 @@ Adds a 3D orb radar gauge
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Filename:](#filename) (Optional) (needs animation with 2 frames, only the 2nd frame is used)
   - ![FSO 3.7.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.4.svg) [Radar Center Offsets:](#radar-center-offsets) (Optional)
   - [Radar Size:](#radar-size) (Optional)
@@ -1489,7 +1541,7 @@ Adds a BSG style radar (a.k.a DRADIS).
 
 ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
 
-![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 [Size:](#size) (Optional)
 [XY Disc Filename:](#xy-disc-filename) (Optional)
@@ -1521,7 +1573,7 @@ Adds a gauge that shows the remaining afterburner energy. Note that it only supp
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional) (needs animation with 2 frames, the 1st is the bar lit for zero energy, the 2nd is the bar lit for max energy)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
@@ -1543,18 +1595,18 @@ Adds a gauge that shows the remaining weapon energy. Note that it only supports 
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional) (needs an animation with 4 frames, the 3rd is the bar lit for zero energy, the 2nd is the bar lit for max energy, frames 1 & 2 are not used)
   - [Foreground Clip Height:](#foreground-clip-height) (Optional)
   - [Text Offsets:](#text-offsets) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Text Alignment:` (Optional)
-  - `Always Show Text:` (Optional)
-  - `Text Follows:` (Optional)
-  - `Show Ballistic Ammo:` (Optional)
-  - `Armed Guns List Offsets:` (Optional)
-  - `Armed Guns List Alignment:` (Optional)
-  - `Armed Guns List Entry Height:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Text Alignment:](#text-alignment) (Optional)
+  - [Always Show Text:](#always-show-text) (Optional)
+  - [Text Follows:](#text-follows) (Optional)
+  - [Show Ballistic Ammo:](#show-ballistic-ammo) (Optional)
+  - [Armed Guns List Offsets:](#armed-guns-list-offsets) (Optional)
+  - [Armed Guns List Alignment:](#armed-guns-list-alignment) (Optional)
+  - [Armed Guns List Entry Height:](#armed-guns-list-entry-height) (Optional)
 
 #### +Text Warnings:
 
@@ -1573,7 +1625,7 @@ Adds a gauge that warns the player (current warnings are EMP, Launch, Evaded, Co
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
 
 #### +Center Reticle:
@@ -1589,7 +1641,7 @@ Adds a "custom" center reticle.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Filename:](#filename) (Optional)
   - [Firepoint display:](#firepoint-display) (Optional)
   - [Firepoint size:](#firepoint-size) (Optional)
@@ -1615,7 +1667,7 @@ Adds a gauge that shows the current throttle position.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Filename:](#filename) (Optional)
   - [Foreground Clip Bottom Y-offset:](#foreground-clip-bottom-y-offset) (Optional)
   - [Foreground Clip Width:](#foreground-clip-width) (Optional)
@@ -1623,16 +1675,16 @@ Adds a gauge that shows the current throttle position.
   - [Afterburner Clip Height:](#afterburner-clip-height) (Optional)
   - [Show Background:](#show-background) (Optional)
   - [Max Speed Label Offsets:](#max-speed-label-offsets) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Show Max Speed Label:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Show Max Speed Label:](#show-max-speed-label) (Optional)
   - [Min Speed Label Offsets:](#min-speed-label-offsets) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Show Min Speed Label:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Show Min Speed Label:](#show-min-speed-label) (Optional)
   - [Orbit Center Offsets:](#orbit-center-offsets) (Optional)
   - [Orbit Radius:](#orbit-radius) (Optional)
-  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) `Current Speed Offsets:` (Optional)
-  - `Target Speed Offsets:` (Optional)
-  - `Show Percentage:` (Optional)
-  - `Glide Status Offsets:` (Optional)
-  - `Match Speed Status Offsets:` (Optional)
+  - ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) [Current Speed Offsets:](#current-speed-offsets) (Optional)
+  - [Target Speed Offsets:](#target-speed-offsets) (Optional)
+  - [Show Percentage:](#show-percentage) (Optional)
+  - [Glide Status Offsets:](#glide-status-offsets) (Optional)
+  - [Match Speed Status Offsets:](#match-speed-status-offsets) (Optional)
 
 #### +Threat Indicator:
 
@@ -1651,7 +1703,7 @@ Adds a gauge that indicates when a lock-on has been achieved by an attacker, and
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Arc Filename:](#arc-filename) (Optional)
   - [Dumbfire Filename:](#dumbfire-filename) (Optional)
@@ -1675,7 +1727,7 @@ Adds a gauge that displays the multiplayer messages.
   - [Display Size:](#display-size)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Voice Status:
 
@@ -1694,7 +1746,7 @@ Adds a gauge that displays the voice status.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Ping:
 
@@ -1713,7 +1765,7 @@ Adds a gauge that the ping time to the multiplayer server.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Supernova:
 
@@ -1732,7 +1784,7 @@ Adds a gauge that warns the player of an impending supernova shock wave.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Lock Indicator:
 
@@ -1741,7 +1793,7 @@ Adds a Lock Indicator gauge.
 - Valid Sub-Entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Lock Filename:](#lock-filename) (Optional)
   - [Locked Filename:](#locked-filename) (Optional)
   - [Lock Center Offsets:](#lock-center-offsets) (Optional)
@@ -1756,7 +1808,7 @@ Adds an Offscreen Indicator.
 - Valid Sub-Entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
 
 #### +Target Brackets:
 
@@ -1765,9 +1817,9 @@ Adds a Target Bracket gauge. This is drawn around current target(s) and talkers.
 - Valid Sub-Entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Dot Filename:](#dot-filename) (Optional) (needs an animation with two frames, 1st is for alive wingmen, 2nd is for dead or missing wingmen)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Enable Target Info:` (Optional boolean. Adds the target name and class to the brackets. Overrides the commandline setting.)
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Enable Target Info:](#enable-target-info) (Optional boolean. Adds the target name and class to the brackets. Overrides the commandline setting.)
 
 #### +Hostile Triangle:
 
@@ -1776,7 +1828,7 @@ Adds a gauge that points to the nearest attacker, if it is off-screen and is not
 - Valid Sub-entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Radius](#radius) (Optional)
   - [Triangle Base:](#triangle-base) (Optional)
@@ -1789,7 +1841,7 @@ Adds a gauge that points to the targeted craft, if it is currently off-screen.
 - Valid Sub-entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Radius](#radius) (Optional)
   - [Triangle Base:](#triangle-base) (Optional)
@@ -1802,7 +1854,7 @@ Adds a gauge that is used during attempting to lock onto a target when using an 
 - Valid Sub-entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Radius](#radius) (Optional)
   - [Triangle Base:](#triangle-base) (Optional)
@@ -1815,7 +1867,7 @@ Adds a gauge that leads (is in front) of the target.  Aim your crosshairs at thi
 - Valid Sub-entries:
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Filename:](#filename) (Optional)
 Frame #0: Secondaries lead indicator (Dumbfire)
 Frame #1: Secondaries lead indicator (Homing)
@@ -1830,7 +1882,7 @@ Adds a gauge that indicates the targeted craft's orientation in relation to the 
   - [Position](#position) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Radius](#radius) (Optional)
 
@@ -1843,7 +1895,7 @@ Adds a gauge that lags (is behind) the target.  Indicates where your shots will 
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
 Frame #0 is used for secondaries
@@ -1867,7 +1919,7 @@ Adds a gauge that keeps track of how many kills the player has scored during a m
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional)
   - [Text Offsets:](#text-offsets) (Optional)
@@ -1890,7 +1942,7 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Arc Filename:](#arc-filename) (Optional)
   - [Single Primary Filename:](#single-primary-filename) (Optional)
@@ -1919,7 +1971,7 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - ![FSO 3.8](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.8.svg) [Center Text On Gauge X-Position:](#center-text-on-gauge-x-position) (Optional)
 
 #### +Flight Path Marker:
@@ -1944,16 +1996,16 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Filename:](#filename) (Optional) (needs an animation with a single frame)
   - [Name Offsets:](#name-offsets) (Optional)
-  - `Count Offsets:` (Optional)
-  - `Icon Width:` (Optional)
-  - `Icon Height:` (Optional)
-  - `Max Icons:` (Optional)
-  - `Max Columns:` (Optional)
-  - `Name Alignment:` (Optional)
+  - [Count Offsets:](#count-offsets) (Optional)
+  - [Icon Width:](#icon-width) (Optional)
+  - [Icon Height:](#icon-height) (Optional)
+  - [Max Icons:](#max-icons) (Optional)
+  - [Max Columns:](#max-columns) (Optional)
+  - [Name Alignment:](#name-alignment) (Optional)
 
 #### +Hardpoints:
 
@@ -1967,10 +2019,10 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Display Size:](#display-size)
   - [Color:](#color) (Optional)
   - [Size:](#size) (Optional)
-  - `Line Width:` (Optional)
-  - `View Direction:` (Optional)
-  - `Show Primary Weapons:` (Optional)
-  - `Show Secondary Weapons:` (Optional)
+  - [Line Width:](#line-width) (Optional)
+  - [View Direction:](#view-direction) (Optional)
+  - [Show Primary Weapons:](#show-primary-weapons) (Optional)
+  - [Show Secondary Weapons:](#show-secondary-weapons) (Optional)
 
 #### +Primary Weapons:
 
@@ -1985,23 +2037,23 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Header Offsets:](#header-offsets) (Optional)
   - [Header Text:](#header-text) (Optional)
   - [First Background Filename:](#first-background-filename) (Optional) (needs animation with a single frame)
-  - `First Background Height:` (Optional)
-  - `First Background X-offset:` (Optional)
+  - [First Background Height:](#first-background-height) (Optional)
+  - [First Background X-offset:](#first-background-x-offset) (Optional)
   - [Entry Background Filename:](#entry-background-filename) (Optional) (needs animation with a single frame)
-  - `Entry Background Height:` (Optional)
-  - `Entry Background X-offset:` (Optional)
+  - [Entry Background Height:](#entry-background-height) (Optional)
+  - [Entry Background X-offset:](#entry-background-x-offset) (Optional)
   - [Last Background Filename:](#last-background-filename) (Optional) (needs animation with a single frame)
-  - `Last Background X-offset:` (Optional)
-  - `Last Background Y-offset:` (Optional)
+  - [Last Background X-offset:](#last-background-x-offset) (Optional)
+  - [Last Background Y-offset:](#last-background-y-offset) (Optional)
   - [Entry Height:](#entry-height) (Optional)
-  - `List Start Y-offset:` (Optional)
-  - `Ammo X-offset:` (Optional)
-  - `Link X-offset:` (Optional)
+  - [List Start Y-offset:](#list-start-y-offset) (Optional)
+  - [Ammo X-offset:](#ammo-x-offset) (Optional)
+  - [Link X-offset:](#link-x-offset) (Optional)
   - [Name X-offset:](#name-x-offset) (Optional)
 
 #### +Secondary Weapons:
@@ -2017,26 +2069,26 @@ Adds a gauge that indicates the selected weapons and their firing rates.
   - [Color:](#color) (Optional)
   - [Font:](#font) (Optional)
   - ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg) [Chase View Only:](#chase-view-only) (Optional)
-  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) `Cockpit View Choice:` (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
+  - ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) [Cockpit View Choice:](#cockpit-view-choice) (Optional. Valid values are "cockpitactive", "cockpitinactive", "both")
   - [Slew:](#slew) (Optional)
   - [Header Offsets:](#header-offsets) (Optional)
   - [Header Text:](#header-text) (Optional)
   - [First Background Filename:](#first-background-filename) (Optional)
-  - `First Background Height:` (Optional)
-  - `First Background X-offset:` (Optional)
+  - [First Background Height:](#first-background-height) (Optional)
+  - [First Background X-offset:](#first-background-x-offset) (Optional)
   - [Entry Background Filename:](#entry-background-filename) (Optional)
-  - `Entry Background Height:` (Optional)
-  - `Entry Background X-offset:` (Optional)
+  - [Entry Background Height:](#entry-background-height) (Optional)
+  - [Entry Background X-offset:](#entry-background-x-offset) (Optional)
   - [Last Background Filename:](#last-background-filename) (Optional)
-  - `Last Background X-offset:` (Optional)
-  - `Last Background Y-offset:` (Optional)
+  - [Last Background X-offset:](#last-background-x-offset) (Optional)
+  - [Last Background Y-offset:](#last-background-y-offset) (Optional)
   - [Entry Height:](#entry-height) (Optional)
-  - `List Start Y-offset:` (Optional)
-  - `Ammo X-offset:` (Optional)
-  - `Link X-offset:` (Optional)
+  - [List Start Y-offset:](#list-start-y-offset) (Optional)
+  - [Ammo X-offset:](#ammo-x-offset) (Optional)
+  - [Link X-offset:](#link-x-offset) (Optional)
   - [Name X-offset:](#name-x-offset) (Optional)
-  - `Unlink X-offset:` (Optional)
-  - `Reload X-offset:` (Optional)
+  - [Unlink X-offset:](#unlink-x-offset) (Optional)
+  - [Reload X-offset:](#reload-x-offset) (Optional)
 
 ### $End Gauges
 
@@ -2711,12 +2763,12 @@ Used by: [+Directives:](hud_gauges.tbl#directives)
 
 #### Alt Ballistic Offsets:
 
-Opetional. Defines the screen coordinate offsets for headers of ballistic weapons
+Optional. Defines the screen coordinate offsets for headers of ballistic weapons
 
 - Syntax: **Integer** horizontal offset, **Integer** vertical offset
 - Units: Pixels
 
-Used by: `+Header Offset:`
+Used by: [+Weapons:](#weapons)
 
 #### Top Primary Background X-offset:
 
@@ -3421,3 +3473,448 @@ Used by: [+Radar:](#radar)
 - Syntax **Float** (radians)
 - Default Value: **0**
 Used by: [+Radar:](#radar)
+
+#### Cockpit View Choice:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Optional. Which views the gauge is drawn in, for ships with a cockpit model: **cockpitactive** (only while the cockpit is shown), **cockpitinactive** (only while it isn't), or **both**. Anything else logs a warning and both is used.
+
+- Syntax: **String**
+- Default: both
+
+Used by: [+Custom:](#custom), [+Scripted Gauge:](#scripted-gauge), [+Messages:](#messages), [+Training Messages:](#training-messages), [+Support:](#support), [+Damage:](#damage), [+Wingman Status:](#wingman-status), [+Auto Speed:](#auto-speed), [+Auto Target:](#auto-target), [+Countermeasures:](#countermeasures), [+Talking Head:](#talking-head), [+Directives:](#directives), [+Weapons:](#weapons), [+Objective notify:](#objective-notify), [+Lag:](#lag), [+Mini Target Shields:](#mini-target-shields), [+Player Shields:](#player-shields), [+Target Shields:](#target-shields), [+Escort View:](#escort-view), [+Mission Time:](#mission-time), [+ETS Retail:](#ets-retail), [+ETS Weapons:](#ets-weapons), [+ETS Engines:](#ets-engines), [+ETS Shields:](#ets-shields), [+Target Monitor:](#target-monitor), [+Extra Target Data:](#extra-target-data), [+Radar:](#radar), [+Radar Orb:](#radar-orb), [+Radar BSG:](#radar-bsg), [+Afterburner Energy:](#afterburner-energy), [+Weapon Energy:](#weapon-energy), [+Text Warnings:](#text-warnings), [+Center Reticle:](#center-reticle), [+Throttle:](#throttle), [+Threat Indicator:](#threat-indicator), [+Multiplayer Messages:](#multiplayer-messages), [+Voice Status:](#voice-status), [+Ping:](#ping), [+Supernova:](#supernova), [+Lock Indicator:](#lock-indicator), [+Offscreen Indicator:](#offscreen-indicator), [+Target Brackets:](#target-brackets), [+Hostile Triangle:](#hostile-triangle), [+Target Triangle:](#target-triangle), [+Missile Triangles:](#missile-triangles), [+Lead Indicator:](#lead-indicator), [+Orientation Tee:](#orientation-tee), [+Lead Sight:](#lead-sight), [+Kills:](#kills), [+Weapon Linking:](#weapon-linking), [+Fixed Messages:](#fixed-messages), [+Warhead Count:](#warhead-count), [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Enable Rearm Timer:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Optional. Shows the countdown until rearming is done.
+
+- Syntax: **Boolean**
+
+Used by: [+Support:](#support)
+
+#### First Background Size:
+
+Optional. The width of the first (left) background piece.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Wingman Status:](#wingman-status)
+
+#### Entry Size:
+
+Optional. The width taken by each wing's entry.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Wingman Status:](#wingman-status)
+
+#### Right Background Offset:
+
+Optional. The horizontal offset of the last (right) background piece. Also accepted as [Last Background Offset:](#last-background-offset).
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Wingman Status:](#wingman-status)
+
+#### Last Background Offset:
+
+Optional. Another name for [Right Background Offset:](#right-background-offset).
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Wingman Status:](#wingman-status)
+
+#### On Text Color:
+
+Optional. The color of the gauge's text while the setting is on (also accepted as `On Text Colour:`).
+
+- Syntax: **Integer** red, **Integer** green, **Integer** blue, **Integer** alpha, 0 to 255
+
+Used by: [+Auto Speed:](#auto-speed), [+Auto Target:](#auto-target)
+
+#### Max Line Width:
+
+Optional. The width a directive line can take before it wraps onto the next line.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Directives:](#directives)
+
+#### Monitor Alpha Mask Filename:
+
+Optional. A mask bitmap that cuts the target view to the monitor's shape.
+
+- Syntax: **String**, file name
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Subsystem Name Offsets:
+
+Optional. Where the targeted subsystem's name is drawn.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Subsystem Integrity Offsets:
+
+Optional. Where the targeted subsystem's integrity is drawn.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Disabled Status Offsets:
+
+Optional. Where the "disabled" status of the targeted subsystem is drawn.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Desaturate:
+
+Optional. Draws the target's model desaturated, in the HUD color.
+
+- Syntax: **Boolean**
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Wireframe:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Optional. How the target's model is drawn: **0** normally, **1** as a wireframe only, **2** normally with lighting.
+
+- Syntax: **Integer**
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Wireframe Color:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Optional. The color of the target's wireframe (also accepted as `Wireframe Colour:`).
+
+- Syntax: **Integer** red, **Integer** green, **Integer** blue, 0 to 255
+
+Used by: [+Target Monitor:](#target-monitor)
+
+#### Text Alignment:
+
+Optional. How the energy text is aligned.
+
+- Syntax: **String**, **left** or **right** (anything else means no alignment)
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Always Show Text:
+
+Optional. Always shows the energy text, instead of only when it changes or is low.
+
+- Syntax: **Boolean**
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Text Follows:
+
+Optional. The energy text moves with the top of the energy bar.
+
+- Syntax: **Boolean**
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Show Ballistic Ammo:
+
+Optional. Shows the ammo of ballistic primaries.
+
+- Syntax: **Boolean**
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Armed Guns List Offsets:
+
+Optional. Shows a list of the armed primaries, at this position.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Armed Guns List Alignment:
+
+Optional, after [Armed Guns List Offsets:](#armed-guns-list-offsets). How the list is aligned.
+
+- Syntax: **String**, **left** or **right** (anything else means no alignment)
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Armed Guns List Entry Height:
+
+Optional, after [Armed Guns List Offsets:](#armed-guns-list-offsets). The height of each line of the list.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Weapon Energy:](#weapon-energy)
+
+#### Show Max Speed Label:
+
+Optional. Shows the maximum speed label.
+
+- Syntax: **Boolean**
+
+Used by: [+Throttle:](#throttle)
+
+#### Show Min Speed Label:
+
+Optional. Shows the minimum speed label.
+
+- Syntax: **Boolean**
+
+Used by: [+Throttle:](#throttle)
+
+#### Current Speed Offsets:
+
+Optional. Draws the current speed at this fixed position, instead of moving it along the throttle bar.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Throttle:](#throttle)
+
+#### Target Speed Offsets:
+
+Optional. Shows the target's speed, at this position.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Throttle:](#throttle)
+
+#### Show Percentage:
+
+Optional. Shows the target speed as a percentage.
+
+- Syntax: **Boolean**
+
+Used by: [+Throttle:](#throttle)
+
+#### Glide Status Offsets:
+
+Optional. Where the glide status is shown.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Throttle:](#throttle)
+
+#### Match Speed Status Offsets:
+
+Optional. Where the match speed status is shown.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Throttle:](#throttle)
+
+#### Enable Target Info:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) Optional. Shows extra information about the target next to its brackets.
+
+- Syntax: **Boolean**
+
+Used by: [+Target Brackets:](#target-brackets)
+
+#### Count Offsets:
+
+Optional. Where the warhead count is drawn.
+
+- Syntax: **Integer** horizontal offset, **Integer** vertical offset
+- Units: Pixels
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Icon Width:
+
+Optional. The width of each warhead icon.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Icon Height:
+
+Optional. The height of each warhead icon.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Max Icons:
+
+Optional. The most warhead icons shown.
+
+- Syntax: **Integer**
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Max Columns:
+
+Optional. How many warhead icons are drawn in a row before starting the next row.
+
+- Syntax: **Integer**
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Name Alignment:
+
+Optional. How the weapon name is aligned.
+
+- Syntax: **String**, **left** or **right** (anything else means no alignment)
+
+Used by: [+Warhead Count:](#warhead-count)
+
+#### Line Width:
+
+Optional. The thickness of the lines the hardpoints are drawn with.
+
+- Syntax: **Float**
+
+Used by: [+Hardpoints:](#hardpoints)
+
+#### View Direction:
+
+Optional. The view the ship's hardpoints are shown from: **Top** or **Front**.
+
+- Syntax: **String**
+
+Used by: [+Hardpoints:](#hardpoints)
+
+#### Show Primary Weapons:
+
+Optional. Shows the primary weapon hardpoints.
+
+- Syntax: **Boolean**
+
+Used by: [+Hardpoints:](#hardpoints)
+
+#### Show Secondary Weapons:
+
+Optional. Shows the secondary weapon hardpoints.
+
+- Syntax: **Boolean**
+
+Used by: [+Hardpoints:](#hardpoints)
+
+#### First Background Height:
+
+Optional. The height of the first (top) background piece.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### First Background X-offset:
+
+Optional. The horizontal offset of the first (top) background piece.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Entry Background Height:
+
+Optional. The height of the background piece repeated for each weapon.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Entry Background X-offset:
+
+Optional. The horizontal offset of the background piece repeated for each weapon.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Last Background X-offset:
+
+Optional. The horizontal offset of the last (bottom) background piece.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Last Background Y-offset:
+
+Optional. The vertical offset of the last (bottom) background piece, from the end of the list.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### List Start Y-offset:
+
+Optional. The vertical offset where the list of weapons starts.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Ammo X-offset:
+
+Optional. The horizontal offset of the ammo count.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Link X-offset:
+
+Optional. The horizontal offset of the "linked" indicator.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Primary Weapons:](#primary-weapons), [+Secondary Weapons:](#secondary-weapons)
+
+#### Unlink X-offset:
+
+Optional. The horizontal offset of the "not linked" indicator.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Secondary Weapons:](#secondary-weapons)
+
+#### Reload X-offset:
+
+Optional. The horizontal offset of the reload indicator.
+
+- Syntax: **Integer**
+- Units: Pixels
+
+Used by: [+Secondary Weapons:](#secondary-weapons)
+
+#### Off Text Color:
+
+Optional. The color of the gauge's text while the setting is off (also accepted as `Off Text Colour:`).
+
+- Syntax: **Integer** red, **Integer** green, **Integer** blue, **Integer** alpha, 0 to 255
+
+Used by: [+Auto Target:](#auto-target), [+Auto Speed:](#auto-speed)
