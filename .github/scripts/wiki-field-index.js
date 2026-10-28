@@ -43,18 +43,18 @@ function build(lines) {
 	const body = [];
 	for (const g of groups) {
 		if (!g.items.length) continue;
-		// each level-3 entry, with everything nested under it in parentheses
-		const parts = [];
-		let cur = null;
-		for (const h of g.items) {
-			if (h.level <= 3 || !cur) { cur = { main: h, subs: [] }; parts.push(cur); }
-			else cur.subs.push(h);
-		}
-		const line = parts.map(p => link(p.main) + (p.subs.length ? ` (${p.subs.map(link).join(', ')})` : '')).join(' | ');
-		body.push(`**${link(g.head)}**`, '', line, '');
+		// one field per line, in table order; sub-fields nested under their field
+		const top = Math.min(...g.items.map(h => h.level));
+		let prev = -1;
+		const list = g.items.map(h => {
+			const depth = Math.min(h.level - top, prev + 1);	// a list can only nest one level at a time
+			prev = depth;
+			return `${'  '.repeat(depth)}- ${link(h)}`;
+		});
+		body.push(`**${link(g.head)}**`, '', ...list, '');
 	}
 	if (!body.length) return null;
-	return [START, '<details>', '<summary><b>Field index</b> (every field, in table order; click one to jump to it)</summary>', '', ...body, '</details>', END];
+	return [START, '<details>', '<summary><b>Field index</b> (every field, one per line in table order; click one to jump to it)</summary>', '', ...body, '</details>', END];
 }
 
 let stale = 0;
