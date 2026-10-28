@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#127](https://github.com/ofp-fs2open/fs2open.github.com/pull/127)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **mainhall.tbl** is used to define the various main menu screens in the game: their backgrounds, animations, doors, sounds and music.
