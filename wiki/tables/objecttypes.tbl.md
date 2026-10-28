@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#133](https://github.com/ofp-fs2open/fs2open.github.com/pull/133)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **objecttypes.tbl** sets the attributes of ship types and defines the target priority groups turrets use. A ship 'type' is shared by many ship classes defined in [ships.tbl](ships.tbl). For example, the GTF Perseus and GTF Ulysses belong to the 'fighter' ship type, while the GTD Orion belongs to the 'capital' ship type.
