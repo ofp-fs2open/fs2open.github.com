@@ -53,6 +53,7 @@
   - [hud_gauges.tbl](hud_gauges.tbl)
   - [icons.tbl](icons.tbl)
   - [iff_defs.tbl](iff_defs.tbl)
+  - [intel.tbl](intel.tbl)
   - [lighting_profiles.tbl](lighting_profiles.tbl)
   - [lightning.tbl](lightning.tbl)
   - [mainhall.tbl](mainhall.tbl)
@@ -69,5 +70,4 @@
   - [scripting.tbl](scripting.tbl)
   - [ships.tbl](ships.tbl)
   - [sounds.tbl](sounds.tbl)
-  - [species.tbl](species.tbl)
   - [species_defs.tbl](species_defs.tbl)

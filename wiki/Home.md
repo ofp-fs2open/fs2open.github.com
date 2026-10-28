@@ -46,6 +46,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [hud_gauges.tbl](hud_gauges.tbl): HUD gauges
   - [icons.tbl](icons.tbl): briefing icons
   - [iff_defs.tbl](iff_defs.tbl): teams and team colors
+  - [intel.tbl](intel.tbl): Tech room intel entries
   - [lighting_profiles.tbl](lighting_profiles.tbl): Lighting and tonemapping profiles
   - [lightning.tbl](lightning.tbl): Nebula lightning bolts and storms
   - [mainhall.tbl](mainhall.tbl): Main hall screens
@@ -62,5 +63,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [scripting.tbl](scripting.tbl): Lua scripting hooks
   - [ships.tbl](ships.tbl): Ship classes
   - [sounds.tbl](sounds.tbl): Game sounds
-  - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
   - [species_defs.tbl](species_defs.tbl): Species definitions

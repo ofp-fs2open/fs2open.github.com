@@ -128,7 +128,7 @@ Changes made through Lua are local: unlike the SEXP writes, they are not sent to
 
 ## Intel entry tech models
 
-Intel entries can have a 3D model through `$Tech Model:` in species.tbl (see [species.tbl](species.tbl#intel-entry-tech-models)). These functions draw that model from a script, for example in a custom tech room UI.
+Intel entries can have a 3D model through `$Tech Model:` in intel.tbl (see [intel.tbl](intel.tbl#tech-model)). These functions draw that model from a script, for example in a custom tech room UI.
 
 ### intelentry:renderTechModel
 
