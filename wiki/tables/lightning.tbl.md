@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#126](https://github.com/ofp-fs2open/fs2open.github.com/pull/126)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **lightning.tbl** is used to define the different storms seen in game (such as nebula conditions): the lightning bolt types, and the storms that fire them.
