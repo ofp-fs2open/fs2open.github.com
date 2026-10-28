@@ -2,7 +2,7 @@
 > OFP Revision: [#103](https://github.com/ofp-fs2open/fs2open.github.com/pull/103)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
-The **ai.tbl** defines the AI classes used in the game. Each AI class sets four abilities for each of the five difficulty levels, and can override many [ai_profiles.tbl](ai_profiles.tbl) values for ships of that class.
+The **ai.tbl** defines the AI classes used in the game. Each AI class sets four abilities for each of the five difficulty levels, and can override many [mission_profiles.tbl](mission_profiles.tbl) values for ships of that class.
 
 This table is one of the Modular Tables and can be extended with **xxx-aic.tbm**.
 
@@ -141,7 +141,7 @@ Badges show the version a field or behavior was added in. Fields without a badge
 
 ![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
-These override the matching [ai_profiles.tbl](ai_profiles.tbl) values for ships of this AI class. All are optional. Values not set here come from the mission's AI profile. The syntax is the same as in ai_profiles.tbl: five values, one for each difficulty level.
+These override the matching [mission_profiles.tbl](mission_profiles.tbl) values for ships of this AI class. All are optional. Values not set here come from the mission's AI profile. The syntax is the same as in ai_profiles.tbl: five values, one for each difficulty level.
 
 - `$AI Countermeasure Firing Chance:`
 - `$AI In Range Time:`
@@ -173,7 +173,7 @@ The percent overrides (`$Glide Attack Percent:`, `$Circle Strafe Percent:`, `$Gl
 
 ![FSO 3.6.12](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.12.svg)
 
-These override the matching [ai_profiles.tbl](ai_profiles.tbl) flags for ships of this AI class. All are optional. Flags not set here come from the mission's AI profile.
+These override the matching [mission_profiles.tbl](mission_profiles.tbl) flags for ships of this AI class. All are optional. Flags not set here come from the mission's AI profile.
 
 - **Syntax:** *Boolean*
 

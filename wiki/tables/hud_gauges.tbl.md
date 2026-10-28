@@ -188,7 +188,7 @@ Optional. Allows using a static color for the target monitor wireframe instead o
 
 ### $Targetbox Shader Effect:
 
-![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional. If set, defines a unique ID for a shader effect to be used when rendering a ship for the targeting box. The ID will be passed to the main shader as in [#Ship_Effects](post_processing.tbl#ship_effects), but a table entry for the effect is not needed.
+![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg) Optional. If set, defines a unique ID for a shader effect to be used when rendering a ship for the targeting box. The ID will be passed to the main shader as in [#Ship_Effects](post_processing.tbl#ship-effects), but a table entry for the effect is not needed.
 
 - Syntax: **Integer**
 - Valid Values: Any positive number
@@ -2379,7 +2379,7 @@ Optional. Defines the screen coordinate offsets for the start of the Directives 
 - Syntax: **Integer** x, **Integer** y
 - Units: Pixels
 
-Used by: [+Directives:](hud_guages.tbl#directives)
+Used by: [+Directives:](hud_gauges.tbl#directives)
 
 #### Entry Height:
 
@@ -2388,7 +2388,7 @@ Optional. Defines the height of each Directive
 - Syntax: **Integer**
 - Units: Pixels
 
-Used by: [+Directives:](hud_guages.tbl#directives)
+Used by: [+Directives:](hud_gauges.tbl#directives)
 
 #### Alt Ballistic Offsets:
 

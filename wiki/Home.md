@@ -21,7 +21,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
 - [OFP Lua Scripting](OFP-Lua-Scripting): Lua API added by OFP
 - [Tables](Tables): every table documented here, in alphabetical order
   - [ai.tbl](ai.tbl): AI classes
-  - [ai_profiles.tbl](ai_profiles.tbl): AI profiles
   - [Animation (-anim.tbm)](Animation): model subobject animations
   - [armor.tbl](armor.tbl): armor and damage types
   - [asteroid.tbl](asteroid.tbl): asteroids and debris
@@ -53,6 +52,7 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [medals.tbl](medals.tbl): Medals and badges
   - [messages.tbl](messages.tbl): Built-in messages and personas
   - [mflash.tbl](mflash.tbl): Weapon muzzle flashes
+  - [mission_profiles.tbl](mission_profiles.tbl): Mission (AI) profiles
   - [music.tbl](music.tbl): Soundtracks and menu music
   - [nebula.tbl](nebula.tbl): Nebula bitmaps and poofs
   - [objecttypes.tbl](objecttypes.tbl): Ship types and target priorities

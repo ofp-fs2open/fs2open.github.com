@@ -31,7 +31,7 @@ Badges show the version a field or behavior was added in.
 
 ### $Name:
 
-- Specifies the name of the glowpoint override (to be referenced in the **[$Glowpoint overrides:](ships.tbl#24glowpoint_overrides)** entry of a ship).
+- Specifies the name of the glowpoint override (to be referenced in the **[$Glowpoint overrides:](ships.tbl#glowpoint-overrides)** entry of a ship).
 - Syntax: ***String***
 
 ### +nocreate

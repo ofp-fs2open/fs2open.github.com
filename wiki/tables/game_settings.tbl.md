@@ -1314,7 +1314,7 @@ If set, a hit to a physical subsystem will always deal damage to that subsystem 
 
 ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
 
-- The [default amount of time](ships.tbl#24warpout_engage_time), in seconds, warping out will take before actually starting to check whether the player is the right speed.
+- The [default amount of time](ships.tbl#warpout-engage-time), in seconds, warping out will take before actually starting to check whether the player is the right speed.
 - Syntax: ***Float***
 - Default Value: ***3.0***
 
@@ -1330,7 +1330,7 @@ If set, a hit to a physical subsystem will always deal damage to that subsystem 
 
 ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
 
-- Amount of damage, as a multiple of normal shockwave damage, assigned to a weapon's [dinky shockwave](weapons.tbl#24dinky-shockwave) by default. To get the same behavior FSO had from 2005-2019, set this to 0.25.
+- Amount of damage, as a multiple of normal shockwave damage, assigned to a weapon's [dinky shockwave](weapons.tbl#dinky-shockwave) by default. To get the same behavior FSO had from 2005-2019, set this to 0.25.
 - Syntax: ***Float***
 - Default Value: ***1.0***
 
@@ -1394,7 +1394,7 @@ If set, a hit to a physical subsystem will always deal damage to that subsystem 
 
 ![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
 
-- Allows the game to use the [Intensity](ships.tbl#24intensity) value when calculating Engine Wash effects.
+- Allows the game to use the [Intensity](ships.tbl#intensity) value when calculating Engine Wash effects.
 - Syntax: ***Boolean***
 - Default Value: ***NO***
 
@@ -1410,7 +1410,7 @@ If set, a hit to a physical subsystem will always deal damage to that subsystem 
 
 ![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
 
-- Causes swarm missiles to lead their targets by default, and will make use of [Target Lead Scaler](weapons.tbl#2btarget_lead_scaler) if specified, like normal aspect seekers.
+- Causes swarm missiles to lead their targets by default, and will make use of [Target Lead Scaler](weapons.tbl#target-lead-scaler) if specified, like normal aspect seekers.
 - Syntax: ***Boolean***
 - Default Value: ***NO***
 

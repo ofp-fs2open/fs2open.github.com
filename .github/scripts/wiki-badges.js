@@ -17,6 +17,7 @@ const BADGES = {
 	'fso-3.7.4':  ['FSO 3.7.4',  '#440085', '#8A00FF', '#c682ff'],
 	'fso-3.8':    ['FSO 3.8',    '#652A71', '#D400FF', '#ED91FF'],
 	'fso-19.0':   ['FSO 19.0',   '#156364', '#1d8788', '#31e5e7'],
+	'fso-20.0':   ['FSO 20.0',   '#004a20', '#3dff41', '#abffc1'],   // no FreeSpace Wiki template; 20.4's colors, darker
 	'fso-20.4':   ['FSO 20.4',   '#007003', '#3dff41', '#abffc1'],
 	'fso-21.0':   ['FSO 21.0',   '#48238c', '#1d8788', '#ffcc23'],
 	'fso-21.2':   ['FSO 21.2',   '#335533', '#1d8788', '#44ccff'],
@@ -25,6 +26,7 @@ const BADGES = {
 	'fso-22.2':   ['FSO 22.2',   '#222222', '#6699FF', '#77AAFF'],
 	'fso-23.0':   ['FSO 23.0',   '#103030', '#00ffff', '#ffaa11'],
 	'fso-23.2':   ['FSO 23.2',   '#302410', '#ff9010', '#47e2d9'],
+	'fso-23.4':   ['FSO 23.4',   '#2c2448', '#ff9010', '#ffc90e'],   // development version between 23.2 and 24.0 (used as a targeted version)
 	'fso-24.0':   ['FSO 24.0',   '#2c2448', '#7364b0', '#ffc90e'],
 	'fso-24.2':   ['FSO 24.2',   '#122410', '#779999', '#99aaaa'],
 	'fso-25.0':   ['FSO 25.0',   '#051414', '#777799', '#9999aa'],

@@ -231,7 +231,7 @@ The objects the texture is replaced on (the third argument onward) can include p
 
 - On a prop that is in the mission, the change applies immediately to the prop's model, as it does for a ship already in the mission.
 - On a prop that hasn't spawned yet, the replacement is queued and applied when the prop spawns.
-- For a replacement set in the table instead, see [props.tbl: Texture replacement](props.tbl#texture-replacement).
+- For a replacement set in the table instead, see [props.tbl: Texture replacement](props.tbl#texture-replace).
 
 ### activate-glow-maps / deactivate-glow-maps
 

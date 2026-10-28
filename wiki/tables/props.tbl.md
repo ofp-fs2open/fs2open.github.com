@@ -85,7 +85,7 @@ Badges show the version a field or behavior was added in. The OFP badge marks wh
 ### $Detail Distance:
 
 - Defines the distance where the change between different Levels-Of-Details (LODs) occurs
-- Take notice that these are base values. Model detail in Detail options, (within game press F2), applies a multiplier to these values. These multipliers default to (from left to right): 1/8, 1/4, 1, 4, and 8, and may be overridden by the [$Detail Distance Multiplier](ai_profiles.tbl#detail-distance-multiplier)
+- Take notice that these are base values. Model detail in Detail options, (within game press F2), applies a multiplier to these values. These multipliers default to (from left to right): 1/8, 1/4, 1, 4, and 8, and may be overridden by the [$Detail Distance Multiplier](mission_profiles.tbl#detail-distance-multiplier)
 - Syntax: ***(Detail Distances)*** , list of **integers** (same amount as LODs, at most 5), distances from the model in meters
   - Example: *(0, 80, 300, 900)*
 

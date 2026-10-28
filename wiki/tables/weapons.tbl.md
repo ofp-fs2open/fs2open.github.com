@@ -60,7 +60,7 @@ NOTE: Beam weapons defined in the primary section will receive the WP_LASER subt
 
 ### $Name:
 
-- This is the name of the weapon. If it's going to be used by the player, keep it under 12 characters so it doesn't spill over the HUD box. Two special characters can be used in the name: **#** and **@**. Their usage details are the very same than inside the [$Name field from Ships.tbl](ships.tbl#24name_2).
+- This is the name of the weapon. If it's going to be used by the player, keep it under 12 characters so it doesn't spill over the HUD box. Two special characters can be used in the name: **#** and **@**. Their usage details are the very same than inside the [$Name field from Ships.tbl](ships.tbl#name-2).
 - Syntax: ***String***
 
 #### +nocreate
@@ -1030,13 +1030,13 @@ Defines the homing method
 
 #### **+Turn Time:**
 
-Determines how quickly the missile can turn. Ostensibly the number of seconds it takes the missile to do a 360 degree circle at full turn speed, but for complicated reasons this is only true if [AI respect tabled turn time and rotdamp](game_settings.tbl#2bai_respect_tabled_turn_time_and_rotdamp) is enabled.
+Determines how quickly the missile can turn. Ostensibly the number of seconds it takes the missile to do a 360 degree circle at full turn speed, but for complicated reasons this is only true if [AI respect tabled turn time and rotdamp](game_settings.tbl#ai-respect-tabled-turn-time-and-rotdamp) is enabled.
   - Syntax: ***Float***, seconds
 
 #### **+Turning Acceleration Time:**
 
 ![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg) Determines how quickly the missile reaches its maximum turn speed.
-- Note: Requires [$AI use framerate independent turning](game_settings.tbl#24ai_use_framerate_independent_turning) in game_settings.tbl
+- Note: Requires [$AI use framerate independent turning](game_settings.tbl#ai-use-framerate-independent-turning) in game_settings.tbl
   - Syntax: ***Float***, seconds
 
 ![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
@@ -1173,7 +1173,7 @@ Extra pixels to move after catching up. (Needs verification )
 - The number of missiles to fire per volley if it's a swarm missile
 - Can be issued to Standard primaries also. Causes single part turrets to malfunction but causes multi part turrets to fire only on their barrel line. Can be used for 'burst fire weapons'. Does not work with player weapons.
 - Is incompatible with "Corkscrew" option.
-- Swarm will negatively affect the missile's ability to hit its target and will not lead its target even with  [Target Lead Scaler](#target-lead-scaler) defined unless [$Swarmers Lead Targets](game_settings.tbl#24swarmers_lead_targets) is enabled.
+- Swarm will negatively affect the missile's ability to hit its target and will not lead its target even with  [Target Lead Scaler](#target-lead-scaler) defined unless [$Swarmers Lead Targets](game_settings.tbl#swarmers-lead-targets) is enabled.
 - Syntax: ***Integer***, number of shots in a swarm
 
 ![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
@@ -1294,7 +1294,7 @@ Extra pixels to move after catching up. (Needs verification )
 
 ### $AmbientSnd:
 
-- The sound this weapon passively emits in 3d space. The weapon version of [EngineSnd](ships.tbl#24enginesnd) for ships.
+- The sound this weapon passively emits in 3d space. The weapon version of [EngineSnd](ships.tbl#enginesnd) for ships.
 - Syntax: ***Integer*** or ***String***, name or identification number of the sound as defined in [sounds.tbl](sounds.tbl)
 
 ![FSO 24.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.0.svg)
@@ -1388,7 +1388,7 @@ Extra pixels to move after catching up. (Needs verification )
 
 ### +Weapon Range:
 
-- If set, the AI will use this value or the result of weapon lifetime * velocity as the weapon's effective range, whichever is lower. This also affects the [Lead Indicator](hud_gauges.tbl#lead_indicator)
+- If set, the AI will use this value or the result of weapon lifetime * velocity as the weapon's effective range, whichever is lower. This also affects the [Lead Indicator](hud_gauges.tbl#lead-indicator)
 - Syntax: ***Float***, meters
 
 ### +Weapon Min Range:
@@ -2486,7 +2486,7 @@ Extra pixels to move after catching up. (Needs verification )
 
 ![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
 
-- TAG Level 3 allows the weapon to trigger [SSMs](weapon.tbl#ssm)
+- TAG Level 3 allows the weapon to trigger [SSMs](weapons.tbl#ssm)
 
 - Syntax: ***Integer*** ***Float***, TAG level and seconds respectively
 - **Note**: TAG will not trigger unless the weapon in question has a non-zero damage value.
@@ -2713,7 +2713,7 @@ Extra pixels to move after catching up. (Needs verification )
 ![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg)
 
 - The new way of specifying triggered animations for weapons. Weapon needs to be a modelled weapon for animations.
-- See [animation.tbl](animation.tbl)
+- See [animation.tbl](Animation)
 - Syntax: ***( "String" "String" )***, names of the animations for this ship, as defined in the Animation.tbl
   - Example: ( "wingflap" "docksequence" )
 
@@ -3255,7 +3255,7 @@ The AI will prefer these weapons for anti-subsystem use
   - Move slower than normal when not pointing at their target.
   - Aspect seekers follow a -1x lag pursuit scalar for the last second before hitting their target.
 - Note that the last point will make aspect seekers much less likely to hit moving targets.
-- [Can be applied globally using an AI profile](ai_profiles.tbl#24enable_freespace_1_style_missile_behavior)
+- [Can be applied globally using an AI profile](mission_profiles.tbl#enable-freespace-1-style-missile-behavior)
 - Syntax: ***Boolean***
 
 

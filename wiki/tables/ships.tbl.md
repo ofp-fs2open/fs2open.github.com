@@ -527,7 +527,7 @@ $end_multi_text
 ### $Detail Distance:
 
 - Defines the distance where the change between different Levels-Of-Details (LODs) occurs
-- Take notice that these are base values. Model detail in Detail options, (within game press F2), applies a multiplier to these values. These multipliers default to (from left to right): 1/8, 1/4, 1, 4, and 8, and may be overridden by the [$Detail Distance Multiplier](ai_profiles.tbl#detail-distance-multiplier)
+- Take notice that these are base values. Model detail in Detail options, (within game press F2), applies a multiplier to these values. These multipliers default to (from left to right): 1/8, 1/4, 1, 4, and 8, and may be overridden by the [$Detail Distance Multiplier](mission_profiles.tbl#detail-distance-multiplier)
 - Syntax: ***(Detail Distances)*** , list of **integers** (same amount as LODs), distances from the model in meters
   - Example: *(0, 80, 300, 900)*
 
@@ -651,7 +651,7 @@ NOTE: this option has done nothing since before 2008
 
 ### $Damage Spew:
 
-See [Impact Spew entry](ship.tbl#impact-spew)
+See [Impact Spew entry](ships.tbl#impact-spew)
 - Controls the 'smoke' released on weapon impact point
 - Certain default values (marked with **X**) gain a specific multiplier based on ship radius
 If the radius is less than 20 the multiplier is 1
@@ -1214,7 +1214,7 @@ Sound when this ship collides with shields active.
 
 ![FSO 3.6.16](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.16.svg)
 
-- Defines the delay the it takes for the warp drive of the ship to engage, during which the player may still abort the warpout. Affects both the player as well as AI ships. If not defined, [defaults to](game_settings.tbl#24minimum-player-warpout-time) 3 seconds for the player and none for the AI.
+- Defines the delay the it takes for the warp drive of the ship to engage, during which the player may still abort the warpout. Affects both the player as well as AI ships. If not defined, [defaults to](game_settings.tbl#minimum-player-warpout-time) 3 seconds for the player and none for the AI.
 - Syntax: ***Float***, seconds
 
 ### $Warpout Speed:
@@ -1426,7 +1426,7 @@ Sound when this ship collides with shields active.
 
 ### $Ship Splitting Particles:
 
-See [Impact Spew entry](ship.tbl#impact-spew)
+See [Impact Spew entry](ships.tbl#impact-spew)
 - Controls the particles released on every explosion event which happens when ship is splitting apart
 - The old 'popcorn' effect
 
@@ -1461,7 +1461,7 @@ See [Impact Spew entry](ship.tbl#impact-spew)
 
 ### $Ship Death Particles:
 
-See [Impact Spew entry](ship.tbl#impact-spew)
+See [Impact Spew entry](ships.tbl#impact-spew)
 - Controls the particles released on the moment 'non-knossos' type object dies
 
 ![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
@@ -1495,7 +1495,7 @@ See [Impact Spew entry](ship.tbl#impact-spew)
 
 ### $Alternate Death Particles:
 
-See [Impact Spew entry](ship.tbl#impact-spew)
+See [Impact Spew entry](ships.tbl#impact-spew)
 - Controls the particles released when 'knossos' type object is dying
 
 ![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
@@ -1705,11 +1705,11 @@ See [Impact Spew entry](ship.tbl#impact-spew)
 - Defines the use of weapon models for secondary weapons. In brackets, different weapon banks may have different definitions
 - Syntax: ***( Boolean Boolean )***
   - Example: *(YES YES)*
-- Note: This requires the [$External_Model_File entry to be defined in weapons.tbl](weapons.tbl#24external_model_file). Weapons without external models will revert to the standard behaviour.
+- Note: This requires the [$External_Model_File entry to be defined in weapons.tbl](weapons.tbl#external-model-file). Weapons without external models will revert to the standard behaviour.
 - Behavior is as follows:
   - If your bank carries fewer or as many missiles as the number of gunpoints on your bank, you will have exactly as many external model shown as you have missiles left in your bank (going in the order of gunpoints defined in the POF). External models will disappear when missiles are fired.
   - If your bank carries more missiles than you have gunpoints in your bank, then external models will "recoil" (to simulate a reloading animation) every time you fire, and will disappear based on the % of missile left in the bank. Example: you have 2 gunpoints and 4 missiles, the first external model will disappear after you fire the second missile.
-  - If your weapon uses the ["external_model_launcher" flag](weapons.tbl#22external_model_launcher22), then the model will be displayed on all gunpoints and will not recoil nor disappear when fired.
+  - If your weapon uses the ["external_model_launcher" flag](weapons.tbl#external-model-launcher), then the model will be displayed on all gunpoints and will not recoil nor disappear when fired.
 
 ### $Ship Recoil Modifier:
 
@@ -2500,7 +2500,7 @@ See [Impact Spew entry](ship.tbl#impact-spew)
 
 ### $Wingmen Gauge Dot Override:
 
-- (Optional) Defines an animation to use for the dots in the wingmen status gauge. Overrides 'Dot Filename:' under the '+Wingman Status:' entry in [Hud_gauges.tbl](hud_gauges.tbl#2bwingman_status)
+- (Optional) Defines an animation to use for the dots in the wingmen status gauge. Overrides 'Dot Filename:' under the '+Wingman Status:' entry in [Hud_gauges.tbl](hud_gauges.tbl#wingman-status)
 - Must be an animation with two frames.
 - Syntax: ***String***, filename
 
@@ -3520,7 +3520,7 @@ The options in this section are entered into each **$Subsystem:** entry of a shi
 
 ##### "override submodel impact"
 
-- If a weapon impacted a submodel, but this subsystem is within range, this subsystem takes priority in the hit sequence rather than the submodel.  This allows case-by-case exceptions to the [$Damage Impacted Subsystem First:](game_settings.tbl#24damage_impacted_subsystem_first) mod flag.
+- If a weapon impacted a submodel, but this subsystem is within range, this subsystem takes priority in the hit sequence rather than the submodel.  This allows case-by-case exceptions to the [$Damage Impacted Subsystem First:](game_settings.tbl#damage-impacted-subsystem-first) mod flag.
 
 ![FSO 3.6.14](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.14.svg)
 

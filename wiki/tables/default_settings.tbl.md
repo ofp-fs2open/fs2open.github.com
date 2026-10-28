@@ -53,44 +53,44 @@ Values:
 
 | Key | Option in the menu | Value | Version |
 |---|---|---|---|
-| Audio.Effects | Effects (*retail*) | **Float**, 0 to 1 (clamped) | 25.0 |
-| Audio.Music | Music (*retail*) | **Float**, 0 to 1 (clamped) | 25.0 |
-| Audio.Voice | Voice (*retail*) | **Float**, 0 to 1 (clamped) | 25.0 |
-| Game.FlightCursorDeadzone | Flight Cursor Deadzone | **Float**, radians, 0 to 0.349 (clamped) | 25.0 |
-| Game.FlightCursorExtent | Flight Cursor Extent | **Float**, radians, 0 to 0.698 (clamped) | 25.0 |
-| Game.FlightMode | Flight Mode | **Text**: ship locked, flight cursor | 25.0 |
-| Graphics.3DShockwaves | Shockwaves | **Boolean** | 25.0 |
-| Graphics.AAMode | Anti Aliasing | **Text**: none, fxaa low, fxaa medium, fxaa high, smaa low, smaa medium, smaa high, smaa ultra | 25.0 |
-| Graphics.BloomIntensity | Bloom intensity | **Integer**, 0 to 200 (clamped) | 25.0 |
-| Graphics.CockpitFOV | Cockpit Field Of View | **Float**, radians, 0.436 to 1.5708 (25 to 90 degrees, clamped) | 26.2 |
-| Graphics.CockpitFOVToggle | Cockpit FOV Toggle | **Boolean** | 26.2 |
-| Graphics.DeferredCockpitLighting | Deferred Cockpit Lighting | **Boolean** | 25.0 |
-| Graphics.DeferredLighting | Deferred Lighting | **Boolean** | 25.0 |
-| Graphics.Detail | Model Detail (*retail*) | **Detail list** | 25.0 |
-| Graphics.FOV | Field Of View | **Float**, radians, 0.436 to 1.5708 (25 to 90 degrees, clamped) | 25.0 |
-| Graphics.Gamma | Brightness (*retail*) | **Float**, 0.1 to 5.0 in steps of 0.05 | 25.0 |
-| Graphics.HDR | HDR Output | **Boolean** | 26.2 |
-| Graphics.HDRPaperWhite | HDR Paper White | **Float**, nits | 26.2 |
-| Graphics.HDRPeakLuminance | HDR Peak Luminance | **Float**, nits | 26.2 |
-| Graphics.Lighting | Lighting (*retail*) | **Detail list** | 25.0 |
-| Graphics.Lightshafts | Lightshafts | **Boolean** | 25.0 |
-| Graphics.MSAASamples | Multisample Anti Aliasing | **Text**: off, 4 samples, 8 samples | 25.0 |
-| Graphics.MotionDebris | Motion Debris | **Boolean** | 25.0 |
-| Graphics.NebulaDetail | Nebula Detail (*retail*) | **Detail list** | 25.0 |
-| Graphics.Particles | Particles (*retail*) | **Detail list** | 25.0 |
-| Graphics.PostProcessing | Post processing | **Boolean** | 25.0 |
-| Graphics.RenderAPI | Render API | **Text**: opengl, vulkan | 26.2 |
-| Graphics.ShadowRenderMethod | Shadow Method | **Text**: shadow map (or shadow maps), raytraced | 26.2 |
-| Graphics.Shadows | Shadow Quality | **Text**: disabled, low, medium, high, ultra | 25.0 |
-| Graphics.ShieldEffects | Shield Hit Effects (*retail*) | **Detail list** | 25.0 |
-| Graphics.SmallDebris | Impact Effects (*retail*) | **Detail list** | 25.0 |
-| Graphics.SoftParticles | Soft Particles | **Boolean** | 25.0 |
-| Graphics.Stars | Stars (*retail*) | **Detail list** | 25.0 |
-| Graphics.Sunglare | Sunglare | **Boolean** | 25.0 |
-| Graphics.Texture | 3D Hardware Textures (*retail*) | **Detail list** | 25.0 |
-| Graphics.TextureFilter | Texture Filtering | **Text**: bilinear, trilinear | 25.0 |
-| Graphics.VSync | Vertical Sync | **Boolean** | 25.0 |
-| Graphics.WindowMode | Window Mode | **Text**: windowed, borderless, fullscreen | 25.0 |
+| Audio.Effects | Effects (*retail*) | **Float**, 0 to 1 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Audio.Music | Music (*retail*) | **Float**, 0 to 1 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Audio.Voice | Voice (*retail*) | **Float**, 0 to 1 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Game.FlightCursorDeadzone | Flight Cursor Deadzone | **Float**, radians, 0 to 0.349 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Game.FlightCursorExtent | Flight Cursor Extent | **Float**, radians, 0 to 0.698 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Game.FlightMode | Flight Mode | **Text**: ship locked, flight cursor | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.3DShockwaves | Shockwaves | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.AAMode | Anti Aliasing | **Text**: none, fxaa low, fxaa medium, fxaa high, smaa low, smaa medium, smaa high, smaa ultra | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.BloomIntensity | Bloom intensity | **Integer**, 0 to 200 (clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.CockpitFOV | Cockpit Field Of View | **Float**, radians, 0.436 to 1.5708 (25 to 90 degrees, clamped) | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.CockpitFOVToggle | Cockpit FOV Toggle | **Boolean** | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.DeferredCockpitLighting | Deferred Cockpit Lighting | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.DeferredLighting | Deferred Lighting | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Detail | Model Detail (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.FOV | Field Of View | **Float**, radians, 0.436 to 1.5708 (25 to 90 degrees, clamped) | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Gamma | Brightness (*retail*) | **Float**, 0.1 to 5.0 in steps of 0.05 | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.HDR | HDR Output | **Boolean** | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.HDRPaperWhite | HDR Paper White | **Float**, nits | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.HDRPeakLuminance | HDR Peak Luminance | **Float**, nits | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.Lighting | Lighting (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Lightshafts | Lightshafts | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.MSAASamples | Multisample Anti Aliasing | **Text**: off, 4 samples, 8 samples | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.MotionDebris | Motion Debris | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.NebulaDetail | Nebula Detail (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Particles | Particles (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.PostProcessing | Post processing | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.RenderAPI | Render API | **Text**: opengl, vulkan | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.ShadowRenderMethod | Shadow Method | **Text**: shadow map (or shadow maps), raytraced | ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) |
+| Graphics.Shadows | Shadow Quality | **Text**: disabled, low, medium, high, ultra | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.ShieldEffects | Shield Hit Effects (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.SmallDebris | Impact Effects (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.SoftParticles | Soft Particles | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Stars | Stars (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Sunglare | Sunglare | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.Texture | 3D Hardware Textures (*retail*) | **Detail list** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.TextureFilter | Texture Filtering | **Text**: bilinear, trilinear | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.VSync | Vertical Sync | **Boolean** | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
+| Graphics.WindowMode | Window Mode | **Text**: windowed, borderless, fullscreen | ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) |
 
 These options exist but can't take a default value from this table: Audio.BriefingVoice, Audio.CaptureDevice, Audio.EnableEFX, Audio.PlaybackDevice, Game.BriefIconScaleFactor, Game.Discord, Game.FontScaleFactor, Game.IffAccessibility, Game.Language, Graphics.Anisotropy, Graphics.Display, Graphics.MaxRtShadowLights, Graphics.MaxRtShadowLocalLights, Graphics.RTShadowQuality, Graphics.Resolution, Graphics.ResolutionVR, Graphics.RtShadowBiasMax, Graphics.RtShadowBiasMin, HUD.Radar2dIconMode, Input.FFStrength, Input.ForceFeedback, Input.HitEffect, Input.Joystick, Input.Joystick1, Input.Joystick2, Input.Joystick3, Input.JoystickDeadZone, Input.JoystickSensitivity, Input.MouseSensitivity, Input.UseMouse, Multi.FlushCache, Multi.LocalBroadcast, Multi.TogglePXO, Multi.TransferMissions, Speech.Briefing, Speech.Ingame, Speech.Multi, Speech.Rate, Speech.Techroom, Speech.Volume.
 

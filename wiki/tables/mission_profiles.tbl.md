@@ -2,13 +2,13 @@
 > OFP Revision: [#105](https://github.com/ofp-fs2open/fs2open.github.com/pull/105)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
-The **ai_profiles.tbl** creates and manages patterns of AI behavior, called profiles. A profile is a set of values and flags that control parts of AI behavior. Every option in a profile is optional; an option that isn't set follows the original FreeSpace 2 behavior. Each mission can use a different profile.
+The **mission_profiles.tbl** creates and manages patterns of AI behavior, called profiles. A profile is a set of values and flags that control parts of AI behavior. Every option in a profile is optional; an option that isn't set follows the original FreeSpace 2 behavior. Each mission can use a different profile.
 
-The default ai_profiles.tbl is built into the engine and defines the "FS2 RETAIL" profile. Rather than changing that profile, it's usually best to create a new one in a modular table, which then starts from FS2 RETAIL's values.
+The default table is built into the engine and defines the "FS2 RETAIL" profile. Rather than changing that profile, it's usually best to create a new one in a modular table, which then starts from FS2 RETAIL's values.
 
-This table is one of the Modular Tables and can be extended with **xxx-aip.tbm**.
+This table is one of the Modular Tables and can be extended with **xxx-msp.tbm**.
 
-![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) The table can also be called **mission_profiles.tbl**, and extended with **xxx-msp.tbm**. If both mission_profiles.tbl and ai_profiles.tbl exist, only mission_profiles.tbl is read, and the log says so.
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) **mission_profiles.tbl** is the current name of this table. Its original name, **ai_profiles.tbl** (extended with **xxx-aip.tbm**), is deprecated but still read: if both mission_profiles.tbl and ai_profiles.tbl exist, only mission_profiles.tbl is read, and the log says so. Modular tables with either extension are read.
 
 Code: [/ai/ai_profiles.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ai/ai_profiles.cpp). See [Tables](Tables) for every table.
 
@@ -32,19 +32,21 @@ If the version targeted in [game_settings.tbl](game_settings.tbl) is the one lis
 
 | Targeted version | Flags turned on |
 |---|---|
-| 3.6.10 | `$reset last_hit_target_time for player hits:` |
+| ![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg) | `$reset last_hit_target_time for player hits:` |
 | 3.6.14 (until 23.1) | `$carry shield difficulty scaling bug:` |
-| 3.7.2 | `$fix ramming stationary targets bug:` |
-| 20.0 | `$huge turret weapons ignore bombs:`, `$fix linked primary weapon decision bug:`, `$prevent turrets targeting too distant bombs:`, `$fix heat seekers homing on stealth ships bug:`, `$allow vertical dodge:`, `$fix AI class bug:`, `$ai guards specific ship in wing:`, `$fix AI path order bug:`, `$aspect bomb invulnerability fix:`, `$use actual primary range:`, `$fighters/bombers with no shields can manage ETS:` |
-| 21.4 | `$fixed ship-weapon collisions:` |
-| 22.0 | `$fighterbay arrivals use carrier orientation:`, `$prevent negative turret ammo:`, `$fix keep-safe-distance:` |
-| 23.0 | `$fix good-rearm-time bug:`, `$no continuous turn on attack:`, `$remove-goal properly removes play-dead order:` |
-| 23.2 | `$ships playing dead don't manage ETS:` |
-| 23.4 | `$hud squad messages use tactical disarm/disable:` |
-| 24.2 | `$debris damage respects 'big damage' flag:`, `$force beam turrets to use normal fov:`, `$guards ignore protected attackers:` |
-| 25.0 | `$fix avoid-shockwave bugs:`, `$purge player-issued form-on-wing after subsequent order:`, `$cancel future waves of any wing launched from an exited ship:` |
-| 26.0 | `$fix 'ignore if dead' flag:` |
-| 26.2 | `$no collision avoidance for kamikaze fighters:`, `$fix big ship waypoint completion:`, `$fix shockwave expiring before dealing damage:`, `$fix fighter/bomber AI recovers after engines repaired:`, `$fix standard strafe:`, `$fix AI target recovery:`, `$fix subsystem path randomization on refresh:`, `$fix fighterbay speed ramp:`, `$fix stale AI order state:` |
+| ![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) | `$fix ramming stationary targets bug:` |
+| ![FSO 20.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-20.0.svg) | `$huge turret weapons ignore bombs:`, `$fix linked primary weapon decision bug:`, `$prevent turrets targeting too distant bombs:`, `$fix heat seekers homing on stealth ships bug:`, `$allow vertical dodge:`, `$fix AI class bug:`, `$ai guards specific ship in wing:`, `$fix AI path order bug:`, `$aspect bomb invulnerability fix:`, `$use actual primary range:`, `$fighters/bombers with no shields can manage ETS:` |
+| ![FSO 21.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.4.svg) | `$fixed ship-weapon collisions:` |
+| ![FSO 22.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.0.svg) | `$fighterbay arrivals use carrier orientation:`, `$prevent negative turret ammo:`, `$fix keep-safe-distance:` |
+| ![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg) | `$fix good-rearm-time bug:`, `$no continuous turn on attack:`, `$remove-goal properly removes play-dead order:` |
+| ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) | `$ships playing dead don't manage ETS:` |
+| ![FSO 23.4](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.4.svg) | `$hud squad messages use tactical disarm/disable:` |
+| ![FSO 24.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-24.2.svg) | `$debris damage respects 'big damage' flag:`, `$force beam turrets to use normal fov:`, `$guards ignore protected attackers:` |
+| ![FSO 25.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-25.0.svg) | `$fix avoid-shockwave bugs:`, `$purge player-issued form-on-wing after subsequent order:`, `$cancel future waves of any wing launched from an exited ship:` |
+| ![FSO 26.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.0.svg) | `$fix 'ignore if dead' flag:` |
+| ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg) | `$no collision avoidance for kamikaze fighters:`, `$fix big ship waypoint completion:`, `$fix shockwave expiring before dealing damage:`, `$fix fighter/bomber AI recovers after engines repaired:`, `$fix standard strafe:`, `$fix AI target recovery:`, `$fix subsystem path randomization on refresh:`, `$fix fighterbay speed ramp:`, `$fix stale AI order state:` |
+
+23.4 is a development version between 23.2 and 24.0, so a mod targeting 24.0 or later gets those flags.
 
 ---
 
@@ -68,7 +70,7 @@ $Profile Name: (name)
 
 ## #AI Profiles
 
-- Indicates to the parser that this is an ai_profiles table file.
+- Indicates to the parser that this is a mission_profiles (ai_profiles) table file.
 
 ### $Default Profile:
 
@@ -1159,7 +1161,7 @@ Also accepted under its earlier name, `$friendly ships use AI profile countermea
 
 ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
 
-- Enables an erroneous behavior where player damage difficulty scaling is applied twice to damage from area blasts and shockwaves, greatly changing the effective difficulty scaling. This is a *bug* that should not be enabled, unless the mod was balanced during the time between 3.6.14 and 23.1 (mods [targeting within those versions](game_settings.tbl#24target_version) automatically have this flag enabled).
+- Enables an erroneous behavior where player damage difficulty scaling is applied twice to damage from area blasts and shockwaves, greatly changing the effective difficulty scaling. This is a *bug* that should not be enabled, unless the mod was balanced during the time between 3.6.14 and 23.1 (mods [targeting within those versions](game_settings.tbl#target-version) automatically have this flag enabled).
 - Syntax: ***Boolean***
 
 ### $debris affected by physics whacks:
@@ -1339,7 +1341,7 @@ Also accepted under its earlier name, `$friendly ships use AI profile countermea
   - Move slower than normal when not pointing at their target.
   - Aspect seekers follow a -1x lag pursuit scalar for the last second before hitting their target.
 - Note that the last point will make aspect seekers much less likely to hit moving targets.
-- [Can be applied on a per-weapon basis](weapons.tbl#22freespace_1_missile_behavior22)
+- [Can be applied on a per-weapon basis](weapons.tbl#freespace-1-missile-behavior)
 - Syntax: ***Boolean***
 
 ### $ETS uses ship class power output:

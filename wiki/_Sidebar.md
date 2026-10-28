@@ -28,7 +28,6 @@
 **Tables**
 - [Tables](Tables)
   - [ai.tbl](ai.tbl)
-  - [ai_profiles.tbl](ai_profiles.tbl)
   - [Animation (-anim.tbm)](Animation)
   - [armor.tbl](armor.tbl)
   - [asteroid.tbl](asteroid.tbl)
@@ -60,6 +59,7 @@
   - [medals.tbl](medals.tbl)
   - [messages.tbl](messages.tbl)
   - [mflash.tbl](mflash.tbl)
+  - [mission_profiles.tbl](mission_profiles.tbl)
   - [music.tbl](music.tbl)
   - [nebula.tbl](nebula.tbl)
   - [objecttypes.tbl](objecttypes.tbl)
