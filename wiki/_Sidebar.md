@@ -65,4 +65,5 @@
   - [post_processing.tbl](post_processing.tbl)
   - [props.tbl](props.tbl)
   - [rank.tbl](rank.tbl)
+  - [scripting.tbl](scripting.tbl)
   - [species.tbl](species.tbl)

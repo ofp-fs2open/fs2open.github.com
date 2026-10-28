@@ -58,4 +58,5 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [post_processing.tbl](post_processing.tbl): Post-processing effects
   - [props.tbl](props.tbl): Prop classes
   - [rank.tbl](rank.tbl): Pilot ranks
+  - [scripting.tbl](scripting.tbl): Lua scripting hooks
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
