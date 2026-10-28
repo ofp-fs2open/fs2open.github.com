@@ -73,3 +73,4 @@
   - [species_defs.tbl](species_defs.tbl)
   - [ssm.tbl](ssm.tbl)
   - [stars.tbl](stars.tbl)
+  - [strings.tbl](strings.tbl)
