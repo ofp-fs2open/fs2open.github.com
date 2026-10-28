@@ -70,3 +70,4 @@
   - [ships.tbl](ships.tbl)
   - [sounds.tbl](sounds.tbl)
   - [species.tbl](species.tbl)
+  - [species_defs.tbl](species_defs.tbl)

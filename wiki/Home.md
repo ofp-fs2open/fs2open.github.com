@@ -63,3 +63,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [ships.tbl](ships.tbl): Ship classes
   - [sounds.tbl](sounds.tbl): Game sounds
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)
+  - [species_defs.tbl](species_defs.tbl): Species definitions
