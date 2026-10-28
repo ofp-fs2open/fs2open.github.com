@@ -58,5 +58,6 @@
   - [messages.tbl](messages.tbl)
   - [mflash.tbl](mflash.tbl)
   - [music.tbl](music.tbl)
+  - [nebula.tbl](nebula.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
