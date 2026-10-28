@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#132](https://github.com/ofp-fs2open/fs2open.github.com/pull/132)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **nebula.tbl** is used to define the various nebula bitmaps and poofs used by full nebula missions. (The FS1-style background nebula is defined in [generated_nebula.tbl](generated_nebula.tbl) instead.)
