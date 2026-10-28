@@ -62,5 +62,6 @@
   - [nebula.tbl](nebula.tbl)
   - [objecttypes.tbl](objecttypes.tbl)
   - [Particle Effects (-part.tbm)](Particle-Effects)
+  - [post_processing.tbl](post_processing.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)
