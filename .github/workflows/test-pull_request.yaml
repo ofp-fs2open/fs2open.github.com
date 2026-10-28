@@ -3,26 +3,27 @@ name: Check a pull request
 on: [pull_request]
 
 jobs:
-  # OFP: skip the builds on PRs that only change wiki/ (see build_result at the bottom)
+  # OFP: skip the builds on PRs that only change docs: wiki/, .md files, issue and Discussion
+  # templates, CODEOWNERS (see build_result at the bottom). Keep in sync with cache-master.yaml.
   changes:
     name: Changes
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.files.outputs.code }}
     steps:
-      - name: Check whether anything outside wiki/ changed
+      - name: Check whether anything besides docs changed
         id: files
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          other=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename | select(startswith("wiki/") | not)')
+          other=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename | select((startswith("wiki/") or endswith(".md") or startswith(".github/ISSUE_TEMPLATE/") or startswith(".github/DISCUSSION_TEMPLATE/") or . == ".github/CODEOWNERS") | not)')
           if [ -n "$other" ]; then
             echo "code=true" >> "$GITHUB_OUTPUT"
           else
             echo "code=false" >> "$GITHUB_OUTPUT"
-            echo "Only wiki/ changed: skipping the builds."
+            echo "Only docs changed: skipping the builds."
           fi
 
   build_linux:
@@ -230,7 +231,7 @@ jobs:
           fixesFile: clang-fixes.yaml
 
   # OFP: the one check the master ruleset requires. Passes when the Linux and Windows builds passed,
-  # or were skipped because the PR only changes wiki/. Fails if either failed or was cancelled.
+  # or were skipped because the PR only changes docs. Fails if either failed or was cancelled.
   # (Mac builds still run but aren't required, as in SCP.)
   build_result:
     name: Build result

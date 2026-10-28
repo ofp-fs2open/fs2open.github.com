@@ -4,8 +4,12 @@ on:
   push:
     branches:
       - master
-    paths-ignore: # OFP: wiki-only merges don't change what the caches hold
+    paths-ignore: # OFP: docs-only merges don't change what the caches hold; keep in sync with test-pull_request.yaml
       - 'wiki/**'
+      - '**.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/DISCUSSION_TEMPLATE/**'
+      - '.github/CODEOWNERS'
 
 jobs:
   build_linux:
