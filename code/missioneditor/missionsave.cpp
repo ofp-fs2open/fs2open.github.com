@@ -1170,6 +1170,8 @@ int Fred_mission_save::save_briefing()
 			parse_comments();
 			fout(" %s", bs->voice);
 
+			save_stage_note(bs->note, "$camera_pos:");
+
 			required_string_fred("$camera_pos:");
 			parse_comments();
 			save_vector(bs->camera_pos);
@@ -1391,6 +1393,8 @@ int Fred_mission_save::save_cmd_brief()
 		required_string_fred("+Wave Filename:", "$Ani Filename:");
 		parse_comments();
 		fout(" %s", Cur_cmd_brief->stage[stage].wave_filename);
+
+		save_stage_note(Cur_cmd_brief->stage[stage].note, "$Stage Text:");
 
 		fso_comment_pop();
 	}
@@ -1807,6 +1811,28 @@ void Fred_mission_save::save_custom_bitmap(const char* expected_string_640,
 	}
 }
 
+void Fred_mission_save::save_stage_note(const SCP_string& note, const char* next_token)
+{
+	if (note.empty() || save_config.save_format == MissionFormat::RETAIL)
+		return;
+
+	const bool had_note = optional_string_fred("+Note:", next_token) != 0;
+	if (had_note)
+		parse_comments();
+	else
+		fout("\n+Note:");
+
+	auto copy = note;
+	lcl_fred_replace_stuff(copy);
+	fout(" %s", copy.c_str());
+
+	// only look for the note's own end marker; without an old note, the next one belongs to something else
+	if (had_note && optional_string_fred("$end_multi_text", next_token))
+		parse_comments();
+	else
+		fout_version("\n$end_multi_text");
+}
+
 int Fred_mission_save::save_cutscenes()
 {
 	char type[NAME_LENGTH];
@@ -1921,6 +1947,8 @@ int Fred_mission_save::save_debriefing()
 			required_string_fred("$Voice:");
 			parse_comments();
 			fout(" %s", Debriefing->stages[i].voice);
+
+			save_stage_note(Debriefing->stages[i].note, "$Recommendation text:");
 
 			// XSTR
 			required_string_fred("$Recommendation text:");

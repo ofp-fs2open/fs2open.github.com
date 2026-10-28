@@ -71,6 +71,7 @@ static void writeStage(QDataStream& ds, const brief_stage& s)
 {
 	ds << QString::fromStdString(s.text);
 	ds << QString::fromLatin1(s.voice);
+	ds << QString::fromStdString(s.note);
 	ds << s.camera_pos.xyz.x << s.camera_pos.xyz.y << s.camera_pos.xyz.z;
 	// camera_orient: row-major rvec/uvec/fvec
 	ds << s.camera_orient.vec.rvec.xyz.x << s.camera_orient.vec.rvec.xyz.y << s.camera_orient.vec.rvec.xyz.z;
@@ -109,9 +110,10 @@ static void writeStage(QDataStream& ds, const brief_stage& s)
 
 static void readStage(QDataStream& ds, brief_stage& s)
 {
-	QString text, voice;
-	ds >> text >> voice;
+	QString text, voice, note;
+	ds >> text >> voice >> note;
 	s.text = text.toStdString();
+	s.note = note.toStdString();
 	strncpy(s.voice, voice.toLatin1().constData(), MAX_FILENAME_LEN - 1);
 	s.voice[MAX_FILENAME_LEN - 1] = '\0';
 

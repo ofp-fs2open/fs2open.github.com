@@ -412,6 +412,7 @@ void debriefing_editor_dlg::copy_stage(int from, int to, int clear_formula)
 	if ((from < 0) || (from >= Debriefing->num_stages)) {
 		Debriefing->stages[to].text = "<Text here>";
 		strcpy_s(Debriefing->stages[to].voice, "none.wav");
+		Debriefing->stages[to].note.clear();
 		Debriefing->stages[to].formula = -1;
 		return;
 	}
@@ -423,6 +424,7 @@ void debriefing_editor_dlg::copy_stage(int from, int to, int clear_formula)
 
 	Debriefing->stages[to].text = Debriefing->stages[from].text;
 	strcpy_s( Debriefing->stages[to].voice, Debriefing->stages[from].voice );
+	Debriefing->stages[to].note = Debriefing->stages[from].note;
 	Debriefing->stages[to].recommendation_text = Debriefing->stages[from].recommendation_text;
 }
 

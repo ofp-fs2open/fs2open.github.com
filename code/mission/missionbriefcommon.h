@@ -153,6 +153,7 @@ class brief_stage
 public:
 	SCP_string	text;
 	char			voice[MAX_FILENAME_LEN];
+	SCP_string	note;				// voice actor note; editor only, unused in game
 	vec3d		camera_pos;
 	matrix		camera_orient;
 	int			camera_time;		// ms
@@ -176,6 +177,7 @@ public:
 	{
 		text.clear();
 		voice[ 0 ] = 0;
+		note.clear();
 		camera_pos = vmd_zero_vector;
 		camera_orient = vmd_identity_matrix;
 		camera_time = 0;
@@ -201,6 +203,7 @@ public:
 	{
 		std::swap(a.text, b.text);
 		std::swap(a.voice, b.voice);
+		std::swap(a.note, b.note);
 		std::swap(a.camera_pos, b.camera_pos);
 		std::swap(a.camera_orient, b.camera_orient);
 		std::swap(a.camera_time, b.camera_time);
@@ -221,6 +224,7 @@ public:
 	int			formula;
 	SCP_string	text;
 	char			voice[MAX_FILENAME_LEN];
+	SCP_string	note;				// voice actor note; editor only, unused in game
 	SCP_string	recommendation_text;
 
 	debrief_stage( ) 

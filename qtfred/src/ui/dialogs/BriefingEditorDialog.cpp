@@ -19,6 +19,7 @@
 #include <globalincs/linklist.h>
 #include <ui/util/default_dir.h>
 #include <ui/util/DialogUndo.h>
+#include <ui/util/NoteDialog.h>
 #include <ui/util/SignalBlockers.h>
 
 #include <mission/commands/FredCommands.h>
@@ -334,6 +335,8 @@ void BriefingEditorDialog::updateUi()
 
 	ui->stageTextPlainTextEdit->setPlainText(QString::fromStdString(_model->getStageText()));
 	ui->voiceFileLineEdit->setText(QString::fromStdString(_model->getSpeechFilename()));
+	const bool stage_exists = _model->getTotalStages() > 0 && _model->getCurrentStage() >= 0;
+	ui->stageNoteButton->setText(util::noteButtonText(stage_exists ? _model->getStageNote() : SCP_string()));
 	// getBriefingMusicIndex() is 1-based (0 = None); widget uses Spooled_music index (-1 = None)
 	ui->defaultMusicWidget->setCurrentMusicIndex(_model->getBriefingMusicIndex() - 1);
 
@@ -365,7 +368,6 @@ void BriefingEditorDialog::updateUi()
 		ui->formulaTreeView->hilite_item(ui->formulaTreeView->select_sexp_node);
 	}
 
-	const bool stage_exists = _model->getTotalStages() > 0 && _model->getCurrentStage() >= 0;
 	const auto& lineSelection = _model->getLineSelection();
 	const bool icon_selected = stage_exists && !lineSelection.empty();
 	const bool single_icon = stage_exists && lineSelection.size() == 1;
@@ -481,6 +483,7 @@ void BriefingEditorDialog::enableDisableControls()
 	ui->voiceFileLineEdit->setEnabled(stage_exists);
 	ui->voiceFileBrowseButton->setEnabled(stage_exists);
 	ui->voiceFilePlayButton->setEnabled(stage_exists && !_model->getSpeechFilename().empty());
+	ui->stageNoteButton->setEnabled(stage_exists);
 	ui->formulaTreeView->setEnabled(stage_exists);
 	
 	const bool icon_selected = stage_exists && !_model->getLineSelection().empty();
@@ -1244,6 +1247,21 @@ void BriefingEditorDialog::on_voiceFileBrowseButton_clicked()
 void BriefingEditorDialog::on_voiceFilePlayButton_clicked()
 {
 	_model->testSpeech();
+}
+
+void BriefingEditorDialog::on_stageNoteButton_clicked()
+{
+	if (_model->getTotalStages() <= 0 || _model->getCurrentStage() < 0)
+		return;
+
+	SCP_string note = _model->getStageNote();
+	if (!util::editNote(this, tr("Stage Note"), tr("Enter a voice actor note for this stage:"), note))
+		return;
+
+	const QByteArray before = _model->captureWorkingState();
+	_model->setStageNote(note);
+	pushWorkingStateSnapshot(before, tr("Edit Stage Note"));
+	updateUi();
 }
 
 void BriefingEditorDialog::on_defaultMusicWidget_currentIndexChanged(int spooledMusicIdx)

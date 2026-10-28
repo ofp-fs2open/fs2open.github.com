@@ -332,6 +332,10 @@ class Fred_mission_save {
 		const char* string_field_1024,
 		int blank_lines = 0);
 
+	// Saves the +Note: of a briefing, debriefing or command briefing stage, if it has one.
+	// next_token is the field that follows the note; it bounds the search for an existing note's comments.
+	void save_stage_note(const SCP_string& note, const char* next_token);
+
 	/**
 	 * @brief Saves cutscenes to file
 	 *

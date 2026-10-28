@@ -8,6 +8,7 @@
 #include <mission/commands/FredCommands.h>
 #include <ui/util/default_dir.h>
 #include <ui/util/DialogUndo.h>
+#include <ui/util/NoteDialog.h>
 #include <ui/util/SignalBlockers.h>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -149,6 +150,8 @@ void DebriefingDialog::updateUi()
 	ui->debriefingTextEdit->setPlainText(QString::fromStdString(_model->getStageText()));
 	ui->recommendationTextEdit->setPlainText(QString::fromStdString(_model->getRecommendationText()));
 	ui->voiceFileLineEdit->setText(QString::fromStdString(_model->getSpeechFilename()));
+	const bool stage_exists = _model->getTotalStages() > 0 && _model->getCurrentStage() >= 0;
+	ui->stageNoteButton->setText(util::noteButtonText(stage_exists ? _model->getStageNote() : SCP_string()));
 
 	SCP_string stages = "No Stages";
 	int total = _model->getTotalStages();
@@ -196,6 +199,7 @@ void DebriefingDialog::enableDisableControls()
 	ui->voiceFileLineEdit->setEnabled(stage_exists);
 	ui->voiceFileBrowseButton->setEnabled(stage_exists);
 	ui->voiceFilePlayButton->setEnabled(stage_exists && !_model->getSpeechFilename().empty());
+	ui->stageNoteButton->setEnabled(stage_exists);
 	ui->formulaTreeView->setEnabled(stage_exists);
 
 	// Music is global to the mission, not per stage
@@ -359,6 +363,21 @@ void DebriefingDialog::on_voiceFileBrowseButton_clicked()
 void DebriefingDialog::on_voiceFilePlayButton_clicked()
 {
 	_model->testSpeech();
+}
+
+void DebriefingDialog::on_stageNoteButton_clicked()
+{
+	if (_model->getTotalStages() <= 0 || _model->getCurrentStage() < 0)
+		return;
+
+	SCP_string note = _model->getStageNote();
+	if (!util::editNote(this, tr("Stage Note"), tr("Enter a voice actor note for this stage:"), note))
+		return;
+
+	const QByteArray before = _model->captureWorkingState();
+	_model->setStageNote(note);
+	pushWorkingStateSnapshot(before, tr("Edit Stage Note"));
+	updateUi();
 }
 
 void DebriefingDialog::on_successMusicWidget_currentIndexChanged(int spooledMusicIdx)

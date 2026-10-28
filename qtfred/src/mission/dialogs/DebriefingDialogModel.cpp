@@ -101,6 +101,7 @@ QByteArray DebriefingDialogModel::captureWorkingState() const
 			fso::fred::state::writeSexp(ds, stage.formula);
 			ds << QString::fromStdString(stage.text);
 			ds << QString::fromLatin1(stage.voice);
+			ds << QString::fromStdString(stage.note);
 			ds << QString::fromStdString(stage.recommendation_text);
 		}
 		// Not editable in this dialog, but Copy To Other Teams overwrites it,
@@ -129,9 +130,10 @@ void DebriefingDialogModel::restoreWorkingState(const QByteArray& state)
 		for (auto& stage : deb.stages) {
 			fso::fred::state::freeSexpFormula(stage.formula);
 			stage.formula = fso::fred::state::readSexp(ds);
-			QString text, voice, rec;
-			ds >> text >> voice >> rec;
+			QString text, voice, note, rec;
+			ds >> text >> voice >> note >> rec;
 			stage.text = text.toStdString();
+			stage.note = note.toStdString();
 			strncpy(stage.voice, voice.toLatin1().constData(), MAX_FILENAME_LEN - 1);
 			stage.voice[MAX_FILENAME_LEN - 1] = '\0';
 			stage.recommendation_text = rec.toStdString();
@@ -216,6 +218,7 @@ void DebriefingDialogModel::addStage()
 	_currentStage = _wipDebriefing[_currentTeam].num_stages - 1;
 	_wipDebriefing[_currentTeam].stages[_currentStage].text = "<Text here>";
 	_wipDebriefing[_currentTeam].stages[_currentStage].recommendation_text = "<Recommendation text here>";
+	_wipDebriefing[_currentTeam].stages[_currentStage].note.clear();
 	strcpy_s(_wipDebriefing[_currentTeam].stages[_currentStage].voice, "none.wav"); // Really? Seeding with none.wav is gross
 	_wipDebriefing[_currentTeam].stages[_currentStage].formula = -1;
 
@@ -272,6 +275,7 @@ void DebriefingDialogModel::deleteStage()
 		}
 		_wipDebriefing[_currentTeam].stages[0].text.clear();
 		_wipDebriefing[_currentTeam].stages[0].recommendation_text.clear();
+		_wipDebriefing[_currentTeam].stages[0].note.clear();
 		memset(_wipDebriefing[_currentTeam].stages[0].voice, 0, CF_MAX_FILENAME_LENGTH);
 		_wipDebriefing[_currentTeam].stages[0].formula = -1;
 		set_modified();
@@ -296,6 +300,7 @@ void DebriefingDialogModel::deleteStage()
 	const int tail = _wipDebriefing[_currentTeam].num_stages; // index of the old last element
 	_wipDebriefing[_currentTeam].stages[tail].text.clear();
 	_wipDebriefing[_currentTeam].stages[tail].recommendation_text.clear();
+	_wipDebriefing[_currentTeam].stages[tail].note.clear();
 	std::memset(_wipDebriefing[_currentTeam].stages[tail].voice, 0, CF_MAX_FILENAME_LENGTH);
 	_wipDebriefing[_currentTeam].stages[tail].formula = -1;
 
@@ -423,6 +428,16 @@ void DebriefingDialogModel::setSpeechFilename(const SCP_string& speechFilename)
 {
 	strcpy_s(_wipDebriefing[_currentTeam].stages[_currentStage].voice, speechFilename.c_str());
 	set_modified();
+}
+
+SCP_string DebriefingDialogModel::getStageNote()
+{
+	return _wipDebriefing[_currentTeam].stages[_currentStage].note;
+}
+
+void DebriefingDialogModel::setStageNote(const SCP_string& note)
+{
+	modify(_wipDebriefing[_currentTeam].stages[_currentStage].note, note);
 }
 
 int DebriefingDialogModel::getFormula() const

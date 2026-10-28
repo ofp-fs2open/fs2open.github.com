@@ -722,6 +722,19 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QPushButton" name="stageNoteButton">
+                <property name="toolTip">
+                 <string>A note for this stage's voice actor. The Voice Acting Manager exports it; the game never shows it.</string>
+                </property>
+                <property name="text">
+                 <string>Add Note</string>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -828,6 +841,7 @@
   <tabstop>voiceFileLineEdit</tabstop>
   <tabstop>voiceFileBrowseButton</tabstop>
   <tabstop>voiceFilePlayButton</tabstop>
+  <tabstop>stageNoteButton</tabstop>
   <tabstop>stageTextPlainTextEdit</tabstop>
   <tabstop>okAndCancelButtons</tabstop>
  </tabstops>

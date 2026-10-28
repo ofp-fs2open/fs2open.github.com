@@ -42,6 +42,7 @@ private slots:
 	void on_actionBrowseAnimation_clicked();
 	void on_actionBrowseSpeechFile_clicked();
 	void on_actionTestSpeechFileButton_clicked();
+	void on_actionStageNote_clicked();
 	void on_actionLowResolutionBrowse_clicked();
 	void on_actionHighResolutionBrowse_clicked();
 

@@ -82,6 +82,7 @@ void CommandBriefingDialogModel::addStage()
 	_wipCommandBrief[_currentTeam].num_stages++;
 	_currentStage = _wipCommandBrief[_currentTeam].num_stages - 1;
 	_wipCommandBrief[_currentTeam].stage[_currentStage].text = "<Text here>";
+	_wipCommandBrief[_currentTeam].stage[_currentStage].note.clear();
 	set_modified();
 }
 
@@ -115,6 +116,7 @@ void CommandBriefingDialogModel::deleteStage()
 	if (_wipCommandBrief[_currentTeam].num_stages <= 1) {
 		_wipCommandBrief[_currentTeam].num_stages = 0;
 		_wipCommandBrief[_currentTeam].stage[0].text.clear();
+		_wipCommandBrief[_currentTeam].stage[0].note.clear();
 		_wipCommandBrief[_currentTeam].stage[0].wave = -1;
 		memset(_wipCommandBrief[_currentTeam].stage[0].wave_filename, 0, CF_MAX_FILENAME_LENGTH);
 		memset(_wipCommandBrief[_currentTeam].stage[0].ani_filename, 0, CF_MAX_FILENAME_LENGTH);
@@ -132,6 +134,7 @@ void CommandBriefingDialogModel::deleteStage()
 	// Clear the tail
 	const int tail = _wipCommandBrief[_currentTeam].num_stages; // index of the old last element
 	_wipCommandBrief[_currentTeam].stage[tail].text.clear();
+	_wipCommandBrief[_currentTeam].stage[tail].note.clear();
 	_wipCommandBrief[_currentTeam].stage[tail].wave = -1;
 	std::memset(_wipCommandBrief[_currentTeam].stage[tail].wave_filename, 0, CF_MAX_FILENAME_LENGTH);
 	std::memset(_wipCommandBrief[_currentTeam].stage[tail].ani_filename, 0, CF_MAX_FILENAME_LENGTH);
@@ -273,6 +276,19 @@ void CommandBriefingDialogModel::setSpeechFilenameAt(int team, int stage, const 
 	}
 	strcpy_s(_wipCommandBrief[team].stage[stage].wave_filename, name.c_str());
 	set_modified();
+}
+
+SCP_string CommandBriefingDialogModel::getStageNote()
+{
+	return _wipCommandBrief[_currentTeam].stage[_currentStage].note;
+}
+
+void CommandBriefingDialogModel::setStageNote(const SCP_string& note)
+{
+	if (!cmdBriefStageInBounds(_currentTeam, _currentStage)) {
+		return;
+	}
+	modify(_wipCommandBrief[_currentTeam].stage[_currentStage].note, note);
 }
 
 SCP_string CommandBriefingDialogModel::getLowResolutionFilename() 

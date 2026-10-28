@@ -1775,6 +1775,22 @@ void parse_fiction(mission * /*pm*/)
 	}
 }
 
+// The voice actor note of a briefing, debriefing or command briefing stage (+Note:), the same as a
+// message's. Like message notes, it is only kept in the editors.
+static void parse_stage_note(SCP_string& note)
+{
+	note.clear();
+	if (optional_string("+Note:")) {
+		if (Fred_running) {
+			stuff_string(note, F_MULTITEXT);
+			lcl_replace_stuff(note, true);
+		} else {
+			SCP_string junk;
+			stuff_string(junk, F_MULTITEXT);
+		}
+	}
+}
+
 /**
  * Parse command briefing
  */
@@ -1800,6 +1816,8 @@ void parse_cmd_brief(mission * /*pm*/)
 			stuff_string(Cur_cmd_brief->stage[stage].wave_filename, F_FILESPEC, MAX_FILENAME_LEN);
 		else
 			Cur_cmd_brief->stage[stage].wave_filename[0] = 0;
+
+		parse_stage_note(Cur_cmd_brief->stage[stage].note);
 
 		stage++;
 	}
@@ -1868,6 +1886,7 @@ void parse_briefing(mission * /*pm*/, int flags)
 			stuff_string(bs->text, F_MULTITEXT, NULL);
 			required_string("$voice:");
 			stuff_string(bs->voice, F_FILESPEC, MAX_FILENAME_LEN);
+			parse_stage_note(bs->note);
 			required_string("$camera_pos:");
 			stuff_vec3d(&bs->camera_pos);
 			required_string("$camera_orient:");
@@ -2118,6 +2137,7 @@ void parse_debriefing_new(mission * /*pm*/)
 			stuff_string(dbs->text, F_MULTITEXT, NULL);
 			required_string("$Voice:");
 			stuff_string(dbs->voice, F_FILESPEC, MAX_FILENAME_LEN);
+			parse_stage_note(dbs->note);
 			required_string("$Recommendation text:");
 			stuff_string(dbs->recommendation_text, F_MULTITEXT, NULL);
 		} // end while
@@ -10538,6 +10558,22 @@ bool check_for_26_1_data()
 	if (std::any_of(Coordinate_points.begin(), Coordinate_points.end(),
 		[](const mission_coordinate_point& cp) { return cp.fred_locked; }))
 		return true;
+
+	// Voice actor notes on briefing, debriefing and command briefing stages (+Note:)
+	for (int team = 0; team < Num_teams; ++team) {
+		for (int i = 0; i < Briefings[team].num_stages; ++i) {
+			if (!Briefings[team].stages[i].note.empty())
+				return true;
+		}
+		for (int i = 0; i < Debriefings[team].num_stages; ++i) {
+			if (!Debriefings[team].stages[i].note.empty())
+				return true;
+		}
+		for (int i = 0; i < Cmd_briefs[team].num_stages; ++i) {
+			if (!Cmd_briefs[team].stage[i].note.empty())
+				return true;
+		}
+	}
 
 	// Editor selection groups on props, waypoint paths and jump nodes (+Group:). Ships have always
 	// had +Group:, and coordinate points are new in this version, so neither needs the bump.

@@ -275,6 +275,16 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="3" colspan="2">
+          <widget class="QPushButton" name="actionStageNote">
+           <property name="toolTip">
+            <string>A note for this stage's voice actor. The Voice Acting Manager exports it; the game never shows it.</string>
+           </property>
+           <property name="text">
+            <string>Add Note</string>
+           </property>
+          </widget>
+         </item>
          <item row="3" column="0">
           <spacer name="SpacerforBackgroundImages">
            <property name="orientation">
@@ -313,6 +323,7 @@
   <tabstop>speechFilename</tabstop>
   <tabstop>actionBrowseSpeechFile</tabstop>
   <tabstop>actionTestSpeechFileButton</tabstop>
+  <tabstop>actionStageNote</tabstop>
   <tabstop>actionLowResolutionFilenameEdit</tabstop>
   <tabstop>actionLowResolutionBrowse</tabstop>
   <tabstop>actionHighResolutionFilenameEdit</tabstop>

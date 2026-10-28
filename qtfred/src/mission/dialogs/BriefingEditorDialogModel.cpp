@@ -25,6 +25,7 @@ void copyStageData(brief_stage& dst, const brief_stage& src)
 
 	dst.text = src.text;
 	strcpy_s(dst.voice, src.voice);
+	dst.note = src.note;
 	dst.camera_pos = src.camera_pos;
 	dst.camera_orient = src.camera_orient;
 	dst.camera_time = src.camera_time;
@@ -351,10 +352,12 @@ void BriefingEditorDialogModel::addStage()
 		}
 		dst.text = "<Text here>";
 		dst.voice[0] = '\0';
+		dst.note.clear();
 	} else {
 		// First stage in an empty briefing
 		dst.text = "<Text here>";
 		dst.voice[0] = '\0';
+		dst.note.clear();
 		dst.camera_pos = vmd_zero_vector;
 		dst.camera_pos.xyz.y = 1000.0f;
 
@@ -426,6 +429,7 @@ void BriefingEditorDialogModel::deleteStage()
 			free_sexp2(_wipBriefings[_currentTeam].stages[0].formula);
 		}
 		_wipBriefings[_currentTeam].stages[0].text.clear();
+		_wipBriefings[_currentTeam].stages[0].note.clear();
 		memset(_wipBriefings[_currentTeam].stages[0].voice, 0, CF_MAX_FILENAME_LENGTH);
 		_wipBriefings[_currentTeam].stages[0].formula = -1;
 		set_modified();
@@ -449,6 +453,7 @@ void BriefingEditorDialogModel::deleteStage()
 	// above it, so just sever the reference (no free — the slot above owns it now).
 	const int tail = _wipBriefings[_currentTeam].num_stages; // index of the old last element
 	_wipBriefings[_currentTeam].stages[tail].text.clear();
+	_wipBriefings[_currentTeam].stages[tail].note.clear();
 	std::memset(_wipBriefings[_currentTeam].stages[tail].voice, 0, CF_MAX_FILENAME_LENGTH);
 	_wipBriefings[_currentTeam].stages[tail].formula = -1;
 
@@ -610,6 +615,16 @@ void BriefingEditorDialogModel::setSpeechFilename(const SCP_string& speechFilena
 {
 	strcpy_s(_wipBriefings[_currentTeam].stages[_currentStage].voice, speechFilename.c_str());
 	set_modified();
+}
+
+SCP_string BriefingEditorDialogModel::getStageNote()
+{
+	return _wipBriefings[_currentTeam].stages[_currentStage].note;
+}
+
+void BriefingEditorDialogModel::setStageNote(const SCP_string& note)
+{
+	modify(_wipBriefings[_currentTeam].stages[_currentStage].note, note);
 }
 
 int BriefingEditorDialogModel::getFormula() const

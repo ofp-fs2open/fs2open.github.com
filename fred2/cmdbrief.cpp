@@ -266,6 +266,7 @@ void cmd_brief_dlg::copy_stage(int from, int to)
 		Cur_cmd_brief->stage[to].text = "<Text here>";
 		strcpy_s(Cur_cmd_brief->stage[to].ani_filename, "<default>");
 		strcpy_s(Cur_cmd_brief->stage[to].wave_filename, "none");
+		Cur_cmd_brief->stage[to].note.clear();
 		return;
 	}
 

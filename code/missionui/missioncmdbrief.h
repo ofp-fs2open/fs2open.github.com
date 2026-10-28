@@ -27,6 +27,7 @@ struct cmd_brief_stage {
 	SCP_string text;  // text to display
 	char ani_filename[MAX_FILENAME_LEN];  // associated ani file to play
 	char wave_filename[MAX_FILENAME_LEN]; // associated wav file to play
+	SCP_string note;  // voice actor note; editor only, unused in game
 	int wave;  // instance number of above
 };
 

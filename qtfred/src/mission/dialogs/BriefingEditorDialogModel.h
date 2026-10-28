@@ -44,6 +44,8 @@ class BriefingEditorDialogModel : public AbstractDialogModel {
 	void setStageText(const SCP_string& text);
 	SCP_string getSpeechFilename();
 	void setSpeechFilename(const SCP_string& speechFilename);
+	SCP_string getStageNote();
+	void setStageNote(const SCP_string& note);
 	int getFormula() const;
 
 	void setTreeControl(sexp_tree_view* tree) { _sexpTree = tree; }

@@ -580,6 +580,7 @@ void mission_brief_common_init()
 		for (i = 0; i < MAX_TVT_TEAMS; i++) {
 			for (j = 0; j < MAX_DEBRIEF_STAGES; j++) {
 				Debriefings[i].stages[j].text = "";
+				Debriefings[i].stages[j].note.clear();
 				Debriefings[i].stages[j].recommendation_text = "";
 			}
 		}
@@ -599,6 +600,7 @@ void mission_brief_common_init()
 		for (i=0; i<MAX_TVT_TEAMS; i++ )	{
 			for (j=0; j<MAX_DEBRIEF_STAGES; j++ )	{
 				Debriefings[i].stages[j].text = "";
+				Debriefings[i].stages[j].note.clear();
 				Debriefings[i].stages[j].recommendation_text = "";
 			}
 		}
@@ -620,6 +622,7 @@ void mission_brief_common_reset()
 			Briefings[i].stages[j].num_icons = 0;
 			Briefings[i].stages[j].num_lines = 0;
 			Briefings[i].stages[j].text = "";
+			Briefings[i].stages[j].note.clear();
 
 			if (Fred_running) {
 				if ( Briefings[i].stages[j].icons ) {
@@ -660,6 +663,7 @@ void mission_debrief_common_reset()
 
 		for (j = 0; j < MAX_DEBRIEF_STAGES; j++) {
 			Debriefings[i].stages[j].text = "";
+			Debriefings[i].stages[j].note.clear();
 			Debriefings[i].stages[j].recommendation_text = "";
 		}
 	}
@@ -2584,6 +2588,7 @@ void cmd_brief_reset()
 		for (i=0; i<MAX_TVT_TEAMS; i++) {
 			for (j=0; j<Cmd_briefs[i].num_stages; j++) {
 				Cmd_briefs[i].stage[j].text = "";
+				Cmd_briefs[i].stage[j].note.clear();
 			}
 		}
 	}

@@ -28,6 +28,7 @@ QByteArray DebriefingDialogModel::captureState() const
 			fso::fred::state::writeSexp(ds, stage.formula);
 			ds << QString::fromStdString(stage.text);
 			ds << QString::fromLatin1(stage.voice);
+			ds << QString::fromStdString(stage.note);
 			ds << QString::fromStdString(stage.recommendation_text);
 		}
 
@@ -52,11 +53,12 @@ void DebriefingDialogModel::restoreState(const QByteArray& state)
 		deb.num_stages = static_cast<int>(numStages);
 
 		for (auto& stage : deb.stages) {
-			QString text, voice, recText;
+			QString text, voice, note, recText;
 			fso::fred::state::freeSexpFormula(stage.formula);
 			stage.formula = fso::fred::state::readSexp(ds);
-			ds >> text >> voice >> recText;
+			ds >> text >> voice >> note >> recText;
 			stage.text = text.toStdString();
+			stage.note = note.toStdString();
 			strncpy(stage.voice, voice.toLatin1().constData(), MAX_FILENAME_LEN - 1);
 			stage.voice[MAX_FILENAME_LEN - 1] = '\0';
 			stage.recommendation_text = recText.toStdString();

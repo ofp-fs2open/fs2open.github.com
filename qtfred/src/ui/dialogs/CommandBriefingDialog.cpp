@@ -7,6 +7,7 @@
 #include <mission/commands/FredCommands.h>
 #include <ui/util/default_dir.h>
 #include <ui/util/DialogUndo.h>
+#include <ui/util/NoteDialog.h>
 #include <ui/util/SignalBlockers.h>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -125,6 +126,7 @@ void CommandBriefingDialog::updateUi()
 	ui->actionBriefingTextEditor->setPlainText(_model->getBriefingText().c_str());
 	ui->animationFilename->setText(_model->getAnimationFilename().c_str());
 	ui->speechFilename->setText(_model->getSpeechFilename().c_str());
+	ui->actionStageNote->setText(util::noteButtonText(_model->getTotalStages() > 0 ? _model->getStageNote() : SCP_string()));
 	ui->actionLowResolutionFilenameEdit->setText(_model->getLowResolutionFilename().c_str());
 	ui->actionHighResolutionFilenameEdit->setText(_model->getHighResolutionFilename().c_str());
 
@@ -161,6 +163,7 @@ void CommandBriefingDialog::enableDisableControls()
 	ui->speechFilename->setEnabled(total_stages > 0);
 	ui->actionBrowseSpeechFile->setEnabled(total_stages > 0);
 	ui->actionTestSpeechFileButton->setEnabled(total_stages > 0 && !_model->getSpeechFilename().empty());
+	ui->actionStageNote->setEnabled(total_stages > 0);
 
 	ui->actionLowResolutionFilenameEdit->setEnabled(total_stages > 0);
 	ui->actionLowResolutionBrowse->setEnabled(total_stages > 0);
@@ -244,6 +247,21 @@ void CommandBriefingDialog::on_actionBrowseSpeechFile_clicked()
 void CommandBriefingDialog::on_actionTestSpeechFileButton_clicked()
 {
 	_model->testSpeech();
+}
+
+void CommandBriefingDialog::on_actionStageNote_clicked()
+{
+	if (_model->getTotalStages() <= 0)
+		return;
+
+	SCP_string note = _model->getStageNote();
+	if (!util::editNote(this, tr("Stage Note"), tr("Enter a voice actor note for this stage:"), note))
+		return;
+
+	const QByteArray before = _model->captureWorkingState();
+	_model->setStageNote(note);
+	pushWorkingStateSnapshot(before, tr("Edit Stage Note"));
+	updateUi();
 }
 
 void CommandBriefingDialog::on_actionLowResolutionBrowse_clicked()

@@ -39,6 +39,8 @@ class DebriefingDialogModel: public AbstractDialogModel {
 	void setRecommendationText(const SCP_string& text);
 	SCP_string getSpeechFilename();
 	void setSpeechFilename(const SCP_string& speechFilename);
+	SCP_string getStageNote();
+	void setStageNote(const SCP_string& note);
 	int getFormula() const;
 
 	// Indexed setters for undo commands: a command captured on one stage must

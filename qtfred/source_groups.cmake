@@ -359,6 +359,8 @@ add_file_folder("Source/UI/Util"
 	src/ui/util/KeyboardNavigation.h
 	src/ui/util/menu.cpp
 	src/ui/util/menu.h
+	src/ui/util/NoteDialog.cpp
+	src/ui/util/NoteDialog.h
 	src/ui/util/SignalBlockers.cpp
 	src/ui/util/SignalBlockers.h
 )

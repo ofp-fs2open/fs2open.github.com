@@ -952,6 +952,7 @@ void briefing_editor_dlg::copy_stage(int from, int to)
 	if ((from < 0) || (from >= Briefing->num_stages)) {
 		Briefing->stages[to].text = "<Text here>";
 		strcpy_s(Briefing->stages[to].voice, "none.wav");
+		Briefing->stages[to].note.clear();
 		Briefing->stages[to].camera_pos = view_pos;
 		Briefing->stages[to].camera_orient = view_orient;
 		Briefing->stages[to].camera_time = 500;
@@ -965,6 +966,7 @@ void briefing_editor_dlg::copy_stage(int from, int to)
 	// Copy all the data in the stage structure.
 	Briefing->stages[to].text = Briefing->stages[from].text;
 	strcpy_s( Briefing->stages[to].voice, Briefing->stages[from].voice );
+	Briefing->stages[to].note = Briefing->stages[from].note;
 	Briefing->stages[to].camera_pos = Briefing->stages[from].camera_pos;
 	Briefing->stages[to].camera_orient = Briefing->stages[from].camera_orient;
 	Briefing->stages[to].camera_time = Briefing->stages[from].camera_time;

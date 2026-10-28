@@ -35,6 +35,8 @@ class CommandBriefingDialogModel: public AbstractDialogModel {
 	void setAnimationFilename(const SCP_string& animationFilename);
 	SCP_string getSpeechFilename();
 	void setSpeechFilename(const SCP_string& speechFilename);
+	SCP_string getStageNote();
+	void setStageNote(const SCP_string& note);
 	SCP_string getLowResolutionFilename();
 	void setLowResolutionFilename(const SCP_string& lowResolutionFilename);
 	SCP_string getHighResolutionFilename();

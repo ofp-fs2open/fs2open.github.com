@@ -26,6 +26,7 @@ QByteArray CommandBriefingDialogModel::captureState() const
 			ds << QString::fromStdString(stage.text);
 			ds << QString::fromLatin1(stage.ani_filename);
 			ds << QString::fromLatin1(stage.wave_filename);
+			ds << QString::fromStdString(stage.note);
 		}
 
 		for (const auto& background : cb.background)
@@ -45,9 +46,10 @@ void CommandBriefingDialogModel::restoreState(const QByteArray& state)
 		cb.num_stages = static_cast<int>(numStages);
 
 		for (auto& stage : cb.stage) {
-			QString text, ani, wave;
-			ds >> text >> ani >> wave;
+			QString text, ani, wave, note;
+			ds >> text >> ani >> wave >> note;
 			stage.text = text.toStdString();
+			stage.note = note.toStdString();
 			strncpy(stage.ani_filename, ani.toLatin1().constData(), MAX_FILENAME_LEN - 1);
 			stage.ani_filename[MAX_FILENAME_LEN - 1] = '\0';
 			strncpy(stage.wave_filename, wave.toLatin1().constData(), MAX_FILENAME_LEN - 1);
@@ -82,6 +84,7 @@ QByteArray CommandBriefingDialogModel::captureWorkingState() const
 			ds << QString::fromStdString(stage.text);
 			ds << QString::fromLatin1(stage.ani_filename);
 			ds << QString::fromLatin1(stage.wave_filename);
+			ds << QString::fromStdString(stage.note);
 		}
 
 		for (const auto& background : cb.background)
@@ -104,9 +107,10 @@ void CommandBriefingDialogModel::restoreWorkingState(const QByteArray& state)
 		cb.num_stages = static_cast<int>(numStages);
 
 		for (auto& stage : cb.stage) {
-			QString text, ani, wave;
-			ds >> text >> ani >> wave;
+			QString text, ani, wave, note;
+			ds >> text >> ani >> wave >> note;
 			stage.text = text.toStdString();
+			stage.note = note.toStdString();
 			strncpy(stage.ani_filename, ani.toLatin1().constData(), MAX_FILENAME_LEN - 1);
 			stage.ani_filename[MAX_FILENAME_LEN - 1] = '\0';
 			strncpy(stage.wave_filename, wave.toLatin1().constData(), MAX_FILENAME_LEN - 1);

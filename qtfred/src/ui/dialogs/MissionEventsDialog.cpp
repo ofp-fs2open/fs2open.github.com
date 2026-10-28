@@ -12,6 +12,7 @@
 #include "ui/util/default_dir.h"
 #include "ui/util/SignalBlockers.h"
 #include "ui/util/KeyboardNavigation.h"
+#include "ui/util/NoteDialog.h"
 #include "ui/dialogs/EventEditor/HeadAnimationPickerDialog.h"
 #include "mission/commands/FredCommands.h"
 
@@ -2598,36 +2599,14 @@ void MissionEventsDialog::on_btnMsgNote_clicked()
 	if (!_model->messageIsValid())
 		return;
 
-	QDialog dlg(this);
-	dlg.setWindowTitle(tr("Message Note"));
-	auto* layout = new QVBoxLayout(&dlg);
-	auto* label = new QLabel(tr("Enter a note for this message:"), &dlg);
-	auto* edit = new QTextEdit(&dlg);
-	edit->setPlainText(QString::fromUtf8(_model->getMessageNote().c_str()));
-	edit->setMinimumSize(700, 500); // big!
-	auto* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-
-	layout->addWidget(label);
-	layout->addWidget(edit, 1);
-	layout->addWidget(buttons);
-
-	QObject::connect(buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-	QObject::connect(buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-
-	if (dlg.exec() != QDialog::Accepted)
-		return;
-
 	const int index         = _model->getCurrentlySelectedMessage();
 	const SCP_string before = _model->getMessageNote();
-	SCP_string note = edit->toPlainText().toUtf8().constData();
-	_model->setMessageNote(note);
+	SCP_string note         = before;
+	if (!util::editNote(this, tr("Message Note"), tr("Enter a note for this message:"), note))
+		return;
 
-	// Update the button text
-	if (note.empty()) {
-		ui->btnMsgNote->setText("Add Note");
-	} else {
-		ui->btnMsgNote->setText("Edit Note");
-	}
+	_model->setMessageNote(note);
+	ui->btnMsgNote->setText(util::noteButtonText(note));
 
 	if (before == note)
 		return;

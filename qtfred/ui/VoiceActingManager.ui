@@ -213,7 +213,7 @@ $filename - name of the message file
 $message - text of the message
 $persona - persona of the sender
 $sender - name of the sender
-$note - message notes
+$note - voice actor notes
 
 Note that $persona and $sender will
 only appear for the Message section.</string>

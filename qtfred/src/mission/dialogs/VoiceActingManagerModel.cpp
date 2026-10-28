@@ -382,6 +382,9 @@ bool VoiceActingManagerModel::generateScript(const SCP_string& absoluteFilePath)
 		fout(fp, "%s\n\n\n", entry.c_str());
 	};
 
+	// briefing stages have no persona, sender or name, but can have a note
+	auto stageNote = [](const SCP_string& note) { return note.empty() ? "<no note specified>" : note.c_str(); };
+
 	// Command Briefings
 	if (_exportSelection == ExportSelection::Everything || _exportSelection == ExportSelection::CommandBriefings) {
 		fout(fp, "\n\nCommand Briefings\n-----------------\n\n");
@@ -392,7 +395,7 @@ bool VoiceActingManagerModel::generateScript(const SCP_string& absoluteFilePath)
 				"<no persona specified>",
 				"<no sender specified>",
 				"<no name specified>",
-				"<no note specified>");
+				stageNote(stage->note));
 		}
 	}
 
@@ -406,7 +409,7 @@ bool VoiceActingManagerModel::generateScript(const SCP_string& absoluteFilePath)
 				"<no persona specified>",
 				"<no sender specified>",
 				"<no name specified>",
-				"<no note specified>");
+				stageNote(stage->note));
 		}
 	}
 
@@ -420,7 +423,7 @@ bool VoiceActingManagerModel::generateScript(const SCP_string& absoluteFilePath)
 				"<no persona specified>",
 				"<no sender specified>",
 				"<no name specified>",
-				"<no note specified>");
+				stageNote(stage->note));
 		}
 	}
 
