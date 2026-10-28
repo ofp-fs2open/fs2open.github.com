@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> OFP Revision: [#129](https://github.com/ofp-fs2open/fs2open.github.com/pull/129)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 The **messages.tbl** is used to link actions, animations, and sounds of the messages received during the mission. Personas are used to group messages by the same talker, for example, all the Wingman 1 (Male Terran Pilot) messages go with a Wingman 1 persona.
