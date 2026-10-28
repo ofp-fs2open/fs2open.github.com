@@ -61,4 +61,5 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [rank.tbl](rank.tbl): Pilot ranks
   - [scripting.tbl](scripting.tbl): Lua scripting hooks
   - [ships.tbl](ships.tbl): Ship classes
+  - [sounds.tbl](sounds.tbl): Game sounds
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

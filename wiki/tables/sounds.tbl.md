@@ -1,0 +1,1204 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **sounds.tbl** defines the sounds played in game: gameplay sounds, interface sounds, each species' flyby sounds, and the reverb presets missions can use.
+
+This table is one of the Modular Tables and can be extended with **xxx-snd.tbm**.
+
+Code: [/gamesnd/gamesnd.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/gamesnd/gamesnd.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [Sound set syntax](#sound-set-syntax)
+3. [SCP Syntax](#scp-syntax)
+4. [Retail Syntax](#retail-syntax)
+5. [Sound Environments](#sound-environments)
+
+---
+
+## Format
+
+- Table file consists of several sections
+- First section defines the sound for the actual game play. It begins at **#Game Sounds Start** and ends at **#Game Sounds End**
+- Second section defines the interface sounds. It starts at **#Interface Sounds Start** and ends at **#Interface Sounds End**
+- Third section defines the flyby sounds for different species. It begins at **#Flyby Sounds Start** and ends at **#Flyby Sounds End**
+- This table has three possible syntaxes. The "Sound set" syntax allows to use multiple sounds. The "SCP Syntax" was introduced as a general improvement over the retail Syntax and is very similar to the sound set syntax.
+  - The Sound set syntax allows to specify multiple sound files for one sound entry and also has a wider variety of options for specifying how the sound should be played. This syntax is based on the SCP syntax and it should be easy to adapt sound entries that use the SCP syntax to the new sound set syntax. This is only required if the new features of the sound set changes are to be used. Otherwise the SCP syntax can be used.
+  - The SCP Syntax is an improvement of the retail syntax which is easier to read, and likely preferred for modular tables and extendability.
+  - The Retail Syntax is the syntax used by the retail tables which was kept in place to keep retail compatibility
+- ![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg) A fourth section, **#Sound Environments Start** ... **#Sound Environments End**, defines reverb presets (see [Sound Environments](#sound-environments)).
+- The sections must be in this order; each is optional.
+- The three syntaxes can be mixed freely, entry by entry. Which one an entry uses is decided by the line after its name: `+Entry:` for the sound set syntax, `+Filename:` for the SCP syntax, otherwise the retail syntax.
+- Most of the sounds are hardcoded in the engine (that is, the engine expects sound 33 to be the missile rearm sound, as an example). Modders should follow the retail table layout, and not assign sound numbers smaller than 250 to their custom sounds. This avoids index collisions. Named (non-number) sounds can't collide: the engine keeps them clear of the retail indexes.
+- A name already used without `+nocreate` logs a warning, and the first sound with that name is the one used. (A retail placeholder entry with no file can be replaced without `+nocreate`.)
+- `+nocreate` with a name that doesn't exist logs a warning, and the entry is created as a new sound, so it then needs all the required fields.
+- A retail-style sound whose number doesn't match its position in the section logs a warning.
+
+## Sound set syntax
+
+> **Note:** Many retail sound names are hardcoded to a specific type of sound, so removing entries is not recommended. However adding new ones or altering existing ones is possible.  See the [hardcoded sounds](https://wiki.hard-light.net/index.php/Hardcoded_sounds) for a list of which sounds have hardcoded names.
+
+![FSO 19.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-19.0.svg)
+
+If this syntax is in use then the new sound set features can be used. These include the ability to use multiple sound files for one entry and with this feature it is possible to randomize the volume and pitch values when a sound is played. Compared to the SCP syntax there are only a few changes: Instead of *+Filename* this now uses *+Entry* and allows using that option as often as needed. The *+Volume* option accepts a random range for possible values and the *+Pitch* option is new.
+
+In most entries, the name of the file (**Second** value) can be replaced with 'empty' if the particular sound index is not in use.
+
+### #Game Sounds Start
+
+Notes
+- Cockpit sounds are in general non-3D sounds
+- All the other in-flight sounds are, in general, 3D sounds
+- Non-3D sounds do not require the **+3D Sound** entries
+
+Example Line
+```
+$Name: 6
+    +Entry: breakup
+    +Cycle type: sequential
+    +Preload: no
+    +Volume: (0.60)
+    +3D Sound:
+        +Attenuation start: 100
+        +Attenuation end: 800
+    +Priority: High
+    +Limit: 3
+    +Pitch: (1.0)
+```
+
+#### $Name:
+
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- If +nocreate is to be used, it must come after **$Name:** and before the **String**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +nocreate
+
+- Allows editing of the sound without creating a new sound handle
+- Must be placed after **$Name:** and before the **String**
+- Example
+```
+$Name: +nocreate SoundName
+```
+
+> **Warning:** Unlike most other tables, existing entries cannot be overwritten/modified without the presence of **+nocreate**.
+
+#### +Entry:
+
+- The name of the actual sound file. This option may appear more than once if multiple sound files should be used for this sound entry.
+- Always required once, even if +nocreate is used.
+- To specify no sound file, use "empty" (without the quotes)
+- With +nocreate, the files listed are added to the sound's existing files; the other fields can still be changed.
+- Syntax: **String**
+
+#### +Cycle type:
+
+- Specifies how the next sound entry should be chosen from the *+Entry* list
+- Required, optional if +nocreate is used
+- May use one of the following modes:
+  - **sequential**: The entry will be chosen sequentially from the list. **Note:** The sequence of played sounds is determined globally so if there are two sound sources using the same entry then the sounds may appear as missing parts for either source since the other source used that entry before.
+  - **random**: An entry is chosen uniformly at random from the entries list
+- Anything else logs a warning and **sequential** is used.
+- Syntax: **sequential** or **random**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Optional if +nocreate is used, required otherwise
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at as a random range between 0 and 1. The actual volume will be picked within that range whenever a sound is played
+- Optional if +nocreate is used, required otherwise
+- Syntax: **[Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)**
+
+#### +3D Sound:
+
+- Sets up table syntax for specifying 3D sound options
+- If present the sound will be loaded as a 3D sound
+- No argument should be specified
+- Must be accompanied by **+Attenuation Start:** and **+Attenuation End:**, both required after it
+- **Known issue:** an edit with +nocreate that leaves this out sets both attenuation distances to 0 but keeps the sound 3D, so a 3D sound edited this way can become inaudible. Repeat the 3D Sound lines when editing a 3D sound.
+
+#### +Attenuation Start:
+
+- Defines the distance from the origin of the 3D sound where it begins to attenuate
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Attenuation End:
+
+- Defines the distance from the origin of the 3D sound where it is inaudible
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Priority:
+
+- Optional, for use with [enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound)
+- Can be used with or without an accompanying +Limit:
+- Specifies the priority of this sound when enhanced sound is used
+- Should be based on how important this sound is and also how likely the player will notice if the sound drops out
+- overrides the engine default value
+- For valid values, see the table below. Values are not case-sensitive. An unknown value is an error.
+- See the [Enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound) page for more information.
+- Syntax: **String**
+
+```
+Value         Meaning
+-----         -------
+Must Play     Absolutely must play
+High          Very important
+Medium-High   Important
+Medium        Somewhat important
+Medium-Low    Only a little important
+Low           Not important
+```
+
+#### +Limit:
+
+- Optional, for use with [enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound)
+- Can be used with or without an accompanying +Priority:
+- Specifies how many instances of the sound can play at the same time
+- overrides the engine default value
+- Must be at least 1; 0 or less is an error.
+- ![FSO 22.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-22.2.svg) Can be set as high as 255 (it was 1 to 15 before)
+
+- See the [Enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound) page for more information,
+- Syntax: **Integer**
+
+#### +Pitch:
+
+- Specifies which pitch values the sound may be assigned
+- Optional, defaults to 1.0 (an edit with +nocreate keeps the old pitch)
+- Values must be above 0
+- This is a random range which specifies the possible pitch values the sound may be assigned
+- The actual effect of these values is very complicated to describe so you should simply test to check which values sound well. A value of 1.0 plays the sound without any changes.
+- Syntax: **[Parsed random range](https://wiki.hard-light.net/index.php/Parsed_random_range)**
+
+**Section ends with #Game Sounds End**
+
+### #Interface Sounds Start
+
+Notes
+- Interface sounds are not 3D sounds. You may specify **+3D Sound:** properties, but they will be ignored.
+
+Example Line
+```
+$Name: CraneSound1
+    +Entry: Crane_1
+    +Cycle type: sequential
+    +Preload: no
+    +Volume: 0.50
+```
+
+#### $Name:
+
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- If +nocreate is to be used, it must come after **$Name:** and before the **String**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +nocreate
+
+- Allows editing of the sound without creating a new sound handle
+- Must be placed after **$Name:** and before the **String**
+- Example
+```
+$Name: +nocreate SoundName
+```
+
+#### +Entry:
+
+- The name of the actual sound file. This option may appear more than once if multiple sound files should be used for this sound entry.
+- Always required once, even if +nocreate is used.
+- To specify no sound file, use "empty" (without the quotes)
+- With +nocreate, the files listed are added to the sound's existing files; the other fields can still be changed.
+- Syntax: **String**
+
+#### +Cycle type:
+
+- Specifies how the next sound entry should be chosen from the *+Entry* list
+- Required, optional if +nocreate is used
+- May use one of the following modes:
+  - **sequential**: The entry will be chosen sequentially from the list. **Note:** The sequence of played sounds is determined globally so if there are two sound sources using the same entry then the sounds may appear as missing parts for either source since the other source used that entry before.
+  - **random**: An entry is chosen uniformly at random from the entries list
+- Anything else logs a warning and **sequential** is used.
+- Syntax: **sequential** or **random**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at as a random range between 0 and 1. The actual volume will be picked within that range whenever a sound is played
+- Optional if +nocreate is used, required otherwise
+- Syntax: **(Float)** or **(Float Float)**, example: *(0.5 1.0)*. It is also valid to only specify one value if there should be no randomization.
+
+#### +Pitch:
+
+- Specifies which pitch values the sound may be assigned
+- Optional, defaults to 1.0 (an edit with +nocreate keeps the old pitch)
+- Values must be above 0
+- This is a random range which specifies the possible pitch values the sound may be assigned
+- The actual effect of these values is very complicated to describe so you should simply test to check which values sound well. A value of 1.0 plays the sound without any changes.
+- Syntax: **(Float)** or **(Float Float)**, example: *(0.9 1.1)*. It is also valid to only specify one value if there should be no randomization.
+
+**Section ends with #Interface Sounds End**
+
+### #Flyby Sounds Start
+
+Notes
+- Each species has two flyby sounds. One for the fighters and one for the bombers.
+- Flyby sounds are all 3D sounds.
+- Each flyby sound is defined on a line that begins with the species name (**String**, species name, eg. **$Terran:**).
+- **THE FLYBY SECTION CANNOT USE +nocreate.** To change a species' flyby sounds in a modular table, list both of its entries again.
+- The first entry for a species is the fighter flyby, the second the bomber flyby; both are required, one after the other.
+- A species that doesn't exist is skipped (noted in the log).
+
+Line starts with **$SPECIES:** in the place of **$Name:**
+
+Example Terran Section
+```
+$Terran: 0
+    +Entry: T_flyby1
+    +Cycle type: sequential
+    +Preload: no
+    +Volume: (0.75)
+    +3D Sound:
+        +Attenuation start: 200
+        +Attenuation end: 400
+
+$Terran: 1
+    +Entry: T_flyby2
+    +Cycle type: sequential
+    +Preload: no
+    +Volume: (0.75)
+    +3D Sound:
+        +Attenuation start: 200
+        +Attenuation end: 400
+```
+
+#### $Name:
+
+- **$Name** must be replaced with **$SPECIES** as from the [species_defs.tbl](species_defs.tbl)
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- In this case it will usually be a **1** or a **0**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +Entry:
+
+- The name of the actual sound file. This option may appear more than once if multiple sound files should be used for this sound entry.
+- Always required once, even if +nocreate is used.
+- To specify no sound file, use "empty" (without the quotes)
+- With +nocreate, the files listed are added to the sound's existing files; the other fields can still be changed.
+- Syntax: **String**
+
+#### +Cycle type:
+
+- Specifies how the next sound entry should be chosen from the *+Entry* list
+- Required, optional if +nocreate is used
+- May use one of the following modes:
+  - **sequential**: The entry will be chosen sequentially from the list. **Note:** The sequence of played sounds is determined globally so if there are two sound sources using the same entry then the sounds may appear as missing parts for either source since the other source used that entry before.
+  - **random**: An entry is chosen uniformly at random from the entries list
+- Anything else logs a warning and **sequential** is used.
+- Syntax: **sequential** or **random**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at as a random range between 0 and 1. The actual volume will be picked within that range whenever a sound is played
+- Optional if +nocreate is used, required otherwise
+- Syntax: **(Float)** or **(Float Float)**, example: *(0.5 1.0)*. It is also valid to only specify one value if there should be no randomization.
+
+#### +3D Sound:
+
+- Sets up table syntax for specifying 3D sound options
+- If present the sound will be loaded as a 3D sound
+- No argument should be specified
+- Must be accompanied by **+Attenuation Start:** and **+Attenuation End:**, both required after it
+- **Known issue:** an edit with +nocreate that leaves this out sets both attenuation distances to 0 but keeps the sound 3D, so a 3D sound edited this way can become inaudible. Repeat the 3D Sound lines when editing a 3D sound.
+
+#### +Attenuation Start:
+
+- Defines the distance from the origin of the 3D sound where it begins to attenuate
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Attenuation End:
+
+- Defines the distance from the origin of the 3D sound where it is inaudible
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Pitch:
+
+- Specifies which pitch values the sound may be assigned
+- Optional, defaults to 1.0 (an edit with +nocreate keeps the old pitch)
+- Values must be above 0
+- This is a random range which specifies the possible pitch values the sound may be assigned
+- The actual effect of these values is very complicated to describe so you should simply test to check which values sound well. A value of 1.0 plays the sound without any changes.
+- Syntax: **(Float)** or **(Float Float)**, example: *(0.9 1.1)*. It is also valid to only specify one value if there should be no randomization.
+
+**Section ends with #Flyby Sounds End**
+
+## SCP Syntax
+
+> **Note:** Many retail sound names are hardcoded to a specific type of sound, so removing entries is not recommended. However adding new ones or altering existing ones is possible.  See the [hardcoded sounds](https://wiki.hard-light.net/index.php/Hardcoded_sounds) for a list of which sounds have hardcoded names.
+
+In most entries, the name of the file (**Second** value) can be replaced with 'empty' if the particular sound index is not in use.
+
+### #Game Sounds Start
+
+Notes
+- Cockpit sounds are in general non-3D sounds
+- All the other in-flight sounds are, in general, 3D sounds
+- Non-3D sounds do not require the **+3D Sound** entries
+
+Example Line
+```
+$Name: 6
+    +Filename: breakup
+    +Preload: no
+    +Volume: 0.60
+    +3D Sound:
+        +Attenuation start: 100
+        +Attenuation end: 800
+    +Priority: High
+    +Limit: 3
+```
+
+#### $Name:
+
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- If +nocreate is to be used, it must come after **$Name:** and before the **String**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +nocreate
+
+- Allows editing of the sound without creating a new sound handle
+- Must be placed after **$Name:** and before the **String**
+- Example
+```
+$Name: +nocreate SoundName
+```
+
+#### +Filename:
+
+- The name of the actual sound file to play
+- Always required, even if +nocreate is used.
+- To specify no sound file, use "empty" (without the quotes)
+- If +nocreate is used and you don't want to change the original filename, then use <same> (including the <>). Using <same> without +nocreate is an error.
+- `empty` or `none` makes the sound silent; the rest of the entry is then not read.
+- With +nocreate, the SCP syntax can't change a sound that has more than one file (from the sound set syntax); that is an error.
+- Syntax: **String**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Optional if +nocreate is used, required otherwise
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at, from 0 to 1
+- Optional if +nocreate is used, required otherwise
+- Syntax: **Float**
+
+#### +3D Sound:
+
+- Sets up table syntax for specifying 3D sound options
+- If present the sound will be loaded as a 3D sound
+- No argument should be specified
+- Must be accompanied by **+Attenuation Start:** and **+Attenuation End:**, both required after it
+- **Known issue:** an edit with +nocreate that leaves this out sets both attenuation distances to 0 but keeps the sound 3D, so a 3D sound edited this way can become inaudible. Repeat the 3D Sound lines when editing a 3D sound.
+
+#### +Attenuation Start:
+
+- Defines the distance from the origin of the 3D sound where it begins to attenuate
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Attenuation End:
+
+- Defines the distance from the origin of the 3D sound where it is inaudible
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Priority:
+
+- Optional, for use with [enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound)
+- Can be used with or without an accompanying +Limit:
+- Specifies the priority of this sound when enhanced sound is used
+- Should be based on how important this sound is and also how likely the player will notice if the sound drops out
+- overrides the engine default value
+- For valid values, see the table below. Values are not case-sensitive. An unknown value is an error.
+- See the [Enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound) page for more information.
+- Syntax: **String**
+
+```
+Value         Meaning
+-----         -------
+Must Play     Absolutely must play
+High          Very important
+Medium-High   Important
+Medium        Somewhat important
+Medium-Low    Only a little important
+Low           Not important
+```
+
+#### +Limit:
+
+- Optional, for use with [enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound)
+- Can be used with or without an accompanying +Priority:
+- Specifies how many instances of the sound can play at the same time
+- overrides the engine default value
+- Must be at least 1; 0 or less is an error.
+- See the [Enhanced sound](https://wiki.hard-light.net/index.php/Enhanced_sound) page for more information,
+- Syntax: **Integer**
+
+**Section ends with #Game Sounds End**
+
+### #Interface Sounds Start
+
+Notes
+- Interface sounds are not 3D sounds. You may specify **+3D Sound:** properties, but they will be ignored.
+
+Example Line
+```
+$Name: CraneSound1
+    +Filename: Crane_1
+    +Preload: no
+    +Volume: 0.50
+```
+
+#### $Name:
+
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- If +nocreate is to be used, it must come after **$Name:** and before the **String**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +nocreate
+
+- Allows editing of the sound without creating a new sound handle
+- Must be placed after **$Name:** and before the **String**
+- Example
+```
+$Name: +nocreate SoundName
+```
+
+#### +Filename:
+
+- The name of the actual sound file to play
+- Syntax: **String**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at as a percentage
+- Syntax: **Float**
+
+**Section ends with #Interface Sounds End**
+
+### #Flyby Sounds Start
+
+Notes
+- Each species has two flyby sounds. One for the fighters and one for the bombers.
+- Flyby sounds are all 3D sounds.
+- Each flyby sound is defined on a line that begins with the species name (**String**, species name, eg. **$Terran:**).
+- **THE FLYBY SECTION CANNOT USE +nocreate.** To change a species' flyby sounds in a modular table, list both of its entries again.
+- The first entry for a species is the fighter flyby, the second the bomber flyby; both are required, one after the other.
+- A species that doesn't exist is skipped (noted in the log).
+
+Line starts with **$SPECIES:** in the place of **$Name:**
+
+Example Terran Section
+```
+$Terran: 0
+    +Filename: T_flyby1
+    +Preload: no
+    +Volume: 0.75
+    +3D Sound:
+        +Attenuation start: 200
+        +Attenuation end: 400
+
+$Terran: 1
+    +Filename: T_flyby2
+    +Preload: no
+    +Volume: 0.75
+    +3D Sound:
+        +Attenuation start: 200
+        +Attenuation end: 400
+```
+
+#### $Name:
+
+- **$Name** must be replaced with **$SPECIES** as from the [species_defs.tbl](species_defs.tbl)
+- Specifies the sound handle which FSO will use to identify the sound from other tables
+- In this case it will usually be a **1** or a **0**
+- Syntax: **String**
+
+> **Warning:** The name may not contain any whitespace (space or tab characters) or the old parsing code will be used.
+
+#### +Filename:
+
+- The name of the actual sound file to play
+- Syntax: **String**
+
+#### +Preload:
+
+- Specifies whether FSO should always preload the sound before the mission or not
+- Syntax: **Boolean**
+
+#### +Volume:
+
+- Specifies the volume the sound should be played at as a percentage
+- Syntax: **Float**
+
+#### +3D Sound:
+
+- Sets up table syntax for specifying 3D sound options
+- If present the sound will be loaded as a 3D sound
+- No argument should be specified
+- Must be accompanied by **+Attenuation Start:** and **+Attenuation End:**, both required after it
+- **Known issue:** an edit with +nocreate that leaves this out sets both attenuation distances to 0 but keeps the sound 3D, so a 3D sound edited this way can become inaudible. Repeat the 3D Sound lines when editing a 3D sound.
+
+#### +Attenuation Start:
+
+- Defines the distance from the origin of the 3D sound where it begins to attenuate
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+#### +Attenuation End:
+
+- Defines the distance from the origin of the 3D sound where it is inaudible
+- Must be preceded by **+3D Sound:**
+- Syntax: **Integer**
+
+**Section ends with #Flyby Sounds End**
+
+## Retail Syntax
+
+> **Note:** Many retail sound names are hardcoded to a specific type of sound, so removing entries is not recommended. However adding new ones or altering existing ones is possible.  See the [hardcoded sounds](https://wiki.hard-light.net/index.php/Hardcoded_sounds) for a list of which sounds have hardcoded names.
+
+In most entries, the name of the file (**Second** value) can be replaced with 'empty' if the particular sound index is not in use.
+
+### #Game Sounds Start
+
+Notes
+- Cockpit sounds are in general non-3D sounds that ought to be of type '0', however all the other in-flight sounds are in general 3D sounds and ought to of type '1' (or type '2').
+- Type 0 sounds do not require the **Sixth** and **Seventh** entries.
+
+Example Line
+```
+$Name: 6 breakup.wav, 0, 0.60, 1, 100, 800
+```
+
+Line starts with *$Name:* and has seven entries separated by commas except for the first and second entries.
+
+  - **First** value is the index number of the sound (**Integer**)
+  - **Second** value is the name of actual sound file (**String**, filename).
+  - **Third** value sets the file to always preloaded before the mission (**Integer**, 0 or 1)
+  - **Fourth** value defines the playing volume of the sound in percentages (**Float**, from 0 to 1)
+  - **Fifth** value sets the sound type to either standard sound (type '0'), 3D stereo sound (type '1'), or Aureal A3D (type '2'). This defaults to 3D stereo if it is not available (**Integer**, 0, 1 or 2)
+    - **Sixth** value defines the distance from the origin of 3D sound where it begins to attenuate and is not used with normal non-3D sounds (type 0)(**Integer**)
+    - **Seventh** value sets the distance from the origin of the 3D sound where it is inaudible and is not used with normal non-3D sounds (type 0)(**Integer**)
+
+**Section ends with #Game Sounds End**
+
+### #Interface Sounds Start
+
+Notes
+- Interface sounds are not 3D sounds. Use type '0' sounds. The **Sixth** and **Seventh** entries can be left out of sounds in this section.
+
+Example Line
+```
+$Name: 26 Crane_1.wav, 0, 0.50, 0
+```
+
+Line starts with *$Name:* and has five entries separated by commas except for the first and second entries.
+
+  - **First** value is the index number of the sound (**Integer**)
+  - **Second** value is the name of actual sound file (**String**, filename or **Empty**).
+  - **Third** value sets the file to always preloaded before the mission (**Integer**, 0 or 1)
+  - **Fourth** value defines the playing volume of the sound in percentages (**Float**, from 0 to 1)
+  - **Fifth** value sets the sound type to either standard sound (type '0'), 3D stereo sound (type '1'), or Aureal A3D (type '2'). This defaults to 3D stereo if it is not available (**Integer**, 0, 1 or 2)
+
+**Section ends with #Interface Sounds End**
+
+### #Flyby Sounds Start
+
+Notes
+- Each species has two flyby sounds. One for the fighters and one for the bombers.
+- Flyby sounds are all 3D sounds of type '1' for the **Fifth** value.
+- Each flyby sound is defined on a single line that begins with the species name (**String**, species name, eg. **$Terran:**).
+
+Retail flyby section
+```
+#Flyby Sounds Start
+
+$Terran:	0	T_flyby1.wav,	0, 0.75, 1, 200, 400	; * Terran ship1 flyby player sound (3d sound)
+$Terran:	1	T_flyby2.wav,	0, 0.75, 1, 200, 400	; * Terran ship1 flyby player sound (3d sound)
+
+$Vasudan:	0	V_flyby1.wav,	0, 0.85, 1, 200, 400	; * Vasudan ship1 flyby player sound (3d sound)
+$Vasudan:	1	V_flyby2.wav,	0, 0.85, 1, 200, 400	; * Vasudan ship1 flyby player sound (3d sound)
+
+$Shivan:	0	S_flyby1.wav,	0, 0.75, 1, 200, 400	; * Shivan ship1 flyby player sound (3d sound)
+$Shivan:	1	S_flyby2.wav,	0, 0.75, 1, 200, 400	; * Shivan ship1 flyby player sound (3d sound)
+
+#Flyby Sounds End
+```
+
+Line starts with *$SPECIES:* and has seven entries separated by commas except for the first and second entries.
+
+  - **First** value is the label of the flyby sound, usually 0 for the first (fighter) entry and 1 for the second (bomber) entry. (**Integer**)
+  - **Second** value is the name of actual sound file (**String**, filename).
+  - **Third** value sets the file to always preloaded before the mission (**Integer**, 0 or 1)
+  - **Fourth** value defines the playing volume of the sound in percentages (**Float**, from 0 to 1)
+  - **Fifth** value sets the sound type and should be set to 3D stereo sound (type '1') (**Integer**, 0, 1 or 2)
+    - **Sixth** value defines the distance from the origin of 3D sound where it begins to attenuate (type 0)(**Integer**)
+    - **Seventh** value sets the distance from the origin of the 3D sound where it is inaudible (type 0)(**Integer**)
+
+**Section ends with #Flyby Sounds End**
+
+![FSO 3.7.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.7.2.svg)
+
+## Sound Environments
+
+- Allows defining custom EFX sound effects (reverb) as well as changing the default. You can then select these in FRED2, under Mission Specs - Sound Environment. Fred2 already has a bunch of default ones coded in.
+
+### #Sound Environments Start
+
+#### $Name:
+
+- Lets you define a name for this preset.
+- If it's "Default", it'll be applied in all missions that don't define their own.
+
+#### $Template:
+
+- Lets you set the EAX template which will act as a default for all subsequent settings.
+- The default setting in FSO is "Hangar".
+- [The default presets available in OpenAL-Soft can be found here.](https://github.com/kcat/openal-soft/blob/master/include/AL/efx-presets.h) Please note that not all of them are implemented (anything not listed below the default section).
+- For easy editing, simply set a template and +gain.
+- [The EAX Reverb manual contains detailed explanations of what all of these do if you want to fine tune them](https://usermanual.wiki/Pdf/Effects20Extension20Guide.90272296/view#95)
+
+> **Note:** - All Subsequent settings are optional.
+> - Their defaults are defined by $Template:
+
+##### +Density:
+
+- range: 0.0 - 1.0
+
+##### +Diffusion:
+
+- linear multiplier
+- range: 0.0 - 1.0
+
+##### +Gain:
+
+- gain/volume
+- linear gain
+- range: 0.0 - 1.0
+
+##### +Gain HF:
+
+- high frequency gain
+- linear gain
+- range: 0.0 - 1.0
+
+##### +Gain LF:
+
+- low frequency gain
+- linear gain
+- range: 0.0 - 1.0
+
+##### +Decay time:
+
+- deacy
+- seconds
+- range: 0.1 - 20
+
+##### +Decay HF Ratio
+
+- high frequency decay multiplier (damping)
+- linear multiplier
+- range: 0.1 - 20
+
+##### +Decay LF Ratio
+
+- low frequency decay multiplier
+- linear multiplier
+- range: 0.1 - 20
+
+##### +reflections gain
+
+- linear gain
+- range: 0.0 - 3.16
+
+##### +Reflections Delay:
+
+- seconds
+- range: 0.0 - 0.3
+
+##### +Reflactions Pan:
+
+- vector (0.0, 0.0, 0.0)
+- magnitude
+- range(s): 0.0 - 1.0
+
+##### +Late Reverb Gain:
+
+- linear gain
+- range: 0.0 - 10.0
+
+##### +Late Reverb Delay:
+
+- seconds
+- range: 0.0 - 0.1
+
+##### +Late Reverb Pan:
+
+- vector
+- magnitude
+- range(s): 0.0 - 1.0
+
+##### +Echo Time:
+
+- seconds
+- range: 0.075 - 0.25
+
+##### +Echo Depth:
+
+- linear multiplier
+- range: 0.0 - 1.0
+
+##### +Modulation Time:
+
+- seconds
+- range: 0.004 - 4.0
+
+##### +Modulation Depth:
+
+- linear multiplier
+- range: 0.0 - 1.0
+
+##### +HF Reference:
+
+- Hz
+- range: 1000.0 - 20000.0
+
+##### +LF Reference:
+
+- Hz
+- range: 20.0 - 1000.0 (should be 1/10th or less of HF Reference value)
+
+##### +Room Rolloff Factor:
+
+- linear multiplier
+- range: 0.0 - 10.0
+
+##### +Air Absorption Gain HF:
+
+- linear gain per meter
+- range: 0.892 - 1.0
+
+##### +Decay HF Limit:
+
+- boolean
+
+### #Sound Environments End
+
+## Sample
+
+- Retail FreeSpace 2 table
+
+```
+;
+;  sounds.tbl *
+;
+;  file to specify general game sounds
+;
+;                     I M P O R T A N T
+;  **********************************************************
+;  *                                                        *
+;  ====>  DO NOT MODIFY THE ORDER OF THE LISTED SOUNDS <====*
+;  *                                                        *
+;  **********************************************************
+;                     I M P O R T A N T
+;
+;  If a sound entry appears in this file, there is a hook into the game to
+;  play the sound.  This file can only be modified to change *existing* sounds.
+;  Talk to a programmer if you want to add brand new sounds.  Adding a line to
+;  this file will not make your sound appear in the game, it will more than
+;  likely break something.
+;
+; 	If you don't want the sound to play, put none.wav as the sound to play.
+;
+;	The fields for a sound entry are:
+;	1) unqiue sound signature
+;	2) filename of the sound
+;	3) flag to indicate sound should always be pre-loaded before a mission
+;	4) the default volume (from 0.0 -> 1.0)
+;	5) 0 - not 3d  1 - stereo 3D  2 - Aureal A3D (if available), otherwise use stereo 3D
+;	6) distance at which sound starts to attenuate (for 3d sounds only)
+;	7) distance at which sound is inaudible (for 3d sounds only)
+;
+#Game Sounds Start
+; Misc sounds section						** = Aureal 3d support | * = FS = 3D support
+$Name:	0	trk-loop.wav,		0, 0.40, 0		; Missle tracking to acquire a lock (looped)
+$Name:	1	lock.wav,		0, 0.40, 0		; Missle lock (non-looping)
+$Name:	2	cycle.wav,		0, 0.60, 0		; cycle primary weapon
+$Name:	3	cycle.wav,		0, 0.60, 0		; cycle secondary weapon
+$Name:	4	ship_p.wav,		0, 0.30, 0		; engine sound (as heard in cockpit)
+$Name:	5	reveal.wav,		0, 0.40, 0		; cargo revealed 
+$Name:	6	breakup.wav,		0, 0.60, 1, 100, 800	; ship death roll (3d sound)
+$Name:	7	boom_3.wav,		0, 0.90, 2, 600, 1200	; * ship explosion 1 (3d sound)
+$Name:	8	beep_2.wav,		0, 0.40, 0		; target acquried
+$Name:	9	switch_1.wav,		0, 0.50, 0		; energy level change success
+$Name:	10	beep_5.wav,		0, 0.50, 0		; energy level change fail
+$Name:	11	switch_2.wav,		0, 0.50, 0		; energy transfer success
+$Name:	12	beep_5.wav,		0, 0.50, 0		; energy transfer faile
+$Name:	13	thr_full.wav,		0, 0.40, 0		; set full throttle
+$Name:	14	thr_off.wav,		0, 0.40, 0		; set zero throttle
+$Name:	15	thr_up.wav,		0, 0.40, 0		; set 1/3 or 2/3 throttle (up)
+$Name:	16	thr_dwn.wav,		0, 0.40, 0		; set 1/3 or 2/3 throttle (down)
+$Name:	17	approach.wav,		0, 0.60, 1, 10, 800	; dock approach retros (3d sound)
+$Name:	18	attach.wav,		0, 0.60, 1, 10, 800	; dock attach (3d sound)
+$Name:	19	detach.wav,		0, 0.60, 1, 10, 800	; dock detach (3d sound)
+$Name:	20	depart.wav,		0, 0.60, 1, 10, 800	; dock depart retros (3d sound)
+$Name:	21	aburn_1.wav,		0, 0.70, 0		; afterburner engage (3d sound)
+$Name:	22	aburn_2.wav,		0, 0.90, 0		; afterburner burn sound (looped)
+$Name:	23	vaporize2.wav,		0, 0.90, 0		; Destroyed by a beam (vaporized)
+$Name:	24	aburn_1f.wav,		0, 0.50, 0		; afterburner fail (no fuel when aburn pressed)
+$Name:	25	alert_2.wav,		0, 0.40, 0		; heat-seeker launch warning
+$Name:	26	m_fail.wav,		0, 0.60, 0		; tried to fire a missle when none are left
+$Name:	27	l_fail.wav,		0, 0.60, 0		; tried to fire lasers when not enough energy left
+$Name:	28	fail.wav,		0, 0.50, 0		; target fail sound (i.e. press targeting key, but nothing happens)
+$Name:	29	beep_1.wav,		0, 0.50, 0		; squadmate message menu appears
+$Name:	30	beep_1.wav,		0, 0.50, 0		; squadmate message menu disappears
+$Name:	31	debris.wav,		0, 0.40, 2, 100, 300	; ** debris sound (persistant, looping) (3d sound)
+$Name:	32	subhit.wav,		0, 0.60, 0		; subsystem gets destroyed on player ship
+$Name:	33	m_load.wav,		0, 0.60, 1, 10, 50	; missle start load (during rearm/repair) (3d sound)
+$Name:	34	m_lock.wav,		0, 0.50, 1, 10, 50	; missle load (during rearm/repair) (3d sound)
+$Name:	35	repair.wav,		0, 0.50, 0		; ship is being repaired (during rearm/repair) (looped)
+$Name:	36	l_hit.wav,		0, 0.90, 0, 30, 100	; * player ship is hit by laser fire (3d sound)
+$Name:	37	m_hit.wav,		0, 0.90, 0, 30, 100	; * player ship is hit by missile (3d sound)
+$Name:	38	cycle.wav,		0, 0.80, 0		; countermeasure cycle
+$Name:	39	s_hit_4.wav,		0, 0.60, 1, 200, 600	; * shield hit (3d sound)
+$Name:	40	s_hit_2.wav,		0, 0.80, 1, 10, 100	; * player shield is hit (3d sound)
+$Name:	41	select.wav,		0, 0.60, 0		; mouse click
+$Name:	42	alert_3.wav,		0, 0.60, 0		; aspect launch warning
+$Name:	43	beep_4.wav,		0, 0.60, 0		; shield quadrant transfer successful
+$Name:	44	wash.wav,		0, 0.80, 1, 200, 400	; Engine wash looping sound
+$Name:	45	warp_1.wav,		0, 0.60, 2, 750, 1500	; ** warp hole opening up for arriving (3d sound)
+$Name:	46	warp_1.wav,		0, 0.60, 2, 750, 1500	; ** warp hole opening up for departing (3d sound)
+$Name:	47	aburn_1f.wav,		0, 0.50, 0		; player warp has failed
+$Name:	48	static.wav,		0, 0.60, 0		; hud gauge static
+$Name:	49	boom_1.wav,		0, 0.90, 1, 600, 1200	; * ship explosion 2 (3d sound)
+$Name:	50	rev1.wav,		0, 0.70, 0		; ship is warping out in 3rd person
+$Name:	51	s_hit_0.wav,		0, 0.70, 1, 100, 200	; * heavy ship-ship collide sound (3d sound)
+$Name:	52	collide.wav,		0, 0.70, 1, 100, 200	; * light ship-ship collide sound (3d sound)
+$Name:	53	s_hit_1.wav,		0, 0.70, 1, 100, 200	; * shield ship-ship collide overlay sound (3d sound)
+$Name:	54	alert_1.wav,		0, 0.50, 0		; missile threat indicator flashes
+$Name:	55	proximity1.wav,		0, 0.70, 0		; proximity warning (heat seeker)
+$Name:	56	proximity2.wav,		0, 0.70, 0		; proximity warning (aspect)
+$Name:	57	directive.wav,		0, 0.70, 0		; directive complete
+$Name:	58	subhit2.wav,		0, 0.90, 1, 250,  800	; * other ship subsystem destroyed (3d sound)
+$Name:	59	atomic.wav,		0, 0.90, 1, 2000, 4000	; * captial ship explosion (3d sound)
+$Name:	60	subhit2.wav,		0, 0.90, 1, 250,  1500	; * captial ship subsystem destroyed (3d sound)
+$Name:	61	warp2.wav,		0, 1.00, 1, 1500, 2000	; [obsolete] large ship warps out (looping 3d sound)
+$Name:	62	ast_lghit.wav,		0, 0.80, 1, 750, 1500	; ** large asteroid blows up (3d sound)
+$Name:	63	ast_smhit.wav,		0, 0.80, 1, 500, 1000	; ** small asteroid blows up (3d sound)
+$Name:	64	cue_voice.wav,		0, 0.90, 0		; sound to indicate voice is about to start
+$Name:	65	end_voice.wav,		0, 0.90, 0		; sound to indicate voice has ended
+$Name:	66	scan.wav,		0, 0.50, 0		; cargo scanning (looping)
+$Name:	67	l_flyby.wav,		0, 0.80, 1, 50, 250	; * weapon flyby sound
+$Name:	68	asteroid.wav,		0, 0.50, 1, 200, 700	; [obsolete] asteroid sound (persistant, looping) (3d sound)
+$Name:	69	warp_open.wav,		0, 1.00, 2, 2000, 4000	; capital warp hole opening (3d sound)
+$Name:	70	warp_close.wav,		0, 1.00, 2, 2000, 4000	; capital warp hole closing (3d sound)
+$Name:	71	rumble.wav,		0, 0.70, 1, 600, 1000	; LARGE engine ambient
+$Name:	72	subspace_left.wav,	0, 0.30, 0		; subspace ambient sound (left channel) (looping)
+$Name:	73	subspace_right.wav,	0, 0.30, 0		; subspace ambient sound (right channel) (looping)
+$Name:	74	Evaded.wav,		0, 0.70, 0		; "evaded" HUD popup
+$Name:	75	rumble.wav,		0, 0.70, 1, 600, 1000	; HUGE engine ambient
+;
+; Weapons section
+;
+$Name:	76	L_Sidearm.wav,		0, 0.50, 1,  50, 400	; SD-4 Sidearm laser fired
+$Name:	77	L_Scalpel.wav,		0, 0.50, 1,  50, 400	; DR-2 Scalpel fired
+$Name:	78	L_Flail2.wav,		0, 0.50, 1,  50, 400	; Flail II fired
+$Name:	79	L_Prom_R.wav,		0, 0.50, 1,  50, 400	; Prometheus R laser fired
+$Name:	80	L_Prom_S.wav,		0, 0.50, 1,  50, 400	; Prometheus S laser fired
+$Name:	81	L_Newton.wav,		0, 0.50, 1,  50, 400	; GTW-66 Newton Cannon fired
+$Name:	82	L_Kayser.wav,		0, 0.55, 1,  50, 400	; UD-8 Kayser Laser fired
+$Name:	83	L_Circle.wav,		0, 0.50, 1,  50, 400	; GTW-19 Circe laser fired
+$Name:	84	L_Lich.wav,		0, 0.50, 1,  50, 400	; GTW-83 Lich laser fired
+$Name:	85	hit_1.wav,		0, 0.90, 1, 200, 800	; Laser impact
+$Name:	86	L_Vasmid.wav,		0, 0.50, 1,  50, 400	; Subach-HLV Vasudan laser
+$Name:	87	m_wasp.wav,		0, 0.80, 1,  50, 400	; rockeye missile launch
+$Name:	88	boom_2.wav,		0, 0.80, 1, 500, 1000	; missile impact 1
+$Name:	89	m_mag.wav,		0, 0.80, 1,  50, 400	; mag pulse missile launch
+$Name:	90	m_fury.wav,		0, 0.80, 1,  50, 400	; fury missile launch
+$Name:	91	m_shrike.wav,		0, 0.80, 1,  50, 400	; shrike missile launch
+$Name:	92	m_angel.wav,		0, 0.80, 1,  50, 400	; angel fire missile launch
+$Name:	93	m_cluster.wav,		0, 0.80, 1,  50, 400	; cluster bomb launch
+$Name:	94	m_clusterb.wav,		0, 0.80, 1,  50, 400	; cluster baby bomb launch
+$Name:	95	m_stiletto.wav,		0, 0.80, 1,  50, 400	; stiletto bomb launch
+$Name:	96	m_tsunami.wav,		0, 0.80, 1,  50, 400	; tsunami bomb launch
+$Name:	97	m_harbinger.wav,	0, 0.80, 1,  50, 400	; harbinger bomb launch
+$Name:	98	m_mega.wav,		0, 0.80, 1,  50, 400	; mega wokka launch
+$Name:	99	counter_1.wav,		0, 0.70, 1,  50, 200	; countermeasure 1 launch
+$Name:	100	l_alien1.wav,		0, 0.60, 1,  50, 400	; Shivan light laser (3d sound)
+$Name:	101	clusterboom.wav,	0, 0.80, 1, 750, 2000	; shockwave ignition (3d sound)
+$Name:	102	m_swarm.wav,		0, 0.70, 1,  50, 400	; swarm missile sound (3d sound)
+$Name:	103	l_alien2.wav,		0, 0.60, 1, 100, 400	; Shivan heavy laser (3d sound)
+$Name:	104	capital4.wav,		0, 0.70, 1, 500, 1500	; Vasudan SuperCap engine (3d sound)
+$Name:	105	capital5.wav,		0, 0.70, 1, 500, 1500	; Shivan SuperCap engine (3d sound)
+$Name:	106	capital6.wav,		0, 0.70, 1, 500, 1500	; Terran SuperCap engine (3d sound)
+$Name:	107	l_vaslight.wav,		0, 0.60, 1,  50, 400	; Vasudan light laser fired (3d sound)
+$Name:	108	l_alien3.wav,		0, 0.60, 1,  50, 400	; Shivan heavy laser (3d sound)
+$Name:	109	shockwave.wav,		0, 1.00, 1,  50, 800	; ** shockwave impact (3d sound)
+$Name:	110	Turret_T1.wav,		0, 0.50, 2, 200, 1000	; TERRAN TURRET 1
+$Name:	111	Turret_T2.wav,		0, 0.50, 2, 200, 1000	; TERRAN TURRET 2
+$Name:	112	Turret_V1.wav,		0, 0.50, 2, 200, 1000	; VASUDAN TURRET 1
+$Name:	113	Turret_V2.wav,		0, 0.50, 2, 200, 1000	; VASUDAN TURRET 2
+$Name:	114	Turret_S1.wav,		0, 0.50, 2, 200, 1000	; SHIVAN TURRET 1
+$Name:	115	paintloop.wav,		0, 0.60, 1,  50, 200	; targeting laser loop sound
+$Name:	116	FlakLaunch.wav,		0, 0.60, 1, 250, 1000	; Flak Gun Launch
+$Name:	117	boom_4.wav,		0, 0.80, 1, 400, 800	; Flak Gun Impact
+$Name:	118	m_emp.wav,		0, 0.60, 1,  50, 400	; EMP Missle
+$Name:	119	Escape.wav,		0, 0.60, 1, 200, 600	; Escape Pod Drone
+$Name:	120	Vaporize1.wav,		0, 0.70, 0		; Beam Hit 1
+$Name:	121	beam_loop.wav,		0, 0.70, 2, 1500, 3000	; beam loop
+$Name:	122	beam_up.wav,		0, 0.70, 2, 1500, 3000	; beam power up
+$Name:	123	beam_down.wav,		0, 0.70, 2, 1500, 3000	; beam power down
+$Name:	124	beam_shot1.wav,		0, 0.70, 2, 1500, 2500	; Beam shot 1
+$Name:	125	beam_shot2.wav,		0, 0.70, 2, 1500, 2500	; Beam shot 2
+;Ship Engine Sounds section
+$Name:	126	ship_a1.wav,		0, 0.60, 1, 200, 400	; Terran fighter engine (3d sound)
+$Name:	127	ship_a2.wav,		0, 0.70, 1, 300, 600	; Terran bomber engine (3d sound)
+$Name:	128	ship_a3.wav,		0, 0.80, 1, 400, 800	; Terran cruiser engine (3d sound)
+$Name:	129	ship_b1.wav,		0, 0.70, 1, 200, 400	; Vasudan fighter engine (3d sound)
+$Name:	130	ship_b2.wav,		0, 0.80, 1, 300, 600	; Vasudan bomber engine (3d sound)
+$Name:	131	ship_b3.wav,		0, 0.80, 1, 400, 800	; Vasudan cruiser engine (3d sound)
+$Name:	132	ship_c1.wav,		0, 0.60, 1, 200, 400	; Shivan fighter engine (3d sound)
+$Name:	133	ship_c2.wav,		0, 0.70, 1, 300, 600	; Shivan bomber engine (3d sound)
+$Name:	134	ship_c3.wav,		0, 0.80, 1, 400, 800	; Shivan cruiser engine (3d sound)
+$Name:	135	beacon.wav,		0, 0.60, 1, 300, 600	; Repair ship beacon/engine sound (3d sound)
+$Name:	136	capital1.wav,		0, 0.70, 1, 500, 1500	; Terran capital engine (3d sound)
+$Name:	137	capital2.wav,		0, 0.70, 1, 500, 1500	; Vasudan capital engine (3d sound)
+$Name:	138	capital3.wav,		0, 0.70, 1, 500, 1500	; Shivan capital engine (3d sound)
+; Electrical arc sound fx on the debris pieces
+$Name:	139	Arc_01.wav,		0, 0.30, 2, 200, 500	; ** 0.10 second spark sound effect (3d sound)
+$Name:	140	Arc_02.wav,		0, 0.30, 2, 200, 500	; ** 0.25 second spark sound effect (3d sound)
+$Name:	141	Arc_03.wav,		0, 0.30, 2, 200, 500	; ** 0.50 second spark sound effect (3d sound)
+$Name:	142	Arc_04.wav,		0, 0.30, 2, 200, 500	; ** 0.75 second spark sound effect (3d sound)
+$Name:	143	Arc_05.wav,		0, 0.30, 2, 200, 500	; ** 1.00 second spark sound effect (3d sound)
+; Beam Sounds
+$Name:	144	BT_LTerSlash.wav,	0, 0.70, 2, 1500, 3000	; LTerSlash 	beam loop
+$Name:	145	BT_TerSlash.wav,	0, 0.70, 2, 1500, 3000	; TerSlash	beam loop
+$Name:	146	BT_SGreen.wav,		0, 0.70, 2, 1500, 3000	; SGreen 	beam loop
+$Name:	147	BT_BGreen.wav,		0, 0.70, 2, 1500, 3000	; BGreen	beem loop
+$Name:	148	BT_BFGreen.wav,		0, 0.70, 2, 1500, 3000	; BFGreen	been loop
+$Name:	149	BT_AntiFtr.wav,		0, 0.70, 2, 1500, 3000	; Antifighter 	beam loop
+$Name:	150	BT_up_1.wav,		0, 0.60, 2, 1500, 3000	; 1 sec		warm up
+$Name:	151	BT_up_1.5.wav,		0, 0.60, 2, 1500, 3000	; 1.5 sec 	warm up
+$Name:	152	BT_up_2.5.wav,		0, 0.60, 2, 1500, 3000	; 2.5 sec 	warm up
+$Name:	153	BT_up_3.wav,		0, 0.60, 2, 1500, 3000	; 3 sec 	warm up
+$Name:	154	BT_up_3.5.wav,		0, 0.60, 2, 1500, 3000	; 3.5 sec 	warm up
+$Name:	155	BT_up_5.wav,		0, 0.60, 2, 1500, 3000	; 5 sec 	warm up
+$Name:	156	BT_dwn_1.wav,		0, 0.70, 2, 2000, 3000	; LTerSlash	warm down
+$Name:	157	BT_dwn_2.wav,		0, 0.70, 2, 2000, 3000	; TerSlash	warm down
+$Name:	158	BT_dwn_3.wav,		0, 0.70, 2, 2000, 3000	; SGreen	warm down
+$Name:	159	BT_dwn_4.wav,		0, 0.70, 2, 2000, 3000	; BGreen	warm down
+$Name:	160	BT_dwn_5.wav,		0, 0.70, 2, 2000, 3000	; BFGreen	warm down
+$Name:	161	BT_dwn_6.wav,		0, 0.70, 2, 2000, 3000	; T_AntiFtr	warm down
+$Name:	162	Empty,			0, 0.50, 0
+$Name:	163	Empty,			0, 0.50, 0
+$Name:	164	Empty,			0, 0.50, 0
+$Name:	165	Empty,			0, 0.50, 0
+$Name:	166	Empty,			0, 0.50, 0
+$Name:	167	Empty,			0, 0.50, 0
+$Name:	168	Empty,			0, 0.50, 0
+$Name:	169	Empty,			0, 0.50, 0
+$Name:	170	Empty,			0, 0.50, 0
+$Name:	171	Empty,			0, 0.50, 0
+$Name:	172	Empty,			0, 0.50, 0
+$Name:	173	SupNova1.wav,		0, 1.00, 0		; SuperNova (distant)
+$Name:	174	SupNova2.wav,		0, 1.00, 0		; SuperNova (shockwave)
+$Name:	175	ship_c4.wav,		0, 0.80, 1, 400, 800	; Shivan large engine (3d sound)
+$Name:	176	ship_c5.wav,		0, 0.80, 1, 400, 1000	; Shivan large engine (3d sound)
+$Name:	177	BS_SRed.wav,		0, 0.70, 2, 1500, 3000	; SRed 		beam loop
+$Name:	178	BS_LRed.wav,		0, 0.70, 2, 1500, 3000	; LRed		beam loop
+$Name:	179	BS_AntiFtr.wav,		0, 0.70, 2, 1500, 3000	; Antifighter	beam loop
+$Name:	180	Thunder_01.wav,		0, 0.70, 0		; Thunder 1 sound in neblua
+$Name:	181	Thunder_02.wav,		0, 0.70, 0		; Thunder 2 sound in neblua
+$Name:	182	BS_up_1.wav,		0, 0.60, 2, 1500, 3000	; 1 sec 	warm up
+$Name:	183	BS_up_1.5.wav,		0, 0.60, 2, 1500, 3000	; 1.5 sec 	warm up
+$Name:	184	BS_up_3.wav,		0, 0.60, 2, 1500, 3000	; 3 sec 	warm up
+$Name:	185	Commnode.wav,		0, 0.60, 1, 200,  500	; Shivan Commnode
+$Name:	186	Pirate.wav,		0, 0.60, 1, 400,  1000	; Volition PirateShip
+$Name:	187	BS_dwn_1.wav,		0, 0.70, 2, 2000, 3000	; SRed 		warm down
+$Name:	188	BS_dwn_2.wav,		0, 0.70, 2, 2000, 3000	; LRed 		warm down
+$Name:	189	BS_dwn_3.wav,		0, 0.70, 2, 2000, 3000	; AntiFtr	warm down
+$Name:	190	Inst1.wav,		0, 0.80, 1, 500, 2000	; Instellation 1
+$Name:	191	Inst2.wav,		0, 0.80, 1, 500, 2000	; Instellation 2
+
+;SCP ADDED SOUNDS START HERE
+$Name:  200     m_load.wav,		0, 0.60, 1, 10, 50	; Ballistic Weapon Rearm Start
+$Name:	201	m_lock.wav,		0, 0.50, 1, 10, 50	; Ballistic Weapon Rearm
+;
+#Game Sounds End
+;
+#Interface Sounds Start
+$Name:	0	user_c.wav,		0, 0.70, 0		; mouse click
+$Name:	1	empty,			0, 0.70, 0		; pick up a ship icon (not used)
+$Name:	2	load01.wav,		0, 0.60, 0		; drop a ship icon on a wing slot
+$Name:	3	unload01.wav,		0, 0.60, 0		; drop a ship icon back to the list
+$Name:	4	beep_4.wav,		0, 0.70, 0		; press briefing, ship selection or weapons bar (top-left)
+$Name:	5	user_c.wav,		0, 0.70, 0		; Switching to a new screen, but not commit
+$Name:	6	beep_4.wav,		0, 0.70, 0		; help pressed
+$Name:	7	commit.wav,		0, 0.60, 0		; commit pressed
+$Name:	8	user_c.wav,		0, 0.70, 0		; prev/next pressed
+$Name:	9	user_c.wav,		0, 0.70, 0		; scroll pressed (and scroll)
+$Name:	10	fail.wav,		0, 0.70, 0		; general failure sound for any event
+$Name:	11	shipview.wav,		0, 0.50, 0		; ship animation starts (ie text and ship first appear)
+$Name:	12	main_amb.wav,		0, 0.60, 0		; ambient sound for the Terran main hall (looping)
+$Name:	13	vas_amb.wav,		0, 0.60, 0		; ambient sound for the Vasudan main hall (looping)
+$Name:	14	user_a.wav,		0, 0.70, 0		; brief stage change
+$Name:	15	user_i.wav,		0, 0.70, 0		; brief stage change fail
+$Name:	16	beep_3.wav,		0, 0.70, 0		; selet brief icon
+$Name:	17	user_o.wav,		0, 0.50, 0		; user_over (mouse over a control)
+$Name:	18	user_c.wav,		0, 0.70, 0		; user_click (mouse selects a control)
+$Name:	19	reset.wav,		0, 0.70, 0		; reset (or similar button) pressed
+$Name:	20	textdraw.wav,		0, 0.60, 0		; briefing text wipe
+$Name:	21	Lift_Mix.wav,		0, 0.50, 0		; main hall - elevator
+$Name:	22	weapview.wav,		0, 0.60, 0		; weapon animation starts
+$Name:	23	dooropen.wav,		0, 0.50, 0		; door in main hall opens
+$Name:	24	doorclose.wav,		0, 0.50, 0		; door in main hall closes
+$Name:	25	itemdraw.wav,		0, 0.50, 0		; glow in main hall opens
+$Name:	26	Crane_1.wav,		0, 0.50, 0		; main hall - crane 1
+$Name:	27	sub_amb.wav,		0, 0.60, 0		; ambient sound for menus off the main hall (looping)
+$Name:	28	user_c.wav,		0, 0.70, 0		; popup dialog box appeared
+$Name:	29	user_c.wav,		0, 0.70, 0		; popup dialog box goes away
+$Name:	30	1_yes.wav,		0, 1.00, 0		; voice clip played when volume slider changes
+$Name:	31	Crane_2.wav,		0, 0.50, 0		; main hall - crane 2
+$Name:	32	Option1.wav,		0, 0.70, 0		; main hall options - mouse on 
+$Name:	33	Option2.wav,		0, 0.70, 0		; main hall options - mouse off
+$Name:	34	Techroom1.wav,		0, 0.70, 0		; main hall tech room - mouse on
+$Name:	35	Techroom2.wav,		0, 0.70, 0		; main hall tech room - mouse off
+$Name:	36	Exitopen.wav,		0, 0.60, 0		; main hall exit open
+$Name:	37	Exitclose.wav,		0, 0.60, 0		; main hall exit close
+$Name:	38	pa_1.wav,		0, 0.50, 0		; main hall random intercom 1
+$Name:	39	pa_2.wav,		0, 0.50, 0		; main hall random intercom 2
+$Name:	40	pa_3.wav,		0, 0.50, 0		; main hall random intercom 3
+$Name:	41	highlight.wav,		0, 0.40, 0		; spinning highlight in briefing
+$Name:	42	noiz.wav,		0, 0.40, 0		; static in a briefing stage cut
+$Name:	43	Camp_on.wav,		0, 0.70, 0		; main hall campaign - mouse on
+$Name:	44	Camp_off.wav,		0, 0.70, 0		; main hall campaign - mouse off
+$Name:	45	V_Hatch_Open.wav,	0, 0.70, 0		; vasudan hall - exit open  
+$Name:	46	V_Hatch_Close.wav,	0, 0.70, 0		; vasudan hall - exit close
+$Name:	47	V_Roll_Open.wav,	0, 0.80, 0		; vasudan hall - hatch open 
+$Name:	48	V_Roll_Close.wav,	0, 0.80, 0		; vasudan hall - hatch close
+$Name:	49	V_Lift_Up.wav,		0, 0.70, 0		; vasudan hall - lift up
+$Name:	50	V_Lift_Down.wav,	0, 0.70, 0		; vasudan hall - lift down
+$Name:	51	V_Lite_On.wav,		0, 0.70, 0		; vasudan hall - glow on
+$Name:	52	V_Lite_Off.wav,		0, 0.70, 0		; vasudan hall - glow off
+$Name:	53	Skiff.wav,		0, 0.70, 0		; vasudan hall - skiff loop
+$Name:	54	V_Map_On.wav,		0, 0.70, 0		; vasudan hall - screen on
+$Name:	55	V_Map_Off.wav,		0, 0.70, 0		; vasudan hall - screen off
+$Name:	56	V_Head_1.wav,		0, 0.70, 0		; vasudan hall - vasudan greeting
+$Name:	57	V_Head_2.wav,		0, 0.70, 0		; vasudan hall - vasudan bye
+$Name:	58	V_Pa_01.wav,		0, 0.70, 0		; vasudan hall - vasudan pa 1
+$Name:	59	V_Pa_02.wav,		0, 0.70, 0		; vasudan hall - vasudan pa 2
+$Name:	60	V_Pa_03.wav,		0, 0.70, 0		; vasudan hall - vasudan pa 3
+$Name:	61	bup.wav,		0, 0.90, 0		; bup bup bup-bup bup bup
+$Name:	62	thankyou.wav,		0, 0.90, 0		; thankyou
+$Name:	63	V_Exit_Open.wav,	0, 0.70, 0		; vasudan hall - exit open
+$Name:	64	V_Exit_Close.wav,	0, 0.70, 0		; vasudan hall - exit close
+;
+#Interface Sounds End
+;
+; Each species can have up to 4 different flyby sounds
+; NOTE : the parse code expects to see exactly 2 sounds for terran, then 2 for vasudan, then 2 for shivan
+;        the first sound for each species is the fighter/small flyby sound. the second is the bomber/big flyby sound
+#Flyby Sounds Start
+
+$Terran:	0	T_flyby1.wav,	0, 0.75, 1, 200, 400	; * Terran ship1 flyby player sound (3d sound)
+$Terran:	1	T_flyby2.wav,	0, 0.75, 1, 200, 400	; * Terran ship1 flyby player sound (3d sound)
+
+$Vasudan:	0	V_flyby1.wav,	0, 0.85, 1, 200, 400	; * Vasudan ship1 flyby player sound (3d sound)
+$Vasudan:	1	V_flyby2.wav,	0, 0.85, 1, 200, 400	; * Vasudan ship1 flyby player sound (3d sound)
+
+$Shivan:	0	S_flyby1.wav,	0, 0.75, 1, 200, 400	; * SHIVAN ship1 flyby player sound (3d sound)
+$Shivan:	1	S_flyby2.wav,	0, 0.75, 1, 200, 400	; * SHIVAN ship1 flyby player sound (3d sound)
+
+#Flyby Sounds End
+```
+
+- Sound Environments section
+```
+#Sound Environments Start
+
+; All options with default values and ranges
+$Name: EFX Defaults
++Density: 1.0						; range: 0.0 - 1.0
++Diffusion: 1.0					; linear multiplier, range: 0.0 - 1.0
++Gain: 0.32						; gain/volume, linear gain, range: 0.0 - 1.0
++Gain HF: 0.89						; high frequency gain, linear gain, range: 0.0 - 1.0
++Gain LF: 0.0						; low frequency gain, linear gain, range: 0.0 - 1.0
++Decay Time: 1.49					; decay, seconds, range: 0.1 - 20.0
++Decay HF Ratio: 0.83				; high frequency decay multiplier (damping), linear multiplier, range: 0.1 - 20.0
++Decay LF Ratio: 1.0				; low frequency decay multiplier, linear multiplier, range: 0.1 - 20.0
++Reflections Gain: 0.05				; linear gain, range: 0.0 - 3.16
++Reflections Delay: 0.007			; seconds, range: 0.0 - 0.3
++Reflections Pan: 0.0, 0.0, 0.0		; vector, magnitude, range(s): 0.0 - 1.0
++Late Reverb Gain: 1.26				; linear gain, range: 0.0 - 10.0
++Late Reverb Delay: 0.011			; seconds, range: 0.0 - 0.1
++Late Reverb Pan: 0.0, 0.0, 0.0		; vector, magnitude, range(s): 0.0 - 1.0
++Echo Time: 0.25					; seconds, range: 0.075 - 0.25
++Echo Depth: 0.0					; linear multiplier, range: 0.0 - 1.0
++Modulation Time: 0.25				; seconds, range: 0.004 - 4.0
++Modulation Depth: 0.0				; linear multiplier, range: 0.0 - 1.0
++HF Reference: 5000.0				; Hz, range: 1000.0 - 20000.0
++LF Reference: 250.0				; Hz, range: 20.0 - 1000.0 (should be 1/10th or less of HF Reference value)
++Room Rolloff Factor: 0.0			; linear multiplier, range: 0.0 - 10.0
++Air Absorption Gain HF: 0.994		; linear gain per meter, range: 0.892 - 1.0
++Decay HF Limit: true				; boolean
+
+; Set up an environment for subspace missions based on the EAX 'Drugged' effect
+$Name: Subspace
+$Template: Drugged
++Gain: 0.8
++Decay HF Ratio: 1.188
++Decay Time: 6.392
+
+; Set the default environment to the EAX 'Hangar' effect
+$Name: Default
+$Template: None
+
+#Sound Environments End
+```

@@ -68,4 +68,5 @@
   - [rank.tbl](rank.tbl)
   - [scripting.tbl](scripting.tbl)
   - [ships.tbl](ships.tbl)
+  - [sounds.tbl](sounds.tbl)
   - [species.tbl](species.tbl)
