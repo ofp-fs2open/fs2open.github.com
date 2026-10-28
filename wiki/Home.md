@@ -52,5 +52,6 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [mflash.tbl](mflash.tbl): Weapon muzzle flashes
   - [music.tbl](music.tbl): Soundtracks and menu music
   - [nebula.tbl](nebula.tbl): Nebula bitmaps and poofs
+  - [objecttypes.tbl](objecttypes.tbl): Ship types and target priorities
   - [props.tbl](props.tbl): prop classes (OFP additions so far)
   - [species.tbl](species.tbl): tech room intel entries (OFP additions so far)

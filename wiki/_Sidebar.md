@@ -59,5 +59,6 @@
   - [mflash.tbl](mflash.tbl)
   - [music.tbl](music.tbl)
   - [nebula.tbl](nebula.tbl)
+  - [objecttypes.tbl](objecttypes.tbl)
   - [props.tbl](props.tbl)
   - [species.tbl](species.tbl)

@@ -63,5 +63,6 @@ Table pages mark when a field or behavior was added with a version badge. Fields
 | [mflash.tbl](mflash.tbl)\* | `xxx-mfl.tbm` | [/weapon/muzzleflash.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/weapon/muzzleflash.cpp) | Weapon muzzle flashes |
 | [music.tbl](music.tbl)\* | `xxx-mus.tbm` | [/gamesnd/eventmusic.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/gamesnd/eventmusic.cpp) | Mission soundtracks and menu music |
 | [nebula.tbl](nebula.tbl)\* | `xxx-neb.tbm` | [/nebula/neb.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/nebula/neb.cpp) | Full nebula background bitmaps and poofs |
+| [objecttypes.tbl](objecttypes.tbl)\* | `xxx-obt.tbm` | [/ship/ship.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/ship/ship.cpp) | Ship types and turret target priority groups |
 | [props.tbl](props.tbl)\* | `xxx-prp.tbm` | [/prop/prop.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/prop/prop.cpp) | Prop classes (only OFP's additions documented so far) |
 | [species.tbl](species.tbl)\* | `xxx-intl.tbm` | [/menuui/techmenu.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/menuui/techmenu.cpp) | Tech room intel entries (only OFP's additions documented so far) |
