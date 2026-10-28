@@ -65,3 +65,4 @@ Documentation for the Open Freespace Project (OFP), a fork of FreeSpace Open wit
   - [sounds.tbl](sounds.tbl): Game sounds
   - [species_defs.tbl](species_defs.tbl): Species definitions
   - [ssm.tbl](ssm.tbl): Subspace missile strikes
+  - [stars.tbl](stars.tbl): Backgrounds, suns and motion debris

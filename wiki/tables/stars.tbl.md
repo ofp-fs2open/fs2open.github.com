@@ -1,0 +1,181 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **stars.tbl** defines the available background graphics, the suns that light the game, and the motion debris animations. (The FS1-style generated nebula background is defined in [generated_nebula.tbl](generated_nebula.tbl).)
+
+This table is one of the Modular Tables and can be extended with **xxx-str.tbm**.
+
+Code: [/starfield/starfield.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/starfield/starfield.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [General Format](#general-format)
+2. [Background graphics](#background-graphics)
+3. [Stars](#stars)
+4. [Motion Debris](#motion-debris)
+5. [Sample](#sample)
+
+---
+
+## General Format
+
+- stars.tbl consists of several sections, in this order:
+  - **Background graphics**: the available background bitmaps (nebulas, planets, etc.)
+  - **Stars**: the suns
+  - **Motion debris**: the specks that stream past to show movement, for normal and nebula missions
+- A section that has any entries must be closed with `#End` before the next one. Sections can be left out.
+- The section headers (`#Background Bitmaps`, `#Stars`, `#Motion Debris`) are optional.
+
+### Background graphics
+
+- Background graphics use the names of their respective graphic files
+- Can begin with **#Background Bitmaps**
+- A bitmap listed twice keeps its first entry (in stars.tbl itself this logs a warning). A bitmap listed once as `$Bitmap:` and once as `$BitmapX:` also keeps its first entry, with a warning.
+- Background graphics can be defined in two different forms:
+  - **$Bitmap:**
+    - This entry type is used for objects that use additive blending (intensity = transparency), such as nebulas and suns.
+    - Syntax: **String**, filename
+  - **$BitmapX:**
+    - This entry type is used for the retail 'green transparency' objects (ie. 0,255,0 is transparent) in case of pcx files, and for full alpha channel blending for files that can have alpha channel (TGA and DXT3/DXT5 files). Use this to make the space around solid background objects (such as planets, big asteroids and such) transparent.
+    - Syntax: **String**, filename
+
+### Stars
+
+- Stars are defined with several different parameters, in this order.
+- Can begin with **#Stars**
+- A sun listed again in a modular table replaces the first one. In stars.tbl itself, a sun listed twice logs a warning and the first entry is used.
+
+#### $Sun:
+
+- Defines the name of the sun's bitmap
+- Syntax: **String**, filename
+
+#### $SunGlow:
+
+- Required. Defines the bitmap or animation used as a glow for the star
+- Syntax: **String**, filename
+
+#### $SunRGBI:
+
+- Required. Defines the color of the sun's light as well as its intensity
+- Syntax: **Color**, four **floats**, 0.0 to 1.0, red, green, blue and intensity respectively
+
+#### $SunSpecularRGB:
+
+![FSO 3.6.10](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-3.6.10.svg)
+
+- **Deprecated and ignored.** It used to set a separate specular color for the sun. A value different from `$SunRGBI:`'s color logs a warning.
+- Syntax: **Color**, three **floats**, 0.0 to 1.0, red, green and blue respectively
+
+#### $Flare:
+
+- Optional. Adds a lens flare effect to the sun. No value.
+
+##### +FlareCount:
+
+- Required after `$Flare:`. The value is read but not used: the number of flares is the number of `$FlareGlow` entries.
+- Syntax: **Integer**
+
+##### $FlareTexture*N*:
+
+- Defines the bitmap used for flare texture *N*. `$FlareTexture1:` is required; up to six can be defined (N = 1 to 6). A number may be skipped.
+- Syntax: **String**, filename
+
+##### $FlareGlow*X*:
+
+- Defines the *X*th lens flare. `$FlareGlow1:` is required; up to ten can be defined (X = 1 to 10). Each needs all three of the fields below.
+
+###### +FlareTexture:
+
+- The texture used for this flare: the number of a `$FlareTexture` entry. Note that this number is zero-indexed, even though the numbers in `$FlareTexture*N*:` are one-indexed! Valid values are 0 through 5.
+- Syntax: **Integer**
+
+###### +FlarePos:
+
+- The position of the flare. 0.0 is the position of the sun on screen, 0.5 is the exact center of the screen. Higher values place the flare opposite the sun, negative values place the flare further "behind" the sun.
+- Syntax: **Float**
+
+###### +FlareScale:
+
+- The scaling factor used for the flare.
+- Syntax: **Float**
+
+#### $NoGlare:
+
+- Optional. Disables the blinding glare effect from the sun. No value.
+
+### Motion Debris
+
+- Default and Nebula debris must be defined, others are optional
+- Each motion debris type needs exactly four bitmaps.
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Motion Debris types are defined in two possible ways, legacy and modern
+- Can begin with **#Motion Debris**
+
+### Legacy Non-nebula debris
+
+- Legacy version. Will define the **Default** motion debris
+- There must always be four (4) of these. More log a warning and are ignored; fewer log a warning and the type is skipped.
+  - **$Debris:**
+    - Defines the animations used for the debris
+    - Syntax: **String**
+
+### Legacy Nebula debris
+
+- Legacy version. Will define the **Nebula** motion debris
+- There must always be four (4) of these. More log a warning and are ignored; fewer log a warning and the type is skipped.
+  - **$DebrisNeb:**
+    - Defines the animations used for the debris
+    - Syntax: **String**
+
+### Modern Motion Debris
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+- Modern version
+- Can have any number of motion debris types.
+  - **$Motion Debris Name:**
+  - Defines the name of the motion debris type.
+  - Use **Default** as the name to set the default motion debris
+  - Use **Nebula** as the name to set the default nebula motion debris
+  - A name that already exists replaces that type's bitmaps.
+  - Syntax: **String**
+    - **+Bitmap:**
+    - Defines the animations used for this motion debris
+    - Required, exactly four (4) times
+    - Syntax: **String**
+
+## Sample
+
+```
+$Bitmap:      dneb01
+
+#end
+
+$Sun:         SunWhite
+$Sunglow:     Sunglow01
+$SunRGBI:     1.0 1.0 1.0 1.0
+
+#end
+
+$Debris:      debris01
+$Debris:      debris02
+$Debris:      debris03
+$Debris:      debris04
+
+#end
+
+$DebrisNeb:   gas
+$DebrisNeb:   gas
+$DebrisNeb:   gas
+$DebrisNeb:   gas
+
+#end
+
+#end
+```
