@@ -1,0 +1,164 @@
+> **Revision information**
+> OFP Revision: [#PR](https://github.com/ofp-fs2open/fs2open.github.com/pull/PR)
+> *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
+
+The **traitor.tbl** defines the text displayed when the player ends the mission with the Traitor IFF and the mission does not have the No Traitor flag.
+
+This table is one of the Modular Tables and can be extended with **xxx-trtr.tbm**.
+
+Code: [/stats/scoring.cpp](https://github.com/ofp-fs2open/fs2open.github.com/blob/master/code/stats/scoring.cpp). See [Tables](Tables) for every table.
+
+Badges show the version a field or behavior was added in. Fields without a badge are from the original game.
+
+## Contents
+
+1. [Format](#format)
+2. [#Debriefing_info](#debriefing_info)
+3. [#Traitor Overrides](#traitor-overrides)
+4. [Sample](#sample)
+
+---
+
+## Format
+
+- Table consists of very FreeSpace 2 mission file like format
+- Table has two optional sections, in this order: **#Debriefing_info** (the default traitor debriefing) and ![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg) **#Traitor Overrides** (alternative debriefings a mission can choose).
+- The fields must be in the order listed here.
+- A modular table replaces the fields it gives; texts are replaced per persona.
+- After all tables are read, a missing default text (one without `+Persona`) logs a warning.
+
+## #Debriefing_info
+
+### $Num stages:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- This field is now ignored and can be omitted
+
+- This sets the number of stages in the traitor debriefing
+- Should always have the value 1
+- Syntax: **Integer**
+
+### $Formula:
+
+![FSO 23.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.0.svg)
+
+- This field is now ignored and can be omitted
+
+- Sets the trigger for the event
+- Should always be ***true***
+- Syntax: ( **true** )
+
+### $Multi text
+
+- Sets the text displayed on the debriefing screen. Value refers to [tstrings.tbl](tstrings.tbl) for translation
+- Is always immediately followed by **$end_multi_text**
+- Syntax: XSTR("**String**", **Integer**)
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg) Starting with 21.0, multiple **$Multi text** fields may exist, each (except for the default) followed by its own Persona.  The mission's Debriefing Persona Index controls which one is used.
+
+### +Persona:
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- Optional, directly after the text.  Defines the persona associated with this text. A negative persona logs a warning and the text is ignored.  If specified, this particular text will be chosen when the Debriefing Persona Index matches. The Debriefing Persona is a number set for a given mission using the campaign editor.
+- Syntax: **Integer**
+
+### $Voice:
+
+- Defines the base voice file that is played during the traitor debriefing.
+
+![FSO 21.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-21.0.svg)
+
+- If the value of Debriefing Persona for the mission has been set, that value plus an underscore plus the base filename becomes the filename FSO will search for.
+- For example, if this value is set to **traitor_debrief.ogg** and the Debriefing Persona value is 10, FSO will look for and play the file **10_traitor_debrief.ogg**.
+- If this persona-specific file cannot be found, the base filename on its own - for example **traitor_debrief.ogg** - will be played instead.
+- Note that the value of $Voice: is only defined once in the table, regardless of however many personas are present in the campaign, just as is the case with rank.tbl voice files.
+- Syntax: **String**
+
+### $Recommendation text:
+
+- Sets the recommendation text displayed on the debriefing screen. Value refers to [tstrings.tbl](tstrings.tbl) for translation
+- Is always immediately followed by **$end_multi_text**
+- Optional; empty by default.
+- Syntax: XSTR("**String**", **Integer**)
+
+## #Traitor Overrides
+
+![FSO 23.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-23.2.svg)
+
+Alternative traitor debriefings. A mission chooses one with the `set-traitor-override` SEXP; it is then used instead of the default one if the player ends that mission as a traitor. Each override needs all four fields, in this order.
+
+### $Name:
+
+- The name the SEXP uses to choose this override.
+- Syntax: **String**
+
+### $Text:
+
+- The debriefing text. Value refers to [tstrings.tbl](tstrings.tbl) for translation.
+- Is always immediately followed by **$end_multi_text**
+- Syntax: XSTR("**String**", **Integer**)
+
+### $Voice Filename:
+
+- The voice file played with the debriefing. Unlike `$Voice:` above, it is used as is, without the persona number.
+- Syntax: **String**
+
+### $Recommendation text:
+
+- The recommendation text. Value refers to [tstrings.tbl](tstrings.tbl) for translation.
+- Is always immediately followed by **$end_multi_text**
+- Syntax: XSTR("**String**", **Integer**)
+
+## Sample
+
+- Part of the retail FreeSpace 2 table
+```
+#Debriefing_info
+
+$Num stages: 1
+
+$Formula: ( true ) 
+$Multi text
+   XSTR("For the crime of high treason, you are hereby stripped of your wings and all privileges bestowed upon you as officer of the Galactic Terran-Vasudan Alliance. 
+   
+   You will be held in custody pending your preliminary hearing, and, if indicted, you will face a military tribunal. 
+   
+   Firing upon allied vessels is a capital offense, punishable by death. You will be transferred to the Vega Penal Colony at 1900 hours.", 3241)
+
+$end_multi_text
+$Voice: traitor_debrief.wav
+
+$Recommendation text:
+   XSTR("Friendly ships are not valid targets.", 3242)
+
+$end_multi_text
+```
+
+## Sample with personas
+
+- Using Debriefing Personas, as implemented in the FreeSpace Port
+```
+#Debriefing_info
+
+$Num stages: 1
+
+$Formula: ( true ) 
+
+$Multi text
+   XSTR("Willfully firing on allied ships is a capital offense, punishable by death.  You are hereby stripped of your rank and your citizenship in the GTA.  You will appear at 0700 hours at the League of Defense Justice Ministry for your court martial.", 503)
+$end_multi_text
+
+$Multi text
+   XSTR("Willfully firing on allied ships is a capital offense, punishable by death.  You are hereby stripped of your rank and your citizenship in the PVE.  You will appear at 0700 hours at the Military Directorate Justice Ministry for your court martial.", 3947)
+$end_multi_text
++Persona: 8
+
+$Voice: traitor_debrief.wav
+
+$Recommendation text:
+   XSTR("Don't fire upon friendly ships.", 504)
+
+$end_multi_text
+```
