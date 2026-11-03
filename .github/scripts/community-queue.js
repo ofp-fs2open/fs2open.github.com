@@ -1,5 +1,5 @@
 // Keeps the Community Queue (discussion #1) and the Feature Queue categories in step
-// with the Queue Accepted label and with PRs that reference queued requests.
+// with the Queue Accepted and Stale labels and with PRs that reference queued requests.
 // Run by .github/workflows/community-queue.yaml; see CONTRIBUTING.md for the policy.
 //
 // The Active Queue section of discussion #1 is the record of what is queued, in
@@ -7,6 +7,7 @@
 
 const QUEUE_DISCUSSION = 1;
 const QUEUE_LABEL = 'Queue Accepted';
+const STALE_LABEL = 'Stale';
 const CATEGORY = {
 	requests: 'Feature Requests',
 	active: 'Active Requests',
@@ -61,13 +62,14 @@ module.exports = async ({ github, context, core }) => {
 	const { owner, repo } = context.repo;
 	const gql = (query, vars = {}) => github.graphql(query, vars);
 
-	const repoInfo = (await gql(`query($owner: String!, $repo: String!, $queue: Int!, $label: String!) {
+	const repoInfo = (await gql(`query($owner: String!, $repo: String!, $queue: Int!, $queueLabel: String!, $staleLabel: String!) {
 		repository(owner: $owner, name: $repo) {
 			discussionCategories(first: 50) { nodes { id name } }
-			label(name: $label) { id }
+			queueLabel: label(name: $queueLabel) { id }
+			staleLabel: label(name: $staleLabel) { id }
 			discussion(number: $queue) { id body }
 		}
-	}`, { owner, repo, queue: QUEUE_DISCUSSION, label: QUEUE_LABEL })).repository;
+	}`, { owner, repo, queue: QUEUE_DISCUSSION, queueLabel: QUEUE_LABEL, staleLabel: STALE_LABEL })).repository;
 
 	const categoryId = {};
 	for (const [key, name] of Object.entries(CATEGORY)) {
@@ -78,6 +80,9 @@ module.exports = async ({ github, context, core }) => {
 	}
 	if (!repoInfo.discussion)
 		throw new Error(`Discussion #${QUEUE_DISCUSSION} not found`);
+	for (const [key, name] of [['queueLabel', QUEUE_LABEL], ['staleLabel', STALE_LABEL]])
+		if (!repoInfo[key])
+			throw new Error(`Label "${name}" not found`);
 
 	const queue = parseQueue(repoInfo.discussion.body);
 	const originalBody = renderQueue(queue);
@@ -87,7 +92,7 @@ module.exports = async ({ github, context, core }) => {
 
 	const getDiscussion = async number => (await gql(`query($owner: String!, $repo: String!, $number: Int!) {
 		repository(owner: $owner, name: $repo) {
-			discussion(number: $number) { id number title url closed category { id } }
+			discussion(number: $number) { id number title url closed category { id } labels(first: 50) { nodes { name } } }
 		}
 	}`, { owner, repo, number })).repository.discussion;
 
@@ -108,6 +113,36 @@ module.exports = async ({ github, context, core }) => {
 			core.info(`Moved #${discussion.number} to ${CATEGORY[key]}`);
 		});
 		return true;
+	};
+
+	// Queue a label change and report whether one is needed. Like moves, label changes made
+	// with this token start another run, which finds nothing left to do.
+	const hasLabel = (discussion, name) => discussion.labels.nodes.some(l => l.name === name);
+	const labelIds = { [QUEUE_LABEL]: repoInfo.queueLabel.id, [STALE_LABEL]: repoInfo.staleLabel.id };
+	const addLabel = (discussion, name) => {
+		if (hasLabel(discussion, name))
+			return false;
+		changes.push(() => gql(`mutation($id: ID!, $label: ID!) { addLabelsToLabelable(input: {labelableId: $id, labelIds: [$label]}) { clientMutationId } }`,
+			{ id: discussion.id, label: labelIds[name] }));
+		return true;
+	};
+	const removeLabel = (discussion, name) => {
+		if (!hasLabel(discussion, name))
+			return false;
+		changes.push(() => gql(`mutation($id: ID!, $label: ID!) { removeLabelsFromLabelable(input: {labelableId: $id, labelIds: [$label]}) { clientMutationId } }`,
+			{ id: discussion.id, label: labelIds[name] }));
+		return true;
+	};
+
+	// Takes a request out of the queue and the Queue Accepted label off it. `changed` (any
+	// earlier change of the caller's) or a change made here means a comment is posted.
+	const markStale = (discussion, changed) => {
+		const queued = !!inQueue(discussion.number);
+		removeFromQueue(discussion.number);
+		if (removeLabel(discussion, QUEUE_LABEL) || queued || changed) {
+			const from = queued ? ` and taken out of the [Community Queue](${queueUrl})` : '';
+			comments.push([discussion, `Marked stale${from}. If this is still wanted, say so here; a maintainer can accept it again, at the back of the queue.`]);
+		}
 	};
 
 	const event = context.eventName;
@@ -132,6 +167,8 @@ module.exports = async ({ github, context, core }) => {
 				added = true;
 			}
 			const moved = moveTo(discussion, 'active');
+			// Accepting a stale request reactivates it.
+			removeLabel(discussion, STALE_LABEL);
 			if (added || moved) {
 				const position = queue.entries.findIndex(e => e.number === number) + 1;
 				comments.push([discussion, `Accepted into the [Community Queue](${queueUrl}) at position ${position}.`]);
@@ -140,12 +177,20 @@ module.exports = async ({ github, context, core }) => {
 			removeFromQueue(number);
 			if (discussion.category.id === categoryId.active)
 				moveTo(discussion, 'requests');
-		} else if (action === 'category_changed' && discussion.category.id === categoryId.stale && inQueue(number)) {
+		} else if (action === 'labeled' && context.payload.label.name === STALE_LABEL) {
 			// Gone stale: out of the queue. Reactivating means accepting it again, at the back.
-			removeFromQueue(number);
-			if (repoInfo.label)
-				changes.push(() => gql(`mutation($id: ID!, $label: ID!) { removeLabelsFromLabelable(input: {labelableId: $id, labelIds: [$label]}) { clientMutationId } }`,
-					{ id: discussion.id, label: repoInfo.label.id }));
+			markStale(discussion, moveTo(discussion, 'stale'));
+		} else if (action === 'unlabeled' && context.payload.label.name === STALE_LABEL) {
+			// No longer stale, but not accepted either: back to Feature Requests.
+			if (discussion.category.id === categoryId.stale)
+				moveTo(discussion, 'requests');
+		} else if (action === 'category_changed') {
+			// Moved by hand: keep the Stale label in step with the Stale Requests category.
+			if (discussion.category.id === categoryId.stale) {
+				markStale(discussion, addLabel(discussion, STALE_LABEL));
+			} else {
+				removeLabel(discussion, STALE_LABEL);
+			}
 		}
 	} else if (event === 'pull_request_target') {
 		const pr = context.payload.pull_request;

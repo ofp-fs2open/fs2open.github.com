@@ -1,7 +1,7 @@
 name: Community Queue
 
 # Keeps the Community Queue (discussion #1) and the Feature Queue categories in step
-# with the Queue Accepted label and with PRs that reference queued requests
+# with the Queue Accepted and Stale labels and with PRs that reference queued requests
 # (Fixes #N and the other issue-closing keywords). See .github/scripts/community-queue.js.
 on:
   discussion:

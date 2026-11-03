@@ -17,7 +17,7 @@ Welcome. OFP is a community-governed fork of FreeSpace Open. This document cover
 
 Feature requests live in [GitHub Discussions](../../discussions). The [Community Queue](../../discussions/1) is the ordered list of accepted, active feature requests that contributors draw from when choosing what to implement.
 
-The Queue is kept up to date automatically. Maintainers only add or remove the **Queue Accepted** label; don't edit the Active Queue list in the Community Queue post by hand.
+The Queue is kept up to date automatically. Maintainers only add or remove the **Queue Accepted** and **Stale** labels; don't edit the Active Queue list in the Community Queue post by hand.
 
 ### How a request enters the Queue
 
@@ -36,7 +36,7 @@ Reference the request in your PR description with `Fixes #<discussion>` (or Clos
 
 ### Stale requests
 
-A request can be marked **Stale** if the original author and supporters have been inactive for over a year with no meaningful recent engagement. Moving a request to the **Stale Requests** category takes it out of the Queue and removes its label. Any active community member can ask for it to be reactivated; a maintainer then adds the label again, and it re-enters the Queue at the back.
+A request can be marked **Stale** if the original author and supporters have been inactive for over a year with no meaningful recent engagement. A maintainer adds the **Stale** label, which takes the request out of the Queue, removes its Queue Accepted label and moves it to the **Stale Requests** category. Any active community member can ask for it to be reactivated; a maintainer then adds Queue Accepted again, and it re-enters the Queue at the back. Removing the Stale label without accepting it returns it to Feature Requests.
 
 ---
 
