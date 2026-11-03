@@ -15,10 +15,12 @@ on:
 permissions:
   contents: read
 
-# Every run rewrites discussion #1, so runs go one at a time.
+# Every run rewrites discussion #1, so runs go one at a time. queue: max keeps every waiting
+# run; by default a newer run cancels the one waiting, and the changes made by the token
+# start follow-up runs that would cancel a maintainer's.
 concurrency:
   group: community-queue
-  cancel-in-progress: false
+  queue: max
 
 jobs:
   update:
