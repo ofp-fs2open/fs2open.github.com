@@ -3,8 +3,10 @@ name: Check a pull request
 on: [pull_request]
 
 jobs:
-  # OFP: skip the builds on PRs that only change docs: wiki/, .md files, issue and Discussion
-  # templates, CODEOWNERS (see build_result at the bottom). Keep in sync with cache-master.yaml.
+  # OFP: skip the builds on PRs that only change docs and repo automation: wiki/, .md files,
+  # issue and Discussion templates, CODEOWNERS, .github/scripts/ and the workflows that never
+  # build (see build_result at the bottom). Build workflows stay off the list, since changing
+  # one needs the builds. Keep in sync with cache-master.yaml.
   changes:
     name: Changes
     runs-on: ubuntu-latest
@@ -18,12 +20,12 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          other=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename | select((startswith("wiki/") or endswith(".md") or startswith(".github/ISSUE_TEMPLATE/") or startswith(".github/DISCUSSION_TEMPLATE/") or . == ".github/CODEOWNERS") | not)')
+          other=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename | select((startswith("wiki/") or endswith(".md") or startswith(".github/ISSUE_TEMPLATE/") or startswith(".github/DISCUSSION_TEMPLATE/") or . == ".github/CODEOWNERS" or startswith(".github/scripts/") or . == ".github/workflows/community-queue.yaml" or . == ".github/workflows/check-documentation.yaml" or . == ".github/workflows/publish-wiki.yaml") | not)')
           if [ -n "$other" ]; then
             echo "code=true" >> "$GITHUB_OUTPUT"
           else
             echo "code=false" >> "$GITHUB_OUTPUT"
-            echo "Only docs changed: skipping the builds."
+            echo "Only docs or repo automation changed: skipping the builds."
           fi
 
   build_linux:

@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - master
-    paths-ignore: # OFP: docs-only merges don't change what the caches hold; keep in sync with test-pull_request.yaml
+    paths-ignore: # OFP: docs and repo automation merges don't change what the caches hold; keep in sync with test-pull_request.yaml
       - 'wiki/**'
       - '**.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/DISCUSSION_TEMPLATE/**'
       - '.github/CODEOWNERS'
+      - '.github/scripts/**'
+      - '.github/workflows/community-queue.yaml'
+      - '.github/workflows/check-documentation.yaml'
+      - '.github/workflows/publish-wiki.yaml'
 
 jobs:
   build_linux:
