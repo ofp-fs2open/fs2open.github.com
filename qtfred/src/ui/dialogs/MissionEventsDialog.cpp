@@ -14,6 +14,7 @@
 #include "ui/util/KeyboardNavigation.h"
 #include "ui/util/NoteDialog.h"
 #include "ui/dialogs/EventEditor/HeadAnimationPickerDialog.h"
+#include "ui/dialogs/General/CheckBoxListDialog.h"
 #include "mission/commands/FredCommands.h"
 
 #include "mission/util.h"
@@ -1046,7 +1047,7 @@ void MissionEventsDialog::applyViewChrome(int index)
 	// also tracks (an event-node selection sets m_cur_event just like the tree).
 	// So it's live in tree and graph; the reorder buttons stay tree-only via their
 	// own gate in updateEventMoveButtons.
-	ui->eventControlsContainer->setEnabled(treeView || graphView);
+	ui->eventControlsContainer->setEnabled(eventControlsAvailable());
 
 	// The sexp help panels describe the selected tree node, so they're
 	// meaningless outside the tree view: clear them on the way out and
@@ -1404,8 +1405,9 @@ void MissionEventsDialog::updateEventUi() {
 	// node selects its event; in the graph, only an event card counts (selecting an
 	// operator / object / data node leaves the fields disabled, for clarity).
 	const int curView = ui->eventViewStack->currentIndex();
-	const bool controlsActive = (curView == TreeViewIndex)
-		|| (curView == GraphViewIndex && ui->eventGraph->isEventNodeSelected());
+	const bool controlsActive = eventControlsAvailable()
+		&& (curView == TreeViewIndex || ui->eventGraph->isEventNodeSelected());
+	ui->eventControlsContainer->setEnabled(eventControlsAvailable());
 
 	if (!_model->eventIsValid() || !controlsActive) {
 		ui->repeatCountBox->setValue(1);
@@ -1427,6 +1429,7 @@ void MissionEventsDialog::updateEventUi() {
 		ui->useMsecsCheckBox->setChecked(false);
 		ui->useMsecsCheckBox->setEnabled(false);
 		ui->teamCombo->setEnabled(false);
+		ui->btnEventFlags->setEnabled(false);
 		ui->editDirectiveText->setEnabled(false);
 		ui->editDirectiveKeypressText->setEnabled(false);
 		setEventLogEnabled(false);
@@ -1471,6 +1474,7 @@ void MissionEventsDialog::updateEventUi() {
 	ui->editDirectiveText->setEnabled(true);
 	ui->editDirectiveKeypressText->setEnabled(true);
 	ui->teamCombo->setEnabled(_model->getMissionIsMultiTeam());
+	ui->btnEventFlags->setEnabled(true);
 
 	// handle event log flags
 	setEventLogEnabled(true);
@@ -1571,6 +1575,16 @@ void MissionEventsDialog::updateEventCreateButtons()
 	ui->btnNewEvent->setEnabled(tree || basicGraph);
 	ui->btnInsertEvent->setEnabled(tree);
 	ui->btnDeleteEvent->setEnabled(tree || (graph && ui->eventGraph->isEventNodeSelected()));
+}
+
+// The column acts on one event. The tree selects one at a time, but a box select
+// in the graph can pick several cards, which the controls can't edit together.
+bool MissionEventsDialog::eventControlsAvailable() const
+{
+	const int view = ui->eventViewStack->currentIndex();
+	if (view == TreeViewIndex)
+		return true;
+	return view == GraphViewIndex && ui->eventGraph->selectedEventCount() <= 1;
 }
 
 void MissionEventsDialog::initHeadCombo() {
@@ -2184,6 +2198,47 @@ void MissionEventsDialog::on_useMsecsCheckBox_toggled(bool checked)
 	    FieldId::Event_UseMsecs + index * FieldId::Event_FieldStride,
 	    nullptr, tr("Toggle Interval In Milliseconds"), true);
 	cmd->addEntry(before, checked, [this, index](const bool& v) { _model->setUseMsecsAt(index, v); refreshEventAfterFieldUndo(index); });
+	_dialogStack->push(cmd);
+}
+
+void MissionEventsDialog::on_btnEventFlags_clicked()
+{
+	if (!_model->eventIsValid())
+		return;
+
+	QVector<std::pair<QString, int>> qtFlags;
+	for (const auto& f : _model->getEventFlags())
+		qtFlags.append({QString::fromUtf8(f.first.c_str()), f.second ? Qt::Checked : Qt::Unchecked});
+
+	QVector<std::pair<QString, QString>> qtDescs;
+	for (const auto& d : _model->getEventFlagDescriptions())
+		qtDescs.append({QString::fromUtf8(d.first.c_str()), QString::fromUtf8(d.second.c_str())});
+
+	CheckBoxListDialog dlg(this);
+	dlg.setCaption(tr("Event Flags"));
+	dlg.setOptions(qtFlags);
+	dlg.setOptionDescriptions(qtDescs);
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	SCP_vector<std::pair<SCP_string, bool>> result;
+	for (const auto& f : dlg.getFlags())
+		result.emplace_back(f.first.toUtf8().constData(), f.second == Qt::Checked);
+
+	const int index  = _model->getCurrentlySelectedEvent();
+	const int before = _model->getEventFlagBits();
+	const int after  = _model->eventFlagBitsFrom(result);
+	if (before == after)
+		return;
+
+	_model->setEventFlagBitsAt(index, after);
+	updateEventUi();
+
+	auto* cmd = new FieldEditCommand<int>(
+	    FieldId::Event_Flags + index * FieldId::Event_FieldStride,
+	    nullptr, tr("Edit Event Flags"), true);
+	cmd->setNoMerge();
+	cmd->addEntry(before, after, [this, index](const int& v) { _model->setEventFlagBitsAt(index, v); refreshEventAfterFieldUndo(index); });
 	_dialogStack->push(cmd);
 }
 

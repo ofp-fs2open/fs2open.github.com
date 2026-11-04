@@ -654,6 +654,16 @@ in Milliseconds</string>
              <widget class="QComboBox" name="teamCombo"/>
             </item>
             <item>
+             <widget class="QPushButton" name="btnEventFlags">
+              <property name="toolTip">
+               <string>Edit this event's flags</string>
+              </property>
+              <property name="text">
+               <string>Event &amp;Flags...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="eventControlsSpacer">
               <property name="orientation">
                <enum>Qt::Orientation::Vertical</enum>
@@ -1150,6 +1160,7 @@ in Milliseconds</string>
   <tabstop>useMsecsCheckBox</tabstop>
   <tabstop>scoreBox</tabstop>
   <tabstop>teamCombo</tabstop>
+  <tabstop>btnEventFlags</tabstop>
   <tabstop>editDirectiveText</tabstop>
   <tabstop>editDirectiveKeypressText</tabstop>
   <tabstop>checkLogTrue</tabstop>

@@ -75,6 +75,7 @@ private slots:
 	void on_chainedCheckBox_toggled(bool checked);
 	void on_chainDelayBox_valueChanged(int value);
 	void on_useMsecsCheckBox_toggled(bool checked);
+	void on_btnEventFlags_clicked();
 	void on_scoreBox_valueChanged(int value);
 	void on_teamCombo_currentIndexChanged(int index);
 
@@ -218,6 +219,7 @@ private: // NOLINT(readability-redundant-access-specifiers)
 	void updateEventUi();
 	void updateEventMoveButtons();
 	void updateEventCreateButtons(); // per-view/-mode New/Insert/Delete enablement
+	bool eventControlsAvailable() const; // the event-controls column is live in this view and selection
 	void setEventLogEnabled(bool enable);
 	void updateMessageUi();
 	void updateWaveInfo();

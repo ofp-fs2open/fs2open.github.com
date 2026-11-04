@@ -861,6 +861,81 @@ void MissionEventsDialogModel::setUseMsecsAt(int index, bool useMsecs)
 	set_modified();
 }
 
+static bool isDialogEventFlag(const flag_def_list& def)
+{
+	return def.def != MEF_USE_MSECS;
+}
+
+static int dialogEventFlagMask()
+{
+	int mask = 0;
+	for (int i = 0; i < Num_mission_event_flags; ++i) {
+		if (isDialogEventFlag(Mission_event_flags[i])) {
+			mask |= Mission_event_flags[i].def;
+		}
+	}
+	return mask;
+}
+
+SCP_vector<std::pair<SCP_string, bool>> MissionEventsDialogModel::getEventFlags() const
+{
+	SCP_vector<std::pair<SCP_string, bool>> flags;
+	const int bits = getEventFlagBits();
+	for (int i = 0; i < Num_mission_event_flags; ++i) {
+		const auto& def = Mission_event_flags[i];
+		if (isDialogEventFlag(def)) {
+			flags.emplace_back(def.name, (bits & def.def) != 0);
+		}
+	}
+	return flags;
+}
+
+SCP_vector<std::pair<SCP_string, SCP_string>> MissionEventsDialogModel::getEventFlagDescriptions() const
+{
+	SCP_vector<std::pair<SCP_string, SCP_string>> descriptions;
+	for (int i = 0; i < Num_mission_event_flags; ++i) {
+		const auto& def = Mission_event_flags[i];
+		const char* desc = get_mission_event_flag_description(def.def);
+		if (isDialogEventFlag(def) && desc != nullptr) {
+			descriptions.emplace_back(def.name, desc);
+		}
+	}
+	return descriptions;
+}
+
+int MissionEventsDialogModel::getEventFlagBits() const
+{
+	if (!SCP_vector_inbounds(m_events, m_cur_event)) {
+		return 0;
+	}
+	return m_events[m_cur_event].flags & dialogEventFlagMask();
+}
+
+int MissionEventsDialogModel::eventFlagBitsFrom(const SCP_vector<std::pair<SCP_string, bool>>& flags) const
+{
+	int bits = 0;
+	for (const auto& flag : flags) {
+		for (int i = 0; i < Num_mission_event_flags; ++i) {
+			const auto& def = Mission_event_flags[i];
+			if (flag.second && isDialogEventFlag(def) && flag.first == def.name) {
+				bits |= def.def;
+			}
+		}
+	}
+	return bits;
+}
+
+void MissionEventsDialogModel::setEventFlagBitsAt(int index, int bits)
+{
+	if (!SCP_vector_inbounds(m_events, index)) {
+		return;
+	}
+	auto& event = m_events[index];
+	const int mask = dialogEventFlagMask();
+	event.flags = (event.flags & ~mask) | (bits & mask);
+	set_modified();
+}
+
 int MissionEventsDialogModel::getEventScore() const
 {
 	if (!SCP_vector_inbounds(m_events, m_cur_event)) {

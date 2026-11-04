@@ -988,7 +988,8 @@ void mission_process_event( int event )
 			mission_event_unset_directive_special(event);
 		}
 
-		if (Mission_events[event].count || (Directive_count > 1) || (Always_show_directive_value_count && Directive_count != DIRECTIVE_WING_ZERO)) {
+		const bool show_count = Always_show_directive_value_count || (Mission_events[event].flags & MEF_SHOW_DIRECTIVE_COUNT);
+		if (Mission_events[event].count || (Directive_count > 1) || (show_count && Directive_count != DIRECTIVE_WING_ZERO)) {
 			Mission_events[event].count = Directive_count;
 		}
 

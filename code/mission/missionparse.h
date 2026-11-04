@@ -362,6 +362,8 @@ extern const char *Mission_event_log_flags[];
 
 extern int Num_mission_event_flags;
 extern flag_def_list Mission_event_flags[];
+// The event flag's description for the editors, or nullptr.
+const char* get_mission_event_flag_description(int flag);
 
 extern char *Cargo_names[MAX_CARGO];
 extern char Cargo_names_buf[MAX_CARGO][NAME_LENGTH];

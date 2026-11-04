@@ -61,7 +61,8 @@ list are processed first, which can affect timing when events interact.</p>
 </table>
 
 <h2>Event properties</h2>
-<p>These fields configure the selected event.</p>
+<p>These fields configure the selected event. They edit one event at a time, so
+they are disabled while several event cards are selected in the graph view.</p>
 <table>
     <tr><th>Field</th><th>Description</th></tr>
     <tr><td>Name</td><td>Internal label shown in the event list. Referenced by the
@@ -89,6 +90,15 @@ list are processed first, which can affect timing when events interact.</p>
         true.</td></tr>
     <tr><td>Team</td><td>In multiplayer missions, restricts the event to a specific
         team. Disabled for non-multiplayer missions.</td></tr>
+    <tr><td>Event Flags...</td><td>Opens a checklist of the event's flags. Hover over a
+        flag for its description.
+        <ul>
+            <li><strong>hide directive count</strong> - never show the directive's
+                count on the HUD. Takes priority over the other two settings.</li>
+            <li><strong>show directive count</strong> - show the count even when it
+                starts at 1, as the <code>$Always Show Directive Value Count:</code>
+                game setting does for every directive.</li>
+        </ul></td></tr>
     <tr><td>Directive text</td><td>Text shown in the player's objective display on the
         HUD when this event is active. Writing text here makes the event a directive.
         Directives turn red when they can no longer become true, and blue when they

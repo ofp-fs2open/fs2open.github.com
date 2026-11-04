@@ -96,6 +96,12 @@ class MissionEventsDialogModel : public AbstractDialogModel {
 	void setChainDelay(int delay);
 	bool getUseMsecs() const;
 	void setUseMsecs(bool useMsecs);
+	// The saved event flags edited in the Event Flags dialog: every flag in
+	// Mission_event_flags except msecs, which has its own checkbox.
+	SCP_vector<std::pair<SCP_string, bool>> getEventFlags() const;
+	SCP_vector<std::pair<SCP_string, SCP_string>> getEventFlagDescriptions() const;
+	int getEventFlagBits() const;
+	int eventFlagBitsFrom(const SCP_vector<std::pair<SCP_string, bool>>& flags) const;
 	int getEventScore() const;
 	void setEventScore(int score);
 	int getEventTeam() const;
@@ -115,6 +121,7 @@ class MissionEventsDialogModel : public AbstractDialogModel {
 	void setChainDelayAt(int index, int delay);
 	void setChainDelayRawAt(int index, int delay); // no clamping; -1 = unchained
 	void setUseMsecsAt(int index, bool useMsecs);
+	void setEventFlagBitsAt(int index, int bits);
 	void setEventTeamAt(int index, int team);
 	void setEventDirectiveTextAt(int index, const SCP_string& text);
 	void setEventDirectiveKeyTextAt(int index, const SCP_string& text);

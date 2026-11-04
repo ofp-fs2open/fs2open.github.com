@@ -321,7 +321,7 @@ void HudGaugeDirectives::render(float  /*frametime*/, bool config)
 			}
 		} else {
 			strcpy_s(buf, Mission_events[z].objective_text.c_str());
-			if (Mission_events[z].count){
+			if (Mission_events[z].count && !(Mission_events[z].flags & MEF_HIDE_DIRECTIVE_COUNT)){
 				sprintf(buf + strlen(buf), NOX(" [%d]"), Mission_events[z].count);
 			}
 

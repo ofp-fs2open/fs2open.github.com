@@ -132,6 +132,8 @@ class EventGraphView final : public QGraphicsView {
 	bool isEventNodeSelected() const;
 	// The event index of the selected event card, or -1 if none is selected.
 	int selectedEventIndex() const;
+	// How many different events have a selected card (box select can pick several).
+	int selectedEventCount() const;
 	// The card with this annotation key has collapsed bullets to reveal (gates the
 	// graph's "Expand Card" menu item); expandNode reveals them.
 	bool nodeExpandable(int key) const;

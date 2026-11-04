@@ -2042,6 +2042,15 @@ int EventGraphView::selectedEventIndex() const
 	return -1;
 }
 
+int EventGraphView::selectedEventCount() const
+{
+	QSet<int> events;
+	for (QGraphicsItem* it : m_scene->selectedItems())
+		if (auto* ev = qgraphicsitem_cast<graphdetail::EventNodeItem*>(it))
+			events.insert(ev->eventIndex());
+	return static_cast<int>(events.size());
+}
+
 bool EventGraphView::nodeExpandable(int key) const
 {
 	if (key == -1)

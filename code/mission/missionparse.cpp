@@ -671,8 +671,27 @@ const char* get_coordinate_point_flag_description(CoordinatePoint::Flags flag)
 // These are only the flags that are saved to the mission file.  See the MEF_ #defines.
 flag_def_list Mission_event_flags[] = {
 	{ "interval & delay use msecs", MEF_USE_MSECS, 0 },
+	{ "hide directive count", MEF_HIDE_DIRECTIVE_COUNT, 0 },
+	{ "show directive count", MEF_SHOW_DIRECTIVE_COUNT, 0 },
 };
 int Num_mission_event_flags = sizeof(Mission_event_flags) / sizeof(flag_def_list);
+
+// Descriptions of the saved event flags, for the editors.
+static const std::pair<int, const char*> Mission_event_flag_descriptions[] = {
+	{ MEF_USE_MSECS, "The event's interval and chain delay are in milliseconds instead of seconds." },
+	{ MEF_HIDE_DIRECTIVE_COUNT, "Never show this directive's count on the HUD. Takes priority over \"show directive count\" and the $Always Show Directive Value Count: game setting." },
+	{ MEF_SHOW_DIRECTIVE_COUNT, "Show this directive's count on the HUD even when it starts at 1, as the $Always Show Directive Value Count: game setting does for every directive." },
+};
+
+const char* get_mission_event_flag_description(int flag)
+{
+	for (const auto& desc : Mission_event_flag_descriptions) {
+		if (desc.first == flag) {
+			return desc.second;
+		}
+	}
+	return nullptr;
+}
 
 const char *Mission_event_log_flags[MAX_MISSION_EVENT_LOG_FLAGS] = {
 	"true",
