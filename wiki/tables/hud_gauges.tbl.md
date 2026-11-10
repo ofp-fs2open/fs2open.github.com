@@ -3202,9 +3202,23 @@ Used by: [+Center Reticle](#center-reticle)
 
 #### Firepoint X coordinate multiplier:
 
+How far the gunpoint circles are spread horizontally from the center of the reticle. Each firepoint's horizontal offset is multiplied by this value to place its circle, so a larger number spreads the circles further apart.
+
+- Syntax: **Float**
+- Default: **15**
+
+![FSO 27.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-27.0.svg) Fractional values are used as given. Earlier versions read this field as an integer, keeping only the whole part and logging a parse warning for the rest.
+
 Used by: [+Center Reticle](#center-reticle)
 
 #### Firepoint Y coordinate multiplier:
+
+How far the gunpoint circles are spread vertically from the center of the reticle. Each firepoint's vertical offset is multiplied by this value to place its circle, so a larger number spreads the circles further apart.
+
+- Syntax: **Float**
+- Default: **10**
+
+![FSO 27.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-27.0.svg) Fractional values are used as given. Earlier versions read this field as an integer, keeping only the whole part and logging a parse warning for the rest.
 
 Used by: [+Center Reticle](#center-reticle)
 

@@ -32,6 +32,7 @@ const BADGES = {
 	'fso-25.0':   ['FSO 25.0',   '#051414', '#777799', '#9999aa'],
 	'fso-26.0':   ['FSO 26.0',   '#222222', '#FF8866', '#FFAA66'],
 	'fso-26.2':   ['FSO 26.2',   '#222222', '#EE22DD', '#CC22AA'],
+	'fso-27.0':   ['FSO 27.0',   '#16210A', '#51BE08', '#7BE833'],
 };
 
 // OFP badges get a triple border so they stand out from the FSO ones
