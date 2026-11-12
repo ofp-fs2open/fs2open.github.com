@@ -270,7 +270,17 @@ enum lua_enum : int32_t {
 	LE_BUILTIN_MESSAGE_STRAY,
 	ENUM_NEXT_INDEX,
 	ENUM_COMBINATION,
-	ENUM_INVALID
+	ENUM_INVALID,
+
+	// OFP-only values have their own range, so SCP can keep adding values before ENUM_NEXT_INDEX without
+	// renumbering ours, and ours never renumber SCP's. Lua RPC packets send the raw index, so an SCP build
+	// that receives one of these reads it as an invalid enum rather than a different constant.
+	// Add new OFP values before LE_OFP_END.
+	LE_OFP_FIRST = 0x40000000,
+	LE_BRIEF_CLOSEUP_SHIP = LE_OFP_FIRST,
+	LE_BRIEF_CLOSEUP_PROP,
+	LE_BRIEF_CLOSEUP_POF,
+	LE_OFP_END
 };
 
 

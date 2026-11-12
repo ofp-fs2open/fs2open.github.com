@@ -116,6 +116,14 @@ class BriefingEditorDialogModel : public AbstractDialogModel {
 	void setIconTypeIndex(int idx);
 	int getIconShipTypeIndex() const;
 	void setIconShipTypeIndex(int idx);
+	// prop class of the selection: -1 for none, -2 when a multi-selection diverges
+	int getIconPropClassIndex() const;
+	void setIconPropClassIndex(int idx);
+	// true when any selected icon is set to a prop class, which turns off the wing and cargo icons
+	bool getIconUsesProp() const;
+	// true when any selected icon's prop has its own briefing icon, so the ship class and icon type
+	// no longer pick the image
+	bool getIconPropHasOwnIcon() const;
 	int getIconTeamIndex() const;
 	void setIconTeamIndex(int idx);
 	float getIconScaleFactor() const;
@@ -151,11 +159,13 @@ class BriefingEditorDialogModel : public AbstractDialogModel {
 	static SCP_vector<SCP_string> getMusicList();
 	static SCP_vector<std::pair<int, SCP_string>> getIconList();
 	static SCP_vector<std::pair<int, SCP_string>> getShipList();
+	static SCP_vector<std::pair<int, SCP_string>> getPropList();
 	static SCP_vector<std::pair<int, SCP_string>> getIffList();
 
 	briefing* getWipBriefingPtr(int team);
 	void makeIconFromShip(int shipIndex);
 	void makeIconFromWing(int wingIndex);
+	void makeIconFromProp(int propIndex);
 
 	struct WingShipEntry {
 		SCP_string name;
@@ -167,6 +177,13 @@ class BriefingEditorDialogModel : public AbstractDialogModel {
 		SCP_vector<WingShipEntry> ships;
 	};
 	static SCP_vector<WingTreeEntry> getWingShipTree();
+
+	struct PlacedPropEntry {
+		SCP_string name;
+		SCP_string className;
+		int propIndex;
+	};
+	static SCP_vector<PlacedPropEntry> getPlacedPropList();
 
   private:
 	void initializeData();

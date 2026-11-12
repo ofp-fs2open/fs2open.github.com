@@ -49,6 +49,7 @@
 #include "parse/sexp_container.h"
 #include "playerman/player.h"
 #include "popup/popup.h"
+#include "prop/prop.h"
 #include "render/3d.h"
 #include "ship/ship.h"
 #include "sound/audiostr.h"
@@ -198,6 +199,7 @@ vec3d Closeup_pos;
 int Closeup_font_height;
 int Closeup_x1, Closeup_y1;
 char Closeup_type_name[NAME_LENGTH];
+BriefCloseupKind Closeup_kind = BriefCloseupKind::Ship;
 
 // used for the 3d view of a closeup ship
 float Closeup_zoom;
@@ -1085,7 +1087,7 @@ void brief_render_closeup(int ship_class, float frametime)
 	model_render_params render_info;
 	render_info.set_detail_level_lock(0);
 
-	if (Closeup_icon->type == ICON_JUMP_NODE)
+	if (Closeup_icon->type == ICON_JUMP_NODE && !brief_icon_uses_prop(Closeup_icon))
 	{
 		render_info.set_color(HUD_color_red, HUD_color_green, HUD_color_blue);
 		render_info.set_flags(MR_NO_LIGHTING | MR_AUTOCENTER | MR_NO_POLYS | MR_SHOW_OUTLINE_HTL | MR_NO_TEXTURING);
@@ -1105,9 +1107,15 @@ void brief_render_closeup(int ship_class, float frametime)
 			gr_set_clip(Closeup_region[gr_screen.res][0], Closeup_region[gr_screen.res][1], w, h, GR_RESIZE_MENU);
 		}
 
-		auto sip = &Ship_info[ship_class];
-		if (!sip->replacement_textures.empty())
-			render_info.set_replacement_textures(Closeup_icon->modelnum, sip->replacement_textures);
+		if (brief_icon_uses_prop(Closeup_icon)) {
+			const auto& pip = Prop_info[Closeup_icon->prop_class];
+			if (!pip.replacement_textures.empty())
+				render_info.set_replacement_textures(Closeup_icon->modelnum, pip.replacement_textures);
+		} else {
+			auto sip = &Ship_info[ship_class];
+			if (!sip->replacement_textures.empty())
+				render_info.set_replacement_textures(Closeup_icon->modelnum, sip->replacement_textures);
+		}
 
 		render_info.set_flags(MR_AUTOCENTER);
 	}
@@ -1283,76 +1291,94 @@ int brief_setup_closeup(brief_icon *bi, bool api_access)
 
 	Closeup_one_revolution_time = ONE_REV_TIME;
 
-	switch(Closeup_icon->type) {
-	case ICON_PLANET:
-		Closeup_icon = NULL;
-		return -1;
-		/*
-		strcpy_s(pof_filename, NOX("planet.pof"));
-		strcpy_s(Closeup_icon->closeup_label, XSTR("planet",-1));
-		vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -8300.0f);
-		Closeup_zoom = 0.5f;
-		Closeup_one_revolution_time = ONE_REV_TIME * 3;
-		*/
-		break;
-
-	case ICON_ASTEROID_FIELD:
-		if(Asteroid_icon_closeup_model[0] == '\0') {
-			Warning(LOCATION, "Tried to display an asteroid field icon, but no asteroids are available.");
+	const prop_info* pip = nullptr;
+	if (brief_icon_uses_prop(Closeup_icon)) {
+		pip = &Prop_info[Closeup_icon->prop_class];
+		strcpy_s(Closeup_type_name, pip->name.c_str());
+		if (Closeup_icon->closeup_label[0] == '\0') {
+			strcpy_s(Closeup_icon->closeup_label, pip->name.c_str());
+		}
+	} else {
+		switch(Closeup_icon->type) {
+		case ICON_PLANET:
 			Closeup_icon = nullptr;
 			return -1;
-		}
+			/*
+			strcpy_s(pof_filename, NOX("planet.pof"));
+			strcpy_s(Closeup_icon->closeup_label, XSTR("planet",-1));
+			vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -8300.0f);
+			Closeup_zoom = 0.5f;
+			Closeup_one_revolution_time = ONE_REV_TIME * 3;
+			*/
+			break;
 
-		strcpy_s(pof_filename, Asteroid_icon_closeup_model);
-		if (Closeup_icon->closeup_label[0] == '\0') {
-			strcpy_s(Closeup_icon->closeup_label, XSTR("Asteroid", 431));
-		}
-		Closeup_cam_pos = Asteroid_icon_closeup_position;
-		Closeup_zoom = Asteroid_icon_closeup_zoom;
-		strcpy_s(Closeup_type_name, pof_filename);
-		break;
-
-	case ICON_JUMP_NODE:
-		strcpy_s(pof_filename, NOX(JN_DEFAULT_MODEL));
-		if (Closeup_icon->closeup_label[0] == '\0') {
-			strcpy_s(Closeup_icon->closeup_label, XSTR("Jump Node", 432));
-		}
-		vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -2700.0f);
-		Closeup_zoom = 0.5f;
-		Closeup_one_revolution_time = ONE_REV_TIME * 3;
-		strcpy_s(Closeup_type_name, pof_filename);
-		break;
-
-	case ICON_UNKNOWN:
-	case ICON_UNKNOWN_WING:
-		strcpy_s(pof_filename, NOX("unknownship.pof"));
-		if (Closeup_icon->closeup_label[0] == '\0') {
-			strcpy_s(Closeup_icon->closeup_label, XSTR("Unknown", 433));
-		}
-		vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -22.0f);
-		Closeup_zoom = 0.5f;
-		strcpy_s(Closeup_type_name, pof_filename);
-		break;
-
-	default:
-		Assert( Closeup_icon->ship_class != -1 );
-		sip = &Ship_info[Closeup_icon->ship_class];
-		strcpy_s(Closeup_type_name, sip->name);
-
-		if (Closeup_icon->closeup_label[0] == '\0') {
-			strcpy_s(Closeup_icon->closeup_label, sip->get_display_name());
-
-			if ((sip->class_type < 0 || !Ship_types[sip->class_type].flags[Ship::Type_Info_Flags::No_class_display])
-				&& (sip->is_small_ship() || sip->is_big_ship() || sip->is_huge_ship() || sip->flags[Ship::Info_Flags::Sentrygun])) {
-					strcat_s(Closeup_icon->closeup_label, XSTR(" class", 434));
+		case ICON_ASTEROID_FIELD:
+			if(Asteroid_icon_closeup_model[0] == '\0') {
+				Warning(LOCATION, "Tried to display an asteroid field icon, but no asteroids are available.");
+				Closeup_icon = nullptr;
+				return -1;
 			}
+
+			strcpy_s(pof_filename, Asteroid_icon_closeup_model);
+			if (Closeup_icon->closeup_label[0] == '\0') {
+				strcpy_s(Closeup_icon->closeup_label, XSTR("Asteroid", 431));
+			}
+			Closeup_cam_pos = Asteroid_icon_closeup_position;
+			Closeup_zoom = Asteroid_icon_closeup_zoom;
+			strcpy_s(Closeup_type_name, pof_filename);
+			break;
+
+		case ICON_JUMP_NODE:
+			strcpy_s(pof_filename, NOX(JN_DEFAULT_MODEL));
+			if (Closeup_icon->closeup_label[0] == '\0') {
+				strcpy_s(Closeup_icon->closeup_label, XSTR("Jump Node", 432));
+			}
+			vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -2700.0f);
+			Closeup_zoom = 0.5f;
+			Closeup_one_revolution_time = ONE_REV_TIME * 3;
+			strcpy_s(Closeup_type_name, pof_filename);
+			break;
+
+		case ICON_UNKNOWN:
+		case ICON_UNKNOWN_WING:
+			strcpy_s(pof_filename, NOX("unknownship.pof"));
+			if (Closeup_icon->closeup_label[0] == '\0') {
+				strcpy_s(Closeup_icon->closeup_label, XSTR("Unknown", 433));
+			}
+			vm_vec_make(&Closeup_cam_pos, 0.0f, 0.0f, -22.0f);
+			Closeup_zoom = 0.5f;
+			strcpy_s(Closeup_type_name, pof_filename);
+			break;
+
+		default:
+			Assert( Closeup_icon->ship_class != -1 );
+			sip = &Ship_info[Closeup_icon->ship_class];
+			strcpy_s(Closeup_type_name, sip->name);
+
+			if (Closeup_icon->closeup_label[0] == '\0') {
+				strcpy_s(Closeup_icon->closeup_label, sip->get_display_name());
+
+				if ((sip->class_type < 0 || !Ship_types[sip->class_type].flags[Ship::Type_Info_Flags::No_class_display])
+					&& (sip->is_small_ship() || sip->is_big_ship() || sip->is_huge_ship() || sip->flags[Ship::Info_Flags::Sentrygun])) {
+						strcat_s(Closeup_icon->closeup_label, XSTR(" class", 434));
+				}
+			}
+			break;
 		}
-		break;
 	}
+
+	if (pip != nullptr)
+		Closeup_kind = BriefCloseupKind::Prop;
+	else if (sip != nullptr)
+		Closeup_kind = BriefCloseupKind::Ship;
+	else
+		Closeup_kind = BriefCloseupKind::Pof;
 	
 	if (!api_access) {
 		if (Closeup_icon->modelnum < 0) {
-			if (sip == nullptr) {
+			if (pip != nullptr) {
+				Closeup_icon->modelnum = model_load(pip->pof_file.c_str());
+			} else if (sip == nullptr) {
 				Closeup_icon->modelnum = model_load(pof_filename);
 			} else {
 				Closeup_icon->modelnum = model_load(sip, true);
@@ -1376,7 +1402,10 @@ int brief_setup_closeup(brief_icon *bi, bool api_access)
 
 	brief_set_closeup_pos(bi);
 
-	if ( sip ) {
+	if (pip != nullptr) {
+		Closeup_cam_pos = pip->closeup_pos;
+		Closeup_zoom = pip->closeup_zoom;
+	} else if ( sip ) {
 		Closeup_cam_pos = sip->closeup_pos;
 		Closeup_zoom = sip->closeup_zoom;
 	}

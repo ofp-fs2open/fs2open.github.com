@@ -1252,6 +1252,15 @@ int Fred_mission_save::save_briefing()
 
 				fout(" %s", Ship_info[bi->ship_class].name);
 
+				if (save_config.save_format != MissionFormat::RETAIL && brief_icon_uses_prop(bi)) {
+					if (optional_string_fred("$prop class:", "$pos:"))
+						parse_comments();
+					else
+						fout("\n$prop class:");
+
+					fout(" %s", Prop_info[bi->prop_class].name.c_str());
+				}
+
 				required_string_fred("$pos:");
 				parse_comments();
 				save_vector(bi->pos);

@@ -2008,6 +2008,18 @@ void parse_briefing(mission * /*pm*/, int flags)
 				bi->modelnum = -1;
 				bi->model_instance_num = -1;
 
+				// optional prop class; it overrides the ship class's icon and closeup model
+				bi->prop_class = -1;
+				if (optional_string("$prop class:")) {
+					SCP_string prop_name;
+					stuff_string(prop_name, F_NAME);
+					bi->prop_class = prop_info_lookup(prop_name.c_str());
+					if (bi->prop_class < 0) {
+						error_display(0, "Briefing icon in stage %d uses unknown prop class \"%s\"; it will use its ship class instead.",
+							stage_num, prop_name.c_str());
+					}
+				}
+
 				// Goober5000 - import
 				if (flags & MPF_IMPORT_FSM)
 				{
@@ -7949,6 +7961,13 @@ bool post_process_mission(mission *pm)
 			for (int j = 0; j < stage.num_icons; j++) {
 				const auto& icon = stage.icons[j];
 
+				if (brief_icon_uses_prop(&icon)) {
+					auto& pip = Prop_info[icon.prop_class];
+					pip.model_num = model_load(pip.pof_file.c_str());
+					stage.icons[j].modelnum = pip.model_num;
+					continue;
+				}
+
 				bool valid = SCP_vector_inbounds(Ship_info, icon.ship_class);
 				Assertion(valid, "Invalid ship class %d for briefing icon in stage %d", icon.ship_class, i);
 
@@ -10591,6 +10610,17 @@ bool check_for_26_1_data()
 		for (int i = 0; i < Cmd_briefs[team].num_stages; ++i) {
 			if (!Cmd_briefs[team].stage[i].note.empty())
 				return true;
+		}
+	}
+
+	// Briefing icons set to a prop class ($prop class:)
+	for (int team = 0; team < Num_teams; ++team) {
+		for (int i = 0; i < Briefings[team].num_stages; ++i) {
+			const auto& stage = Briefings[team].stages[i];
+			for (int j = 0; j < stage.num_icons; ++j) {
+				if (brief_icon_uses_prop(&stage.icons[j]))
+					return true;
+			}
 		}
 	}
 

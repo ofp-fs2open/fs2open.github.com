@@ -1119,6 +1119,7 @@ void briefing_editor_dlg::OnMakeIcon()
 
 	biconp->modelnum = -1;
 	biconp->model_instance_num = -1;
+	biconp->prop_class = -1;	// FRED2 has no prop class control; QtFRED sets it
 
 	if (ship >= 0) {
 		biconp->ship_class = Ships[ship].ship_info_index;

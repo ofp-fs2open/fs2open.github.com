@@ -221,6 +221,7 @@ void parse_prop_table(const char* filename)
 
 			pip->name = fname;
 			pip->category_index = -1;
+			pip->closeup_zoom = 0.5f;	// same default as ships; a zero zoom would draw nothing in a closeup
 		}
 
 		if (optional_string("$POF file:")) {
@@ -278,6 +279,9 @@ void parse_prop_table(const char* filename)
 				pip->closeup_zoom = 0.5f;
 			}
 		}
+
+		if (optional_string("$Briefing icon:"))
+			pip->bii_index = parse_and_add_briefing_icon_info();
 
 		if(optional_string("$Detail distance:")) {
 			pip->num_detail_levels = (int)stuff_int_list(pip->detail_distance, MAX_PROP_DETAIL_LEVELS, ParseLookupType::RAW_INTEGER_TYPE);

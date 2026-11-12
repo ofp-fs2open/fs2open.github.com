@@ -69,10 +69,12 @@ in the currently loaded mod.</p>
 </table>
 
 <h2>Icon controls</h2>
-<p><strong>Make icon</strong> places a blank icon on the map. <strong>Make icon from
-ship</strong> lets you pick a ship from the mission and creates an icon preset to that
-ship's type, a shorthand for Make Icon followed by setting the ship type
-manually.</p>
+<p><strong>Make icon</strong> places a blank icon on the map. <strong>Make icon
+from</strong> lets you pick something from the mission and creates an icon preset to
+match it, a shorthand for Make Icon followed by setting the icon up by hand. The
+<strong>Ships</strong> tab lists ships and wings, and the icon gets the ship's name,
+team and type. The <strong>Props</strong> tab lists placed props, and the icon gets
+the prop's name and prop class. The filter searches both tabs.</p>
 
 <h3>Icon properties</h3>
 <table>
@@ -88,6 +90,12 @@ manually.</p>
     <tr><td>Ship type</td><td>3D model shown when the player clicks the icon. If the
         ship class has a special briefing icon defined, that is used instead of
         the icon image.</td></tr>
+    <tr><td>Prop class</td><td>Shows a prop instead of a ship. The icon uses the
+        prop's own briefing icon from <code>props.tbl</code>, and clicking it shows
+        the prop's model. While a prop is chosen, Use cargo icon and Wing icon are
+        turned off. Icon image and Ship type are turned off too when the prop has
+        its own briefing icon; without one, they still pick the image. Choose None
+        to go back to the ship.</td></tr>
     <tr><td>Team</td><td>Tints the icon with that team's color.</td></tr>
     <tr><td>Scale</td><td>Scales the icon up or down on the map.</td></tr>
     <tr><td>Draw lines</td><td>Draws lines between icons that are marked for

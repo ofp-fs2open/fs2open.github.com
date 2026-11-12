@@ -35,6 +35,7 @@ static void writeIcon(QDataStream& ds, const brief_icon& ic)
 	ds << QString::fromLatin1(ic.closeup_label);
 	ds << static_cast<qint32>(ic.flags);
 	ds << ic.scale_factor;
+	ds << static_cast<qint32>(ic.prop_class);
 }
 
 static void readIcon(QDataStream& ds, brief_icon& ic)
@@ -65,6 +66,10 @@ static void readIcon(QDataStream& ds, brief_icon& ic)
 	ic.closeup_label[MAX_LABEL_LEN - 1] = '\0';
 	ic.flags        = static_cast<int>(flags);
 	ic.scale_factor = scale;
+
+	qint32 propClass;
+	ds >> propClass;
+	ic.prop_class = static_cast<int>(propClass);
 }
 
 static void writeStage(QDataStream& ds, const brief_stage& s)

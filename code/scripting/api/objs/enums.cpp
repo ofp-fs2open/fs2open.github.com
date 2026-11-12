@@ -183,6 +183,9 @@ const lua_enum_def_list Enumerations[] = {
 	{"HOTKEY_LINE_WING", LE_HOTKEY_LINE_WING, true},
 	{"HOTKEY_LINE_SHIP", LE_HOTKEY_LINE_SHIP, true},
 	{"HOTKEY_LINE_SUBSHIP", LE_HOTKEY_LINE_SUBSHIP, true},
+	{"BRIEF_CLOSEUP_SHIP", LE_BRIEF_CLOSEUP_SHIP, true},
+	{"BRIEF_CLOSEUP_PROP", LE_BRIEF_CLOSEUP_PROP, true},
+	{"BRIEF_CLOSEUP_POF", LE_BRIEF_CLOSEUP_POF, true},
 	{"SCROLLBACK_SOURCE_COMPUTER", LE_SCROLLBACK_SOURCE_COMPUTER, true},
 	{"SCROLLBACK_SOURCE_TRAINING", LE_SCROLLBACK_SOURCE_TRAINING, true},
 	{"SCROLLBACK_SOURCE_HIDDEN", LE_SCROLLBACK_SOURCE_HIDDEN, true},
@@ -374,6 +377,7 @@ std::optional<enum_group_info> get_enum_group_info(const char* enum_name) {
 		{"DC_", "object-create-flags", "Object Creation Flags", "Flags that modify object creation behavior."},
 		{"RPC_", "rpc", "Remote Procedure Call", "RPC routing and reliability mode constants."},
 		{"HOTKEY_", "hotkey-lines", "Hotkey Lines", "Hotkey list line type constants."},
+		{"BRIEF_CLOSEUP_", "brief-closeup", "Briefing Closeup", "What a briefing icon's closeup names: a ship class, a prop class, or a POF file."},
 		{"SCROLLBACK_", "scrollback-sources", "Scrollback Sources", "Mission scrollback/source category constants."},
 		{"MULTI_TYPE_", "multi-types", "Multiplayer Mission Types", "Multiplayer mission type constants."},
 		{"MULTI_OPTION_", "multi-options", "Multiplayer Options", "Multiplayer option scope/permission constants."},
@@ -712,6 +716,11 @@ static const SCP_unordered_map<SCP_string, const char*> Enum_descriptions = {
 	{"HOTKEY_LINE_WING", "A wing (squadron) entry in the hotkey list. Can be expanded to show its constituent ships as HOTKEY_LINE_SUBSHIP entries beneath it, or collapsed to hide them."},
 	{"HOTKEY_LINE_SHIP", "An individual ship that is not part of any wing; appears as a top-level entry in the hotkey list."},
 	{"HOTKEY_LINE_SUBSHIP", "An individual ship that belongs to a wing, displayed as an indented child entry beneath its parent HOTKEY_LINE_WING entry when the wing is expanded."},
+
+	// BRIEF_CLOSEUP
+	{"BRIEF_CLOSEUP_SHIP", "The closeup name is a ship class. Look it up in tb.ShipClasses and draw it with renderTechModel."},
+	{"BRIEF_CLOSEUP_PROP", "The closeup name is a prop class. Look it up in tb.PropClasses and draw it with renderTechModel."},
+	{"BRIEF_CLOSEUP_POF", "The closeup name is a POF file, used for asteroid, jump node and unknown icons. Draw it with ui.Briefing.renderBriefingModel."},
 };
 
 const char* get_enum_description(const char* enum_name) {
@@ -771,7 +780,10 @@ SCP_string enum_h::getName() const
 
 	return SCP_string();
 }
-bool enum_h::isValid() const { return index < ENUM_NEXT_INDEX || index == ENUM_COMBINATION; }
+bool enum_h::isValid() const
+{
+	return index < ENUM_NEXT_INDEX || index == ENUM_COMBINATION || (index >= LE_OFP_FIRST && index < LE_OFP_END);
+}
 
 enum_h operator&(const enum_h& l, const enum_h& other) {
 	Assertion(l.value && other.value, "Tried to and-combine non-combinable enums %s and %s!", l.getName().c_str(), other.getName().c_str());

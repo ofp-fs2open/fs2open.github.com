@@ -928,12 +928,12 @@ void BriefingMapWidget::mousePressEvent(QMouseEvent* event) {
 	const auto mouseY = (static_cast<float>(event->position().y()) - static_cast<float>(_blitRect.y())) *
 						(static_cast<float>(_lastRenderHeight) / static_cast<float>(_blitRect.height()));
 
-	// Ctrl+click creates a new icon at the cursor; Shift+Ctrl+click opens Make Icon From Ship and places
+	// Ctrl+click creates a new icon at the cursor; Shift+Ctrl+click opens Make Icon From and places
 	// the result at the cursor. Either way, no selection or drag.
 	if (event->modifiers() & Qt::ControlModifier) {
 		const vec3d worldPos = worldPosAtMouse(mouseX, mouseY);
 		if (event->modifiers() & Qt::ShiftModifier) {
-			Q_EMIT iconFromShipCreateRequested(worldPos);
+			Q_EMIT iconFromObjectCreateRequested(worldPos);
 		} else {
 			Q_EMIT iconCreateRequested(worldPos);
 		}

@@ -27,6 +27,7 @@
 #include "options/Option.h"
 #include "parse/parselo.h"
 #include "playerman/player.h"
+#include "prop/prop.h"
 #include "render/3d.h"
 #include "ship/ship.h"
 #include "sound/audiostr.h"
@@ -628,6 +629,7 @@ void mission_brief_common_reset()
 				if ( Briefings[i].stages[j].icons ) {
 					memset( Briefings[i].stages[j].icons, 0, sizeof(brief_icon) * MAX_STAGE_ICONS );
 					Briefings[i].stages[j].icons->ship_class = -1;
+					Briefings[i].stages[j].icons->prop_class = -1;
 					Briefings[i].stages[j].icons->modelnum = -1;
 					Briefings[i].stages[j].icons->model_instance_num = -1;
 					Briefings[i].stages[j].icons->bitmap_id = -1;
@@ -755,8 +757,17 @@ bool brief_special_closeup(int briefing_icon_type)
 	return false;
 }
 
+bool brief_icon_uses_prop(const brief_icon *bi)
+{
+	return bi->prop_class >= 0 && bi->prop_class < prop_info_size();
+}
+
 briefing_icon_info *brief_get_icon_info(brief_icon *bi)
 {
+	// a prop class with its own icon takes priority; without one, fall back to the ship class and icon type
+	if (brief_icon_uses_prop(bi) && Prop_info[bi->prop_class].bii_index >= 0)
+		return &Briefing_icon_info[Prop_info[bi->prop_class].bii_index];
+
 	if (bi->ship_class < 0)
 		return nullptr;
 	ship_info *sip = &Ship_info[bi->ship_class];

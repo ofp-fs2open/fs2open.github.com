@@ -51,6 +51,9 @@ struct brief_icon;
 
 extern brief_icon* Closeup_icon;
 extern char Closeup_type_name[NAME_LENGTH];
+// what Closeup_type_name names: a ship class, a prop class, or a POF file
+enum class BriefCloseupKind { Ship, Prop, Pof };
+extern BriefCloseupKind Closeup_kind;
 extern float Closeup_zoom;
 extern vec3d Closeup_cam_pos;
 

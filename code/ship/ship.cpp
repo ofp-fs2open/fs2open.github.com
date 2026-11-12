@@ -2496,7 +2496,7 @@ static void parse_weapon_bank(ship_info *sip, bool is_primary, int *num_banks, i
 /**
  * Common method for parsing briefing icon info.
  */
-static int parse_and_add_briefing_icon_info()
+int parse_and_add_briefing_icon_info()
 {
 	int bii_index = -1;
 	size_t icon;

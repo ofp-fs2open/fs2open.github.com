@@ -1031,9 +1031,10 @@ ADE_FUNC(checkStageIcons,
 	l_UserInterface_Brief,
 	"number xPos, number yPos",
 	"Sends the mouse position to the brief map rendering functions to properly highlight icons.",
-	"string, number, vector, string, number",
-	"If an icon is highlighted then this will return the ship name for ships or the pof to render for asteroid, jumpnode, or unknown icons. "
-	"also returns the closeup zoom, the closeup position, the closeup label, and the icon id. Otherwise it returns nil")
+	"string, number, vector, string, number, enumeration",
+	"If an icon is highlighted then this will return the ship class name for ships, the prop class name for props, or the pof to render for asteroid, jumpnode, or unknown icons. "
+	"also returns the closeup zoom, the closeup position, the closeup label, the icon id, and a BRIEF_CLOSEUP_SHIP, BRIEF_CLOSEUP_PROP or BRIEF_CLOSEUP_POF "
+	"enumeration that says which of the three the name is. Otherwise it returns nil")
 {
 	int x;
 	int y;
@@ -1048,7 +1049,14 @@ ADE_FUNC(checkStageIcons,
 	if (Closeup_icon == nullptr) {
 		return ADE_RETURN_NIL;
 	} else {
-		return ade_set_args(L, "sfosi", Closeup_type_name, Closeup_zoom, l_Vector.Set(Closeup_cam_pos), Closeup_icon->closeup_label, Closeup_icon->id);
+		lua_enum kind = LE_BRIEF_CLOSEUP_SHIP;
+		if (Closeup_kind == BriefCloseupKind::Prop)
+			kind = LE_BRIEF_CLOSEUP_PROP;
+		else if (Closeup_kind == BriefCloseupKind::Pof)
+			kind = LE_BRIEF_CLOSEUP_POF;
+
+		return ade_set_args(L, "sfosio", Closeup_type_name, Closeup_zoom, l_Vector.Set(Closeup_cam_pos), Closeup_icon->closeup_label,
+			Closeup_icon->id, l_Enum.Set(enum_h(kind)));
 	}
 }
 

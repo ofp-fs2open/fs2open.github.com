@@ -3186,14 +3186,16 @@ bool render_tech_model(tech_render_type model_type, int x1, int y1, int x2, int 
 		case TECH_POF:
 			closeup_pos = close_pos;
 			closeup_zoom = close_zoom;
-			model_num = model_load(pof_filename.c_str());
+			// a script can pass any name here (an older briefing script passes prop class names), so a
+			// missing file draws nothing and returns false instead of ending the game
+			model_num = model_load(pof_filename.c_str(), nullptr, ErrorType::NONE);
 
 			break;
 
 		case TECH_JUMP_NODE:
 			closeup_pos = close_pos;
 			closeup_zoom = close_zoom;
-			model_num = model_load(pof_filename.c_str());
+			model_num = model_load(pof_filename.c_str(), nullptr, ErrorType::NONE);
 			render_info.set_color(HUD_color_red, HUD_color_green, HUD_color_blue);
 			render_flags |= MR_NO_POLYS | MR_SHOW_OUTLINE_HTL | MR_NO_TEXTURING;
 			model_lighting = false;
@@ -3205,8 +3207,16 @@ bool render_tech_model(tech_render_type model_type, int x1, int y1, int x2, int 
 	}
 
 	//check if the model was loaded
-	if (model_num < 0)
+	if (model_num < 0) {
+		// the POF loads above don't stop the game on a missing file; say so once per name in debug builds,
+		// since a script calling this every frame would otherwise warn every frame
+		if (model_type == TECH_POF || model_type == TECH_JUMP_NODE) {
+			static SCP_unordered_set<SCP_string> warned_pofs;
+			if (warned_pofs.insert(pof_filename).second)
+				Warning(LOCATION, "Can't open model file <%s> for a tech or briefing model render; nothing is drawn.", pof_filename.c_str());
+		}
 		return false;
+	}
 
 	// Clip
 	gr_set_clip(x1, y1, x2 - x1, y2 - y1, GR_RESIZE_NONE);

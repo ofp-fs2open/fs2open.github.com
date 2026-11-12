@@ -287,8 +287,8 @@ add_file_folder("Source/UI/Dialogs/BriefingEditor"
 	src/ui/dialogs/BriefingEditor/CameraCoordinatesDialog.h
 	src/ui/dialogs/BriefingEditor/IconCoordinatesDialog.cpp
 	src/ui/dialogs/BriefingEditor/IconCoordinatesDialog.h
-	src/ui/dialogs/BriefingEditor/IconFromShipDialog.cpp
-	src/ui/dialogs/BriefingEditor/IconFromShipDialog.h
+	src/ui/dialogs/BriefingEditor/IconFromObjectDialog.cpp
+	src/ui/dialogs/BriefingEditor/IconFromObjectDialog.h
 )
 add_file_folder("Source/UI/Dialogs/MissionSpecs"
 	src/ui/dialogs/MissionSpecs/CustomDataDialog.cpp

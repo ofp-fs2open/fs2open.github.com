@@ -8,7 +8,7 @@
 #include "ui/widgets/BriefingMapWidget.h"
 #include "ui/widgets/data_list_menu.h"
 #include "BriefingEditor/CameraCoordinatesDialog.h"
-#include "BriefingEditor/IconFromShipDialog.h"
+#include "BriefingEditor/IconFromObjectDialog.h"
 #include "BriefingEditor/IconCoordinatesDialog.h"
 #include "mission/missionbriefcommon.h"
 #include "mission/missiongrid.h"
@@ -193,7 +193,7 @@ void BriefingEditorDialog::setupMapWidget()
 	ui->mapView->hide();
 	ui->leftPaneLayout->insertWidget(idx, _mapWidget);
 	// Tab reaches the map after the icon controls above it, then moves on to the right pane
-	util::setTabChain({ui->makeIconFromShipButton, _mapWidget, ui->formulaTreeView});
+	util::setTabChain({ui->makeIconFromButton, _mapWidget, ui->formulaTreeView});
 	_mapWidget->setFocus(Qt::OtherFocusReason);
 
 	// Wire icon selection from the map widget to our UI update
@@ -228,9 +228,9 @@ void BriefingEditorDialog::setupMapWidget()
 		createIconAt(worldPos);
 	});
 
-	// Shift+Ctrl+click opens Make Icon From Ship and places the resulting icon at the cursor.
-	connect(_mapWidget, &fso::fred::BriefingMapWidget::iconFromShipCreateRequested, this, [this](vec3d worldPos) {
-		createIconFromShipDialog(worldPos);
+	// Shift+Ctrl+click opens Make Icon From and places the resulting icon at the cursor.
+	connect(_mapWidget, &fso::fred::BriefingMapWidget::iconFromObjectCreateRequested, this, [this](vec3d worldPos) {
+		createIconFromObjectDialog(worldPos);
 	});
 
 	// Right-click context menus: on empty map vs. on an icon.
@@ -304,6 +304,12 @@ void BriefingEditorDialog::initializeUi()
 	auto ships = _model->getShipList();
 	for (const auto& ship : ships) {
 		ui->iconShipTypeComboBox->addItem(ship.second.c_str(), ship.first);
+	}
+
+	// item data is the prop class index, -1 for none
+	ui->iconPropClassComboBox->addItem(tr("None"), -1);
+	for (const auto& prop : _model->getPropList()) {
+		ui->iconPropClassComboBox->addItem(prop.second.c_str(), prop.first);
 	}
 
 	auto iffs = _model->getIffList();
@@ -407,6 +413,8 @@ void BriefingEditorDialog::updateUi()
 		ui->iconCloseupLabelLineEdit->setText(QString::fromStdString(_model->getIconCloseupLabel()));
 		ui->iconImageComboBox->setCurrentIndex(_model->getIconTypeIndex());
 		ui->iconShipTypeComboBox->setCurrentIndex(_model->getIconShipTypeIndex());
+		const int propClass = _model->getIconPropClassIndex();
+		ui->iconPropClassComboBox->setCurrentIndex(propClass < -1 ? -1 : ui->iconPropClassComboBox->findData(propClass));
 		ui->iconTeamComboBox->setCurrentIndex(_model->getIconTeamIndex());
 
 		const float scale = _model->getIconScaleFactor();
@@ -470,7 +478,7 @@ void BriefingEditorDialog::enableDisableControls()
 	ui->disableGridCheckBox->setEnabled(stage_exists);
 
 	ui->makeIconButton->setEnabled(stage_exists);
-	ui->makeIconFromShipButton->setEnabled(stage_exists);
+	ui->makeIconFromButton->setEnabled(stage_exists);
 
 	// Change Locally is an editing-mode toggle (whether icon edits propagate forward), not a per-icon
 	// property, so it is available whenever a stage exists rather than gated on an icon being selected.
@@ -489,6 +497,17 @@ void BriefingEditorDialog::enableDisableControls()
 	const bool icon_selected = stage_exists && !_model->getLineSelection().empty();
 	const bool single_icon_selected = stage_exists && _model->getLineSelection().size() == 1;
 	ui->currentIconInfoGroupBox->setEnabled(icon_selected);
+
+	// A prop has no wing or cargo icons. Its own briefing icon also replaces the image the ship class and
+	// icon type would pick; without one, those two still pick it, so they stay editable.
+	const bool uses_prop = icon_selected && _model->getIconUsesProp();
+	const bool prop_has_icon = icon_selected && _model->getIconPropHasOwnIcon();
+	ui->iconImageLabel->setEnabled(!prop_has_icon);
+	ui->iconImageComboBox->setEnabled(!prop_has_icon);
+	ui->iconShipTypeLabel->setEnabled(!prop_has_icon);
+	ui->iconShipTypeComboBox->setEnabled(!prop_has_icon);
+	ui->useWingIconCheckBox->setEnabled(!uses_prop);
+	ui->useCargoIconCheckBox->setEnabled(!uses_prop);
 	ui->iconIdSpinBox->setEnabled(single_icon_selected); // ids are unique per stage, so single-icon only
 	ui->iconCoordinatesButton->setEnabled(single_icon_selected);
 	ui->deleteIconButton->setEnabled(icon_selected); // deletes the whole selection
@@ -916,6 +935,24 @@ void BriefingEditorDialog::on_iconShipTypeComboBox_currentIndexChanged(int index
 	pushWorkingStateSnapshot(before, tr("Change Icon Ship Type"), iconSnapshotMergeId(FieldId::Brief_SnapIconShip));
 }
 
+void BriefingEditorDialog::on_iconPropClassComboBox_currentIndexChanged(int index)
+{
+	if (index < 0)
+		return; // blanked for a divergent multi-selection
+
+	// updateUi() also lands here when it shows the selection's value; that's not a change
+	const int propClass = ui->iconPropClassComboBox->itemData(index).toInt();
+	if (propClass == _model->getIconPropClassIndex())
+		return;
+
+	const QByteArray before = _model->captureWorkingState();
+	_model->setIconPropClassIndex(propClass);
+	if (_mapWidget != nullptr) // the combo is filled in initializeUi(), before the map exists
+		_mapWidget->notifyIconVisualsChanged();
+	pushWorkingStateSnapshot(before, tr("Change Icon Prop Class"), iconSnapshotMergeId(FieldId::Brief_SnapIconProp));
+	enableDisableControls();
+}
+
 void BriefingEditorDialog::on_iconTeamComboBox_currentIndexChanged(int index)
 {
 	const QByteArray before = _model->captureWorkingState();
@@ -1034,8 +1071,8 @@ void BriefingEditorDialog::showMapContextMenu(const QPoint& globalPos, const vec
 	menu.addSeparator();
 
 	connect(menu.addAction(tr("Make Icon")), &QAction::triggered, this, [this, worldPos] { createIconAt(worldPos); });
-	connect(menu.addAction(tr("Make Icon From Ship...")), &QAction::triggered, this, [this, worldPos] {
-		createIconFromShipDialog(worldPos);
+	connect(menu.addAction(tr("Make Icon From...")), &QAction::triggered, this, [this, worldPos] {
+		createIconFromObjectDialog(worldPos);
 	});
 
 	menu.exec(globalPos);
@@ -1063,7 +1100,7 @@ void BriefingEditorDialog::showIconContextMenu(const QPoint& globalPos)
 	// Checkable flags: checked when the whole selection shares the flag; a click applies the new state to
 	// every selected icon.
 	const auto addFlag = [&](const QString& label, TriStateBool state, const std::function<void(bool)>& setter,
-							 const QString& undoLabel) {
+							 const QString& undoLabel) -> QAction* {
 		QAction* action = menu.addAction(label);
 		action->setCheckable(true);
 		action->setChecked(state == TriStateBool::TRUE_);
@@ -1074,15 +1111,20 @@ void BriefingEditorDialog::showIconContextMenu(const QPoint& globalPos)
 			pushWorkingStateSnapshot(before, undoLabel);
 			updateUi();
 		});
+		return action;
 	};
 	addFlag(tr("Flip Icon"), _model->getIconFlippedState(), [this](bool c) { _model->setIconFlipped(c); },
 		tr("Toggle Icon Flip"));
 	addFlag(tr("Highlight"), _model->getIconHighlightedState(), [this](bool c) { _model->setIconHighlighted(c); },
 		tr("Toggle Icon Highlight"));
+	// same rules as enableDisableControls(): no wing or cargo icons for props, and no image or ship type
+	// while a prop's own briefing icon replaces them
+	const bool usesProp = _model->getIconUsesProp();
+	const bool propHasIcon = _model->getIconPropHasOwnIcon();
 	addFlag(tr("Use Cargo Icon"), _model->getIconUseCargoState(), [this](bool c) { _model->setIconUseCargo(c); },
-		tr("Toggle Cargo Icon"));
+		tr("Toggle Cargo Icon"))->setEnabled(!usesProp);
 	addFlag(tr("Use Wing Icon"), _model->getIconUseWingState(), [this](bool c) { _model->setIconUseWing(c); },
-		tr("Toggle Wing Icon"));
+		tr("Toggle Wing Icon"))->setEnabled(!usesProp);
 
 	menu.addSeparator();
 
@@ -1093,7 +1135,7 @@ void BriefingEditorDialog::showIconContextMenu(const QPoint& globalPos)
 									   int currentId,
 									   const std::function<void(int)>& setter,
 									   const QString& undoLabel,
-									   int mergeBase) {
+									   int mergeBase) -> QMenu* {
 		QMenu* sub = menu.addMenu(label);
 		std::vector<util::SelectMenuEntry> entries;
 		entries.reserve(items.size());
@@ -1107,37 +1149,55 @@ void BriefingEditorDialog::showIconContextMenu(const QPoint& globalPos)
 				pushWorkingStateSnapshot(before, undoLabel, iconSnapshotMergeId(mergeBase));
 				updateUi();
 			}, 0, currentId);
+		return sub;
 	};
 	addAttributeMenu(tr("Icon Image"), _model->getIconList(), _model->getIconTypeIndex(),
-		[this](int id) { _model->setIconTypeIndex(id); }, tr("Change Icon Image"), FieldId::Brief_SnapIconImage);
+		[this](int id) { _model->setIconTypeIndex(id); }, tr("Change Icon Image"), FieldId::Brief_SnapIconImage)
+		->setEnabled(!propHasIcon);
 	addAttributeMenu(tr("Ship Type"), _model->getShipList(), _model->getIconShipTypeIndex(),
-		[this](int id) { _model->setIconShipTypeIndex(id); }, tr("Change Icon Ship Type"), FieldId::Brief_SnapIconShip);
+		[this](int id) { _model->setIconShipTypeIndex(id); }, tr("Change Icon Ship Type"), FieldId::Brief_SnapIconShip)
+		->setEnabled(!propHasIcon);
+
+	// Menu ids are the prop class + 1, so "None" (-1) gets id 0 and can show as the current value
+	SCP_vector<std::pair<int, SCP_string>> propItems;
+	propItems.emplace_back(0, tr("None").toStdString());
+	for (const auto& prop : _model->getPropList()) {
+		propItems.emplace_back(prop.first + 1, prop.second);
+	}
+	addAttributeMenu(tr("Prop Class"), propItems, _model->getIconPropClassIndex() + 1,
+		[this](int id) {
+			_model->setIconPropClassIndex(id - 1);
+			_mapWidget->notifyIconVisualsChanged();
+		},
+		tr("Change Icon Prop Class"), FieldId::Brief_SnapIconProp);
 	addAttributeMenu(tr("Team"), _model->getIffList(), _model->getIconTeamIndex(),
 		[this](int id) { _model->setIconTeamIndex(id); }, tr("Change Icon Team"), FieldId::Brief_SnapIconTeam);
 
 	menu.exec(globalPos);
 }
 
-void BriefingEditorDialog::on_makeIconFromShipButton_clicked()
+void BriefingEditorDialog::on_makeIconFromButton_clicked()
 {
-	createIconFromShipDialog(getNewIconPlacement());
+	createIconFromObjectDialog(getNewIconPlacement());
 }
 
-void BriefingEditorDialog::createIconFromShipDialog(const vec3d& placement)
+void BriefingEditorDialog::createIconFromObjectDialog(const vec3d& placement)
 {
-	IconFromShipDialog dlg(this, _model.get());
+	IconFromObjectDialog dlg(this, _model.get());
 	if (dlg.exec() == QDialog::Accepted) {
 		const QByteArray before = _model->captureWorkingState();
-		if (dlg.selectedKind() == IconFromShipDialog::SelectionKind::Ship && dlg.selectedShipIndex() >= 0) {
-			_model->makeIconFromShip(dlg.selectedShipIndex());
-		} else if (dlg.selectedKind() == IconFromShipDialog::SelectionKind::Wing && dlg.selectedWingIndex() >= 0) {
-			_model->makeIconFromWing(dlg.selectedWingIndex());
+		if (dlg.selectedKind() == IconFromObjectDialog::SelectionKind::Ship && dlg.selectedIndex() >= 0) {
+			_model->makeIconFromShip(dlg.selectedIndex());
+		} else if (dlg.selectedKind() == IconFromObjectDialog::SelectionKind::Wing && dlg.selectedIndex() >= 0) {
+			_model->makeIconFromWing(dlg.selectedIndex());
+		} else if (dlg.selectedKind() == IconFromObjectDialog::SelectionKind::Prop && dlg.selectedIndex() >= 0) {
+			_model->makeIconFromProp(dlg.selectedIndex());
 		} else {
 			return;
 		}
 		_model->setLineSelection({_model->getCurrentIconIndex()});
 		_model->setIconPosition(placement);
-		pushWorkingStateSnapshot(before, tr("Make Icon From Ship"));
+		pushWorkingStateSnapshot(before, tr("Make Icon From"));
 		updateUi();
 	}
 }

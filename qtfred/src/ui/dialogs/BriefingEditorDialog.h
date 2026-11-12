@@ -62,6 +62,7 @@ class BriefingEditorDialog : public QDialog, public SexpTreeEditorInterface {
 	void on_iconCloseupLabelLineEdit_textChanged(const QString& string);
 	void on_iconImageComboBox_currentIndexChanged(int index);
 	void on_iconShipTypeComboBox_currentIndexChanged(int index);
+	void on_iconPropClassComboBox_currentIndexChanged(int index);
 	void on_iconTeamComboBox_currentIndexChanged(int index);
 	void on_scaleDoubleSpinBox_valueChanged(double arg1);
 
@@ -75,7 +76,7 @@ class BriefingEditorDialog : public QDialog, public SexpTreeEditorInterface {
 	void on_useCargoIconCheckBox_stateChanged(int state);
 
 	void on_makeIconButton_clicked();
-	void on_makeIconFromShipButton_clicked();
+	void on_makeIconFromButton_clicked();
 	void on_iconCoordinatesButton_clicked();
 	void on_deleteIconButton_clicked();
 	void on_propagateIconButton_clicked();
@@ -106,9 +107,9 @@ class BriefingEditorDialog : public QDialog, public SexpTreeEditorInterface {
 	void enableDisableControls();
 	void captureResetCameraForCurrentStage();
 	void deleteSelectedIconsWithConfirm(); // shared by the Delete button and the Delete key
-	// Opens the Make Icon From Ship dialog and, if accepted, creates the icon at the given placement.
-	// Shared by the "Make Icon From Ship..." button, Shift+Ctrl+click, and the map context menu.
-	void createIconFromShipDialog(const vec3d& placement);
+	// Opens the Make Icon From dialog and, if accepted, creates the icon at the given placement.
+	// Shared by the "Make Icon From..." button, Shift+Ctrl+click, and the map context menu.
+	void createIconFromObjectDialog(const vec3d& placement);
 	void createIconAt(const vec3d& worldPos); // makeIcon at a world position (Ctrl+click / context menu)
 
 	// Right-click context menus on the briefing map.

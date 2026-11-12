@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#137](https://github.com/ofp-fs2open/fs2open.github.com/pull/137)
+> OFP Revision: [#171](https://github.com/ofp-fs2open/fs2open.github.com/pull/171)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 ![FSO 26.2](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/fso-26.2.svg)
@@ -37,6 +37,10 @@ Badges show the version a field or behavior was added in. The OFP badge marks wh
 - [$POF file:](#pof-file)
 - [$Closeup_pos:](#closeup_pos)
 - [$Closeup_zoom:](#closeup_zoom)
+- [$Briefing icon:](#briefing-icon)
+  - [+Regular:](#regular)
+  - [+Fade:](#fade)
+  - [+Highlight:](#highlight)
 - [$Detail Distance:](#detail-distance)
 - [$Category:](#category)
 - [$Flags:](#flags)
@@ -121,8 +125,28 @@ Badges show the version a field or behavior was added in. The OFP badge marks wh
 ### $Closeup_zoom:
 
 - How far the camera's zoomed in when the prop's model is shown in a menu view; defines the camera's FOV.
-- A value of 0 or less is noted in the log and 0.5 is used.
+- Without it, 0.5 is used. A value of 0 or less is noted in the log and 0.5 is used.
 - Syntax: ***Float***, radians
+
+### $Briefing icon:
+
+![OFP 26.3.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.3.0.svg)
+
+- The icon the briefing map shows for a briefing icon set to this prop class. When the prop has none, the icon's ship class and icon type pick the image as usual.
+- Clicking the icon shows the prop's model, using `$Closeup_pos:` and `$Closeup_zoom:`.
+- A prop has no wing or cargo icon variants.
+
+#### +Regular:
+
+- Syntax: ***<regular anim filename>***
+
+#### +Fade:
+
+- Syntax: ***<fade anim filename>***
+
+#### +Highlight:
+
+- Syntax: ***<highlight anim filename>***
 
 ### $Detail Distance:
 

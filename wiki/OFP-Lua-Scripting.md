@@ -1,5 +1,5 @@
 > **Revision information**
-> OFP Revision: [#36](https://github.com/ofp-fs2open/fs2open.github.com/pull/36)
+> OFP Revision: [#171](https://github.com/ofp-fs2open/fs2open.github.com/pull/171)
 > *Set the revision to your PR when your PR changes what this page documents. Leave it alone for edits that only fix or improve the documentation.*
 
 This page covers the Lua scripting API that OFP adds on top of stock FreeSpace Open. The full, always-current reference is the scripting documentation the engine writes itself (run with `-output_scripting`). This page adds context and examples for the OFP-specific parts. Everything else works as described on the [FreeSpace Wiki scripting pages](https://wiki.hard-light.net/index.php/Scripting.tbl).
@@ -18,8 +18,10 @@ This page covers the Lua scripting API that OFP adds on top of stock FreeSpace O
 3. [Intel entry tech models](#intel-entry-tech-models)
    1. [intelentry:renderTechModel](#intelentryrendertechmodel)
    2. [intelentry:renderTechModel2](#intelentryrendertechmodel2)
-4. [Documentation corrections](#documentation-corrections)
-5. [Sample](#sample)
+4. [Briefing closeups](#briefing-closeups)
+   1. [ui.Briefing.checkStageIcons](#uibriefingcheckstageicons)
+5. [Documentation corrections](#documentation-corrections)
+6. [Sample](#sample)
 
 ---
 
@@ -160,6 +162,40 @@ boolean intelentry:renderTechModel2(number X1, number Y1, number X2, number Y2,
 - Returns `false` if the entry has no tech model.
 
 This matches `shipclass:renderTechModel2`.
+
+---
+
+## Briefing closeups
+
+A briefing icon can show a ship class, a prop class (see [props.tbl](props.tbl#briefing-icon)), or a plain model file in its closeup. A briefing UI script needs to know which, to draw it the right way.
+
+### ui.Briefing.checkStageIcons
+
+![OFP 26.3.0](https://raw.githubusercontent.com/wiki/ofp-fs2open/fs2open.github.com/images/badges/ofp-26.3.0.svg)
+
+```
+string, number, vector, string, number, enumeration ui.Briefing.checkStageIcons(number xPos, number yPos)
+```
+
+- OFP adds a sixth return value: `BRIEF_CLOSEUP_SHIP`, `BRIEF_CLOSEUP_PROP` or `BRIEF_CLOSEUP_POF`, saying what the first value names.
+- `BRIEF_CLOSEUP_SHIP`: a ship class. Draw it with `tb.ShipClasses[name]:renderTechModel(...)`.
+- `BRIEF_CLOSEUP_PROP`: a prop class. Draw it with `tb.PropClasses[name]:renderTechModel(...)`.
+- `BRIEF_CLOSEUP_POF`: a model file, for asteroid, jump node and unknown icons. Draw it with `ui.Briefing.renderBriefingModel(...)`, passing the returned closeup zoom and position.
+- On stock FSO and on OFP builds before this change, the sixth value and the `BRIEF_CLOSEUP_*` constants are all `nil`. Lua treats `nil == nil` as true, so check that the value isn't `nil` before comparing, as the sample does, or every icon will look like a prop.
+- The first five values are unchanged, so scripts that ignore the sixth keep working for ships and model files. A script that looks the name up in `tb.ShipClasses` and otherwise treats it as a model file won't draw prop closeups, since a prop class name isn't a file: `renderBriefingModel` draws nothing and returns `false`. In OFP, any model file name `renderBriefingModel` can't find does the same, with a warning in debug builds (once per name), where stock FSO stops the game with an error.
+
+```lua
+local name, zoom, pos, label, id, kind = ui.Briefing.checkStageIcons(mx, my)
+if name then
+    if kind ~= nil and kind == BRIEF_CLOSEUP_PROP then
+        tb.PropClasses[name]:renderTechModel(x1, y1, x2, y2)
+    elseif kind ~= nil and kind == BRIEF_CLOSEUP_SHIP then
+        tb.ShipClasses[name]:renderTechModel(x1, y1, x2, y2)
+    else
+        ui.Briefing.renderBriefingModel(name, zoom, pos, x1, y1, x2, y2)
+    end
+end
+```
 
 ---
 

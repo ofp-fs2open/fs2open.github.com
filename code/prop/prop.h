@@ -17,6 +17,7 @@ typedef struct prop_info {
 	SCP_string pof_file;                                        // Pof filename
 	vec3d closeup_pos;                                          // position for camera when using prop in closeup view (eg briefing and techroom)
 	float closeup_zoom;                                         // zoom when using prop in closeup view (eg briefing and techroom)
+	int bii_index = -1;                                         // briefing icon used when a briefing icon is set to this prop class
 	int model_num = -1;                                         // The model number of the loaded POF
 	int num_detail_levels;                                      // Detail levels of the model
 	int detail_distance[MAX_PROP_DETAIL_LEVELS];                // distance to change detail levels at

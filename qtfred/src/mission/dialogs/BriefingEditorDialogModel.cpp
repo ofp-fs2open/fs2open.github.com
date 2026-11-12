@@ -6,6 +6,7 @@
 #include "sound/audiostr.h"
 #include "iff_defs/iff_defs.h"
 #include "ship/ship.h"
+#include "prop/prop.h"
 #include "object/object.h"
 #include "mission/missiongrid.h"
 
@@ -1088,6 +1089,47 @@ void BriefingEditorDialogModel::setIconShipTypeIndex(int idx)
 	applyToSelectedIconsCurrentAndForward([&](brief_icon& ic) { modify(ic.ship_class, idx); });
 }
 
+int BriefingEditorDialogModel::getIconPropClassIndex() const
+{
+	const auto& b = _wipBriefings[_currentTeam];
+	if (b.num_stages <= 0 || _currentStage < 0 || _currentStage >= b.num_stages)
+		return -1;
+	const auto& s = b.stages[_currentStage];
+	return common_icon_value<int>(s, getEffectiveSelection(s),
+		[](const brief_icon& ic) { return brief_icon_uses_prop(&ic) ? ic.prop_class : -1; }, -2);
+}
+
+void BriefingEditorDialogModel::setIconPropClassIndex(int idx)
+{
+	if (idx < -1 || idx >= prop_info_size())
+		return;
+	applyToSelectedIconsCurrentAndForward([&](brief_icon& ic) { modify(ic.prop_class, idx); });
+}
+
+bool BriefingEditorDialogModel::getIconUsesProp() const
+{
+	const auto& b = _wipBriefings[_currentTeam];
+	if (b.num_stages <= 0 || _currentStage < 0 || _currentStage >= b.num_stages)
+		return false;
+	const auto& s = b.stages[_currentStage];
+	const auto sel = getEffectiveSelection(s);
+	return std::any_of(sel.begin(), sel.end(),
+		[&](int idx) { return idx >= 0 && idx < s.num_icons && brief_icon_uses_prop(&s.icons[idx]); });
+}
+
+bool BriefingEditorDialogModel::getIconPropHasOwnIcon() const
+{
+	const auto& b = _wipBriefings[_currentTeam];
+	if (b.num_stages <= 0 || _currentStage < 0 || _currentStage >= b.num_stages)
+		return false;
+	const auto& s = b.stages[_currentStage];
+	const auto sel = getEffectiveSelection(s);
+	return std::any_of(sel.begin(), sel.end(), [&](int idx) {
+		return idx >= 0 && idx < s.num_icons && brief_icon_uses_prop(&s.icons[idx]) &&
+			   Prop_info[s.icons[idx].prop_class].bii_index >= 0;
+	});
+}
+
 int BriefingEditorDialogModel::getIconTeamIndex() const
 {
 	const auto& b = _wipBriefings[_currentTeam];
@@ -1440,6 +1482,7 @@ void BriefingEditorDialogModel::makeIcon(const SCP_string& label, int typeIndex,
 	ic.type = safeType;
 	ic.team = safeTeam;
 	ic.ship_class = safeClass;
+	ic.prop_class = -1;
 
 	// Labels
 	copy_cstr(ic.label, MAX_LABEL_LEN, label);
@@ -1617,6 +1660,16 @@ SCP_vector<std::pair<int, SCP_string>> BriefingEditorDialogModel::getShipList()
 	return out;
 }
 
+SCP_vector<std::pair<int, SCP_string>> BriefingEditorDialogModel::getPropList()
+{
+	SCP_vector<std::pair<int, SCP_string>> out;
+	out.reserve(Prop_info.size());
+	for (int i = 0; i < prop_info_size(); ++i) {
+		out.emplace_back(i, Prop_info[i].name);
+	}
+	return out;
+}
+
 SCP_vector<std::pair<int, SCP_string>> BriefingEditorDialogModel::getIffList()
 {
 	SCP_vector<std::pair<int, SCP_string>> out;
@@ -1706,6 +1759,33 @@ void BriefingEditorDialogModel::makeIconFromWing(int wingIndex)
 
 	makeIcon(SCP_string(wingp.name), iconType, shipp.team, shipp.ship_info_index);
 	setIconUseWing(true);
+}
+
+void BriefingEditorDialogModel::makeIconFromProp(int propIndex)
+{
+	if (!SCP_vector_inbounds(Props, propIndex) || !Props[propIndex].has_value())
+		return;
+
+	const auto& p = *Props[propIndex];
+	if (p.objnum < 0 || p.prop_info_index < 0 || p.prop_info_index >= prop_info_size())
+		return;
+
+	// Props have no team or ship class. The icon still needs a valid ship class, which only picks the
+	// image (with the icon type) when the prop has no briefing icon of its own.
+	makeIcon(SCP_string(p.prop_name), ICON_INSTALLATION, 0, 0);
+	setIconPropClassIndex(p.prop_info_index);
+}
+
+SCP_vector<BriefingEditorDialogModel::PlacedPropEntry> BriefingEditorDialogModel::getPlacedPropList()
+{
+	SCP_vector<PlacedPropEntry> result;
+	for (int i = 0; i < static_cast<int>(Props.size()); ++i) {
+		const auto& p = Props[i];
+		if (!p.has_value() || p->objnum < 0 || p->prop_info_index < 0 || p->prop_info_index >= prop_info_size())
+			continue;
+		result.push_back({p->prop_name, Prop_info[p->prop_info_index].name, i});
+	}
+	return result;
 }
 
 SCP_vector<BriefingEditorDialogModel::WingTreeEntry> BriefingEditorDialogModel::getWingShipTree()

@@ -406,24 +406,34 @@
                 <item row="1" column="1">
                  <widget class="QComboBox" name="iconShipTypeComboBox"/>
                 </item>
-                <item row="2" column="0">
+                <item row="3" column="0">
                  <widget class="QLabel" name="iconTeamLabel">
                   <property name="text">
                    <string>Team</string>
                   </property>
                  </widget>
                 </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="iconPropClassLabel">
+                  <property name="text">
+                   <string>Prop Class</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="2" column="1">
+                 <widget class="QComboBox" name="iconPropClassComboBox"/>
+                </item>
+                <item row="3" column="1">
                  <widget class="QComboBox" name="iconTeamComboBox"/>
                 </item>
-                <item row="3" column="0">
+                <item row="4" column="0">
                  <widget class="QLabel" name="iconScaleLabel">
                   <property name="text">
                    <string>Scale</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <widget class="QDoubleSpinBox" name="scaleDoubleSpinBox">
                   <property name="singleStep">
                    <double>0.100000000000000</double>
@@ -545,9 +555,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="makeIconFromShipButton">
+            <widget class="QPushButton" name="makeIconFromButton">
              <property name="text">
-              <string>Make Icon From Ship...</string>
+              <string>Make Icon From...</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -823,6 +833,7 @@
   <tabstop>iconCloseupLabelLineEdit</tabstop>
   <tabstop>iconImageComboBox</tabstop>
   <tabstop>iconShipTypeComboBox</tabstop>
+  <tabstop>iconPropClassComboBox</tabstop>
   <tabstop>iconTeamComboBox</tabstop>
   <tabstop>scaleDoubleSpinBox</tabstop>
   <tabstop>drawLinesCheckBox</tabstop>
@@ -834,7 +845,7 @@
   <tabstop>deleteIconButton</tabstop>
   <tabstop>propagateIconButton</tabstop>
   <tabstop>makeIconButton</tabstop>
-  <tabstop>makeIconFromShipButton</tabstop>
+  <tabstop>makeIconFromButton</tabstop>
   <tabstop>formulaTreeView</tabstop>
   <tabstop>defaultMusicWidget</tabstop>
   <tabstop>musicPackWidget</tabstop>

@@ -82,6 +82,9 @@ extern SCP_vector<briefing_icon_info> Briefing_icon_info;
 struct brief_icon;
 extern briefing_icon_info *brief_get_icon_info(brief_icon *bi);
 
+// true when the icon is set to a valid prop class, which overrides its ship class and icon type
+extern bool brief_icon_uses_prop(const brief_icon *bi);
+
 extern bool brief_special_closeup(int briefing_icon_type);
 
 
@@ -123,6 +126,7 @@ typedef struct brief_icon {
 	float	scale_factor;
 	int		hold_x, hold_y;	// 2D screen position of icon, used to place animations
 	int		ship_class;
+	int		prop_class;			// -1 for none; when set, the prop's icon and model replace the ship class's
 	int		modelnum;
 	int		model_instance_num;
 	float		radius;
